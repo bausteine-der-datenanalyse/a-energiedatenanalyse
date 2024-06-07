@@ -440,8 +440,9 @@ plotting_data.drop(columns = ['Braunkohle [MWh]',  'Steinkohle [MWh]', 'Erdgas [
 konventionelle = ['Braunkohle [MWh]',  'Steinkohle [MWh]', 'Erdgas [MWh]', 'Sonstige Konventionelle [MWh]']
 plotting_data["Konventionelle"] = erzeugung[konventionelle].sum(axis = 'columns')
 
-# Reihenfolge ändern
+# rearrange columns, remove " [MWh]"
 plotting_data = plotting_data[['Erneuerbare', 'Pumpspeicher [MWh]', 'Konventionelle', 'Kernenergie [MWh]']]
+plotting_data.columns = plotting_data.columns.str.replace(pat = " [MWh]", repl = "")
 
 # zur Kontrolle - axis = columns addiert die Spalten zeilenweise
 ## print(erneuerbare)
@@ -452,14 +453,23 @@ plotting_data = plotting_data[['Erneuerbare', 'Pumpspeicher [MWh]', 'Konventione
 # Grafik mit drei subplots erzeugen
 plt.figure(figsize = (7.5, 7.5))
 
+# white space between pieces
+explosion = np.zeros(sum(list(plotting_data.dtypes == np.number))) # way to count numeric columns
+explosion = explosion + 0.01 # set spacing
+
 nrows = 4
 ncols = 2
 font_size = 8
 x_lim = erzeugung.sum(numeric_only = True).max() * 1.1 # get value for shared x-axis on barplots
 
-# use 4 out of 8 panels = middle 2 rows
-plt.subplot(nrows, ncols, (3, 6))
-plt.pie(x = plotting_data.sum(), colors = plt.cm.Pastel1.colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.7, textprops = dict(size = font_size +2 ))
+# plot the pie, use 4 out of 8 panels = middle 2 rows
+ax = plt.subplot(nrows, ncols, (3, 6))
+plt.pie(x = plotting_data.sum(), colors = plt.cm.Pastel1.colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.85, textprops = dict(size = font_size + 1), explode = explosion)
+
+# make a donut
+my_axis = plt.gca() # plt.gca = get current axis
+circle = plt.Circle((0, 0), radius = 0.65, color = "white")
+ax.add_patch(circle)
 
 # top row  unstacked barplot 
 plt.subplot(nrows, ncols, (1, 2))
@@ -526,14 +536,23 @@ plotting_data = plotting_data[['Erneuerbare', 'Pumpspeicher [MWh]', 'Konventione
 # Grafik mit drei subplots erzeugen
 plt.figure(figsize = (7.5, 7.5))
 
+# white space between pieces
+explosion = np.zeros(sum(list(plotting_data.dtypes == np.number))) # way to count numeric columns
+explosion = explosion + 0.01 # set spacing
+
 nrows = 4
 ncols = 2
 font_size = 8
 x_lim = erzeugung.sum(numeric_only = True).max() * 1.1 # get value for shared x-axis on barplots
 
-# use 4 out of 8 panels = middle 2 rows
-plt.subplot(nrows, ncols, (3, 6))
-plt.pie(x = plotting_data.sum(), colors = plt.cm.Pastel1.colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.7, textprops = dict(size = font_size +2 ))
+# plot the pie, use 4 out of 8 panels = middle 2 rows
+ax = plt.subplot(nrows, ncols, (3, 6))
+plt.pie(x = plotting_data.sum(), colors = plt.cm.Pastel1.colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.85, textprops = dict(size = font_size + 1), explode = explosion)
+
+# make a donut
+my_axis = plt.gca() # plt.gca = get current axis
+circle = plt.Circle((0, 0), radius = 0.65, color = "white")
+ax.add_patch(circle)
 
 # top row  unstacked barplot 
 plt.subplot(nrows, ncols, (1, 2))
