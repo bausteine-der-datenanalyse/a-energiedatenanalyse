@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Lukas Arnold">
+<meta name="author" content="Simone Arnold">
+<meta name="author" content="Florian Bagemihl">
+<meta name="author" content="Matthias Baitsch">
+<meta name="author" content="Marc Fehr">
+<meta name="author" content="Maik Poetzsch">
+<meta name="author" content="Sebastian Seipel">
+
+<title>Anwendungsbaustein Energiedatenanalyse</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="Energiedatenauswertung_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Energiedatenauswertung_files/libs/quarto-html/quarto.js"></script>
+<script src="Energiedatenauswertung_files/libs/quarto-html/popper.min.js"></script>
+<script src="Energiedatenauswertung_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Energiedatenauswertung_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Energiedatenauswertung_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Energiedatenauswertung_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Energiedatenauswertung_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Energiedatenauswertung_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Energiedatenauswertung_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+  <li><a href="#voraussetzungen" id="toc-voraussetzungen" class="nav-link active" data-scroll-target="#voraussetzungen"><span class="header-section-number">1</span> Voraussetzungen</a></li>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">2</span> Lernziele</a></li>
+  <li><a href="#hintergrund" id="toc-hintergrund" class="nav-link" data-scroll-target="#hintergrund"><span class="header-section-number">3</span> Hintergrund</a></li>
+  <li><a href="#daten-einlesen" id="toc-daten-einlesen" class="nav-link" data-scroll-target="#daten-einlesen"><span class="header-section-number">4</span> Daten einlesen</a></li>
+  <li><a href="#daten-organisieren" id="toc-daten-organisieren" class="nav-link" data-scroll-target="#daten-organisieren"><span class="header-section-number">5</span> Daten organisieren</a></li>
+  <li><a href="#beschreibende-datenanalyse" id="toc-beschreibende-datenanalyse" class="nav-link" data-scroll-target="#beschreibende-datenanalyse"><span class="header-section-number">6</span> Beschreibende Datenanalyse</a>
+  <ul class="collapse">
+  <li><a href="#ablesen-ist-pfui-visualisieren-ist-hui-arbeitstitel" id="toc-ablesen-ist-pfui-visualisieren-ist-hui-arbeitstitel" class="nav-link" data-scroll-target="#ablesen-ist-pfui-visualisieren-ist-hui-arbeitstitel"><span class="header-section-number">6.1</span> Ablesen ist pfui, visualisieren ist hui (Arbeitstitel)</a></li>
+  </ul></li>
+  <li><a href="#explorative-datenanalyse" id="toc-explorative-datenanalyse" class="nav-link" data-scroll-target="#explorative-datenanalyse"><span class="header-section-number">7</span> Explorative Datenanalyse</a>
+  <ul class="collapse">
+  <li><a href="#übungen-beschreibende-statistik" id="toc-übungen-beschreibende-statistik" class="nav-link" data-scroll-target="#übungen-beschreibende-statistik"><span class="header-section-number">7.1</span> Übungen beschreibende Statistik</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Andere Formate</h2><ul><li><a href="Energiedatenauswertung.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Anwendungsbaustein Energiedatenanalyse</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor:innen</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lukas Arnold </p>
+             <p>Simone Arnold </p>
+             <p>Florian Bagemihl </p>
+             <p>Matthias Baitsch </p>
+             <p>Marc Fehr </p>
+             <p>Maik Poetzsch </p>
+             <p>Sebastian Seipel </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">7. Juni 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div id="Lizenz" class="border">
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout="[20, 80]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: center;">
+<p><img src="skript/00-bilder/CC-BY.svg" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 80.0%;justify-content: flex-start;">
+<p>Bausteine Computergestützter Datenanalyse. Anwendungsbaustein Energiedatenanalyse von Lukas Arnold, Simone Arnold, Florian Bagemihl, Matthias Baitsch, Marc Fehr, Maik Poetzsch und Sebastian Seipel ist lizensiert unter <a href="https://creativecommons.org/licenses/by/4.0/deed.de">CC BY 4.0</a>. Das Werk ist abrufbar auf <a href="https://github.com/bausteine-der-datenanalyse/bcd-styleguide">GitHub</a>. Ausgenommen von der Lizenz sind alle Logos und anders gekennzeichneten Inhalte. 2024</p>
+</div>
+</div>
+</div>
+<p>Zitiervorschlag</p>
+<p>Arnold, Lukas, Simone Arnold, Matthias Baitsch, Marc Fehr, Maik Poetzsch, und Sebastian Seipel. 2024. „Bausteine Computergestützter Datenanalyse. Anwendungsbaustein Energiedatenanalyse“. <a href="https://github.com/bausteine-der-datenanalyse/a-energiedatenanalyse" class="uri">https://github.com/bausteine-der-datenanalyse/a-energiedatenanalyse</a>.</p>
+<p>BibTeX-Vorlage</p>
+<pre><code>@misc{BCD-Styleguide-2024,
+ title={Bausteine Computergestützter Datenanalyse. Anwendungsbaustein Energiedatenanalyse},
+ author={Arnold, Lukas and Arnold, Simone and Baitsch, Matthias and Fehr, Marc and Poetzsch, Maik and Seipel, Sebastian},
+ year={2024},
+ url={https://github.com/bausteine-der-datenanalyse/a-energiedatenanalyse}} </code></pre>
+</div>
+<div style="page-break-after: always;"></div>
+<section id="voraussetzungen" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Voraussetzungen</h1>
+<p>Die Bearbeitungszeit dieses Bausteins beträgt circa <strong>Platzhalter</strong>. Für die Bearbeitung dieses Bausteins werden folgende Bausteine vorausgesetzt und die genannten Bibliotheken verwendet:</p>
+<ul>
+<li><p>Werkzeugbaustein Python <strong>3 Links, 3 verschiedene Quellen</strong></p>
+<ul>
+<li><p>Modul <a href="https://pypi.org/project/pandas/">Pandas</a></p></li>
+<li><p>Modul <a href="https://numpy.org/">NumPy</a></p></li>
+<li><p>Modul <a href="https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html">matplotlib.pyplot</a></p>
+<ul>
+<li>Untermodul matplotlib.patches <strong>?!</strong></li>
+</ul></li>
+</ul></li>
+<li><p>Methodenbaustein Einlesen strukturierter Datensätze</p></li>
+</ul>
+<p>Im Baustein werden Strommarktdaten der Bundesnetzagentur für das Jahr 2023 verwendet die unter <a href="https://www.smard.de/home/downloadcenter/download-marktdaten/">https://www.smard.de/</a> abrufbar sind.</p>
+</section>
+<section id="lernziele" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Lernziele</h1>
+<p><strong>TO DO: ergänzen</strong></p>
+<p>In diesen Baustein lernen Sie Methoden und Werkzeuge für die Energiedatenanalyse kennen. Zu den vorgestellten Instrumenten gehören:</p>
+<ul>
+<li><p>Berechnung und Visualisierung einer Jahresdauerlinie</p></li>
+<li><p>Berechnung der Residuallast</p></li>
+<li><p>Einspeisung glätten (Speicherbedarf für jede EE bestimmen, damit diese konstant einspeisen)</p></li>
+</ul>
+<p><strong>Simones Skript als Quelle benennen und zitieren - ist Lukas auch Autor?</strong><br>
+<span class="citation" data-cites="Arnold-2023-Strommarktdatenanalyse">(<a href="#ref-Arnold-2023-Strommarktdatenanalyse" role="doc-biblioref">Arnold 2023</a>)</span></p>
+</section>
+<section id="hintergrund" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Hintergrund</h1>
+<p>Elektrischer Strom wird in Kraftwerken erzeugt und über das Stromnetz zu den Stromverbrauchern transportiert. Stromerzeugung und -verbrauch müssen dabei immer ausgeglichen sein. Der Anteil wetterabhängiger erneuerbarer Einspeisung steigt, Strom kann bislang aber nicht (kostengünstig) großtechnisch gespeichert werden. 2023 speisten die Pumpspeicherkraftwerke in Deutschland 11,1 TWh Strom ein, was 2,4 Prozent des deutschen Stromverbrauchs von 458,3 TWh entsprach <span class="citation" data-cites="energy-charts-strom">(<a href="#ref-energy-charts-strom" role="doc-biblioref">Fraunhofer Institut für Solare Energiesysteme ISE o.&nbsp;J.</a>)</span>. Die Kraftwerkseinsatzplanung und Speicherauslegung auf Basis von Erzeugungs- und Verbrauchsdaten ist deshalb ein relevantes Anwendungsfeld für die Datenanalyse.<br>
+Die Bundesnetzagentur veröffentlicht auf <a href="https://www.smard.de/home/downloadcenter/download-marktdaten/">https://www.smard.de/</a> unter anderem Daten zu Stromerzeugung, -verbrauch und Großhandelspreisen. (Hinweis: Kraftwerksdaten liegen für Erzeugungseinheiten mit einer installierten Erzeugungsleistung von mindestens 100 MW vor.)</p>
+<p><strong>idealerweise werden die Konzepte anhand der Daten der FH gezeigt, und mit den SMARD-Daten beübt</strong></p>
+</section>
+<section id="daten-einlesen" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Daten einlesen</h1>
+<p>Die Strommarktdaten der Bundesnetzagentur müssen manuell auf <a href="https://www.smard.de/home/downloadcenter/download-marktdaten/">https://www.smard.de/</a> heruntergeladen werden. In diesem Skript werden Daten für das Jahr 2023 benutzt.</p>
+<div style="font-size: 90%;">
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Daten</th>
+<th>Dateiname</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Installierte Erzeugungsleistung 2023</td>
+<td>Installierte_Erzeugungsleistung_202301010000_202401010000_Jahr.csv</td>
+</tr>
+<tr class="even">
+<td>Realisierte Stromerzeugung 2023</td>
+<td>Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv</td>
+</tr>
+<tr class="odd">
+<td>Realisierter Stromverbrauch 2023</td>
+<td>Realisierter_Stromverbrauch_202301010000_202401010000_Viertelstunde.csv</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="wrn-SMARD" class="callout callout-style-simple callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning&nbsp;1: SMARD Daten herunterladen
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout="[[50, 50], [50, 50], [1]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Beim der Auswahl des Zeitraums auf Akzeptieren klicken.</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Daten zur installierten Leistung in Originalauflösung (Jahresbasis) auswählen.</p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="skript/00-bilder/smard-accept.png" class="img-fluid figure-img"></p>
+<figcaption>&nbsp;</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="skript/00-bilder/smard-installed-capacity-de.png" class="img-fluid figure-img"></p>
+<figcaption>&nbsp;</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<p>Das Datumsformat der Dateien ist abhängig von der auf der Internetseite eingestellten Sprache (Deutsch/English).</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Die semikolonseparierten Dateien werden als DataFrame mit dem Python Modul Pandas eingelesen, das mit dem Kürzel <code>pd</code> importiert wird. Dazu wird die Funktion <code>pd.read_csv()</code> verwendet. Dabei werden:</p>
+<ul>
+<li><p>das Zeichen-, Tausender- und Dezimaltrennzeichen spezifiziert.<br>
+<code>sep = ";", thousands = ".", decimal = ","</code></p></li>
+<li><p>die Spalten mit Datums- und Zeitangaben sowie das Datumsformat bestimmt.<br>
+<code>parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M"</code></p></li>
+</ul>
+<div id="04543f3e" class="cell" data-results="hold" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.precision"</span>, <span class="dv">2</span>) <span class="co"># places after decimal for floats</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>installierte_leistung0 <span class="op">=</span> pd.read_csv(filepath_or_buffer <span class="op">=</span> <span class="op">\</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">"skript/01-daten/Installierte_Erzeugungsleistung_202301010000_202401010000_Jahr.csv"</span>, <span class="op">\</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>sep <span class="op">=</span> <span class="st">";"</span>, thousands <span class="op">=</span> <span class="st">"."</span>, decimal <span class="op">=</span> <span class="st">","</span>, <span class="op">\</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>parse_dates <span class="op">=</span>  [<span class="dv">0</span>, <span class="dv">1</span>], date_format <span class="op">=</span> <span class="st">"</span><span class="sc">%d</span><span class="st">.%m.%Y"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>erzeugung0 <span class="op">=</span> pd.read_csv(filepath_or_buffer <span class="op">=</span> <span class="op">\</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="st">"skript/01-daten/Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv"</span>, <span class="op">\</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>sep <span class="op">=</span> <span class="st">";"</span>, thousands <span class="op">=</span> <span class="st">"."</span>, decimal <span class="op">=</span> <span class="st">","</span>, <span class="op">\</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>parse_dates <span class="op">=</span>  [<span class="dv">0</span>, <span class="dv">1</span>], date_format <span class="op">=</span> <span class="st">"</span><span class="sc">%d</span><span class="st">.%m.%Y %H:%M"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>verbrauch0 <span class="op">=</span> pd.read_csv(filepath_or_buffer <span class="op">=</span> <span class="op">\</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="st">"skript/01-daten/Realisierter_Stromverbrauch_202301010000_202401010000_Viertelstunde.csv"</span>, <span class="op">\</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>sep <span class="op">=</span> <span class="st">";"</span>, thousands <span class="op">=</span> <span class="st">"."</span>, decimal <span class="op">=</span> <span class="st">","</span>, <span class="op">\</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>parse_dates <span class="op">=</span>  [<span class="dv">0</span>, <span class="dv">1</span>], date_format <span class="op">=</span> <span class="st">"</span><span class="sc">%d</span><span class="st">.%m.%Y %H:%M"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Sehen Sie sich die Zeichenkette zur Spezifikation des Datumsformats an: <code>"%d.%m.%Y %H:%M"</code>. Können Sie anhand der <a href="https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior">Dokumentation</a> bestimmen, welches Format die Datumsangaben in der Datei haben? Welches Format hat der 14. April 2023 um Viertel nach zwei nachmittags?</p>
+<textarea id="“date-format”" name="“date-format”" rows="4" cols="80">Hier können Sie Ihre Antwort eingeben. Die Lösung finden Sie im Aufklapper.</textarea>
+<p><strong>Aufgabe eher für m-Baustein Einlesen strukturierter Datensätze geeignet. Als Folgeaufgabe könnte man mit Hilfe der Dokumentation die englische Datei ‘Actual_generation_202301010000_202401010000_Quarterhour’ einlesen lassen.</strong></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+english version
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>english version</p>
+<div id="46a1de90" class="cell" data-results="hold" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>erzeugung0_en <span class="op">=</span> pd.read_csv(filepath_or_buffer <span class="op">=</span> <span class="op">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="st">"skript/01-daten/english/Actual_generation_202301010000_202401010000_Quarterhour.csv"</span>, <span class="op">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>sep <span class="op">=</span> <span class="st">";"</span>, thousands <span class="op">=</span> <span class="st">","</span>, decimal <span class="op">=</span> <span class="st">"."</span>, <span class="op">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>parse_dates <span class="op">=</span>  [<span class="dv">0</span>, <span class="dv">1</span>], date_format <span class="op">=</span> <span class="st">"%b </span><span class="sc">%d</span><span class="st">, %Y %I:%M %p"</span>) <span class="co"># leading zero is optional for formats %d, %m, %H, %I, %M, %S, %j, %U, %W, and %V</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0_en.head(<span class="dv">2</span>), erzeugung0_en.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Start date</th>
+<th data-quarto-table-cell-role="th">End date</th>
+<th data-quarto-table-cell-role="th">Biomass [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Hydropower [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Wind offshore [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Wind onshore [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Photovoltaics [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Other renewable [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Nuclear [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Lignite [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Hard coal [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Fossil gas [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Hydro pumped storage [MWh] Original resolutions</th>
+<th data-quarto-table-cell-role="th">Other conventional [MWh] Original resolutions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>2023-01-01 00:00:00</td>
+<td>2023-01-01 00:15:00</td>
+<td>1094.25</td>
+<td>320.0</td>
+<td>684.25</td>
+<td>7145.75</td>
+<td>0.50</td>
+<td>32.25</td>
+<td>615.25</td>
+<td>962.75</td>
+<td>517.00</td>
+<td>429.75</td>
+<td>13.50</td>
+<td>307.25</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2023-01-01 00:15:00</td>
+<td>2023-01-01 00:30:00</td>
+<td>1091.25</td>
+<td>317.5</td>
+<td>743.50</td>
+<td>7158.25</td>
+<td>0.25</td>
+<td>32.25</td>
+<td>614.75</td>
+<td>963.25</td>
+<td>518.00</td>
+<td>429.50</td>
+<td>9.75</td>
+<td>307.25</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">35038</td>
+<td>2023-12-31 23:30:00</td>
+<td>2023-12-31 23:45:00</td>
+<td>1053.25</td>
+<td>412.5</td>
+<td>1479.25</td>
+<td>7544.25</td>
+<td>0.50</td>
+<td>24.00</td>
+<td>0.00</td>
+<td>845.25</td>
+<td>444.50</td>
+<td>683.00</td>
+<td>122.75</td>
+<td>348.50</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">35039</td>
+<td>2023-12-31 23:45:00</td>
+<td>2024-01-01 00:00:00</td>
+<td>1051.50</td>
+<td>404.0</td>
+<td>1469.00</td>
+<td>7480.50</td>
+<td>0.50</td>
+<td>24.00</td>
+<td>0.00</td>
+<td>840.75</td>
+<td>442.25</td>
+<td>679.00</td>
+<td>58.25</td>
+<td>348.00</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div id="tip-date-format" class="callout callout-style-default callout-tip callout-titled" title="Solution date format">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip&nbsp;1: Solution date format
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Directive</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>%b</td>
+<td>Month as locale’s abbreviated name (Jan, Feb, …) with delimiter ” ”</td>
+</tr>
+<tr class="even">
+<td>%d</td>
+<td>Day with delimiter “,&nbsp;”</td>
+</tr>
+<tr class="odd">
+<td>%Y</td>
+<td>Year as four digit decimal with delimiter ” ”</td>
+</tr>
+<tr class="even">
+<td>%I:</td>
+<td>Hour as two digit decimal (leading zero is optional) with delimiter “:”</td>
+</tr>
+<tr class="odd">
+<td>%M</td>
+<td>Minute as two digit decimal with delimiter ” ”</td>
+</tr>
+<tr class="even">
+<td>%p</td>
+<td>AM or PM</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Solution:</strong> Apr 14, 2023 2:00 PM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tip-datumsformat" class="callout callout-style-default callout-tip callout-titled" title="Lösung Datumsformat">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip&nbsp;2: Lösung Datumsformat
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<!-- Das Format ist in den englischen Dateien unterschiedlich! -->
+<table class="table">
+<thead>
+<tr class="header">
+<th>Kürzel</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>%d.</td>
+<td>Tag als zweistellige Ganzzahl mit Trennzeichen “.”</td>
+</tr>
+<tr class="even">
+<td>%m.</td>
+<td>Monat (ggf. mit führender Null) mit Trennzeichen “.”</td>
+</tr>
+<tr class="odd">
+<td>%Y</td>
+<td>Jahr als vierstellige Ganzzahl mit Trennzeichen ” ”</td>
+</tr>
+<tr class="even">
+<td>%H:</td>
+<td>Stunde als zweistellige Ganzzahl mit Trennzeichen “:”</td>
+</tr>
+<tr class="odd">
+<td>%M</td>
+<td>Minute als zweistellige Ganzzahl</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lösung</strong>: 14.04.2023 14:15</p>
+</div>
+</div>
+</div>
+</section>
+<section id="daten-organisieren" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Daten organisieren</h1>
+<p>Vor der Datenanalyse sollte überprüft werden, ob die Daten korrekt eingelesen wurden. Dies bedeutet zum einen, zu kontrollieren, ob der Datentyp aller Spalten richtig erkannt wurde. Ob die Spaltentypen einer Datei korrekt eingelesen wurden, können Sie in Python mit dem Befehl <code>df.dtypes</code> überprüfen. Hier der Output des Befehls für den DataFrame <code>erzeugung0</code>.</p>
+<div id="603b0bcd" class="cell" data-results="hold" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Spalten:</span><span class="ch">\n</span><span class="sc">{</span>erzeugung0<span class="sc">.</span>dtypes<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spalten:
+Datum von                                            datetime64[ns]
+Datum bis                                            datetime64[ns]
+Biomasse [MWh] Originalauflösungen                          float64
+Wasserkraft [MWh] Originalauflösungen                       float64
+Wind Offshore [MWh] Originalauflösungen                     float64
+Wind Onshore [MWh] Originalauflösungen                      float64
+Photovoltaik [MWh] Originalauflösungen                      float64
+Sonstige Erneuerbare [MWh] Originalauflösungen              float64
+Kernenergie [MWh] Originalauflösungen                       float64
+Braunkohle [MWh] Originalauflösungen                        float64
+Steinkohle [MWh] Originalauflösungen                        float64
+Erdgas [MWh] Originalauflösungen                            float64
+Pumpspeicher [MWh] Originalauflösungen                      float64
+Sonstige Konventionelle [MWh] Originalauflösungen           float64
+dtype: object</code></pre>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>Viele der Spaltennamen enthalten die Zeichenkette ” Originalauflösungen”, die der Übersichtlichkeit wegen entfernt werden kann (führendes Leerzeichen beachten). Auf diese Weise könnte auch die Einheitenangabe [MWh] entfernt werden, falls diese als störend empfunden wird.</p>
+<div id="f6bcb67e" class="cell" data-results="hold" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Zeichenkette " Originalauflösungen" entfernen</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0.columns <span class="op">=</span> installierte_leistung0.columns.<span class="bu">str</span>.replace(pat <span class="op">=</span> <span class="st">" Originalauflösungen"</span>, repl <span class="op">=</span> <span class="st">""</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>erzeugung0.columns <span class="op">=</span> erzeugung0.columns.<span class="bu">str</span>.replace(pat <span class="op">=</span> <span class="st">" Originalauflösungen"</span>, repl <span class="op">=</span> <span class="st">""</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Spalten:</span><span class="ch">\n</span><span class="sc">{</span>erzeugung0<span class="sc">.</span>dtypes<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>verbrauch0.columns <span class="op">=</span> verbrauch0.columns.<span class="bu">str</span>.replace(pat <span class="op">=</span> <span class="st">" Originalauflösungen"</span>, repl <span class="op">=</span> <span class="st">""</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spalten:
+Datum von                        datetime64[ns]
+Datum bis                        datetime64[ns]
+Biomasse [MWh]                          float64
+Wasserkraft [MWh]                       float64
+Wind Offshore [MWh]                     float64
+Wind Onshore [MWh]                      float64
+Photovoltaik [MWh]                      float64
+Sonstige Erneuerbare [MWh]              float64
+Kernenergie [MWh]                       float64
+Braunkohle [MWh]                        float64
+Steinkohle [MWh]                        float64
+Erdgas [MWh]                            float64
+Pumpspeicher [MWh]                      float64
+Sonstige Konventionelle [MWh]           float64
+dtype: object</code></pre>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>Zum anderen sollten die eingelesenen Daten betrachtet werden, um Fehler etwa bei der Umwandlung von Dezimal- und Tausendertrennzeichen, des Datumsformats oder eine unerwartete Anzahl fehlender Werte und sonstige Auffälligkeiten zu identifizieren. Dazu sollten nicht nur die ersten Zeilen des Datensatzes, sondern auch Ausschnitte aus der Mitte und dem Ende kontrolliert werden. Dafür ist der Befehl <code>pd.concat([a, b, c])</code> nützlich, dem eine Liste von Indexbereichen übergeben werden kann (siehe zweiter und dritter Reiter im folgenden Panel).</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">installierte Leistung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">realisierte Erzeugung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">realisierter Verbrauch</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div id="5e18ce75" class="cell" data-results="hold" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># der DataFrame installierte_leistung0 hat nur 1 Zeile</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Datum von</th>
+<th data-quarto-table-cell-role="th">Datum bis</th>
+<th data-quarto-table-cell-role="th">Biomasse [MW]</th>
+<th data-quarto-table-cell-role="th">Wasserkraft [MW]</th>
+<th data-quarto-table-cell-role="th">Wind Offshore [MW]</th>
+<th data-quarto-table-cell-role="th">Wind Onshore [MW]</th>
+<th data-quarto-table-cell-role="th">Photovoltaik [MW]</th>
+<th data-quarto-table-cell-role="th">Sonstige Erneuerbare [MW]</th>
+<th data-quarto-table-cell-role="th">Kernenergie [MW]</th>
+<th data-quarto-table-cell-role="th">Braunkohle [MW]</th>
+<th data-quarto-table-cell-role="th">Steinkohle [MW]</th>
+<th data-quarto-table-cell-role="th">Erdgas [MW]</th>
+<th data-quarto-table-cell-role="th">Pumpspeicher [MW]</th>
+<th data-quarto-table-cell-role="th">Sonstige Konventionelle [MW]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>2023-01-01</td>
+<td>2024-01-01</td>
+<td>8467.0</td>
+<td>5049.0</td>
+<td>8129.0</td>
+<td>57590.0</td>
+<td>63066.0</td>
+<td>440.0</td>
+<td>4056.0</td>
+<td>17692.0</td>
+<td>18127.0</td>
+<td>31808.0</td>
+<td>9379.0</td>
+<td>8958.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div id="83ef1889" class="cell" data-results="hold" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0.head(<span class="dv">2</span>), <span class="op">\</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>erzeugung0.iloc[<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>erzeugung0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Datum von</th>
+<th data-quarto-table-cell-role="th">Datum bis</th>
+<th data-quarto-table-cell-role="th">Biomasse [MWh]</th>
+<th data-quarto-table-cell-role="th">Wasserkraft [MWh]</th>
+<th data-quarto-table-cell-role="th">Wind Offshore [MWh]</th>
+<th data-quarto-table-cell-role="th">Wind Onshore [MWh]</th>
+<th data-quarto-table-cell-role="th">Photovoltaik [MWh]</th>
+<th data-quarto-table-cell-role="th">Sonstige Erneuerbare [MWh]</th>
+<th data-quarto-table-cell-role="th">Kernenergie [MWh]</th>
+<th data-quarto-table-cell-role="th">Braunkohle [MWh]</th>
+<th data-quarto-table-cell-role="th">Steinkohle [MWh]</th>
+<th data-quarto-table-cell-role="th">Erdgas [MWh]</th>
+<th data-quarto-table-cell-role="th">Pumpspeicher [MWh]</th>
+<th data-quarto-table-cell-role="th">Sonstige Konventionelle [MWh]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>2023-01-01 00:00:00</td>
+<td>2023-01-01 00:15:00</td>
+<td>1094.25</td>
+<td>320.0</td>
+<td>684.25</td>
+<td>7145.75</td>
+<td>0.50</td>
+<td>32.25</td>
+<td>615.25</td>
+<td>962.75</td>
+<td>517.00</td>
+<td>429.75</td>
+<td>13.50</td>
+<td>307.25</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2023-01-01 00:15:00</td>
+<td>2023-01-01 00:30:00</td>
+<td>1091.25</td>
+<td>317.5</td>
+<td>743.50</td>
+<td>7158.25</td>
+<td>0.25</td>
+<td>32.25</td>
+<td>614.75</td>
+<td>963.25</td>
+<td>518.00</td>
+<td>429.50</td>
+<td>9.75</td>
+<td>307.25</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">17520</td>
+<td>2023-07-02 13:00:00</td>
+<td>2023-07-02 13:15:00</td>
+<td>955.25</td>
+<td>317.5</td>
+<td>736.00</td>
+<td>4228.50</td>
+<td>6832.75</td>
+<td>25.25</td>
+<td>0.00</td>
+<td>795.00</td>
+<td>216.75</td>
+<td>546.00</td>
+<td>0.75</td>
+<td>264.75</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">17521</td>
+<td>2023-07-02 13:15:00</td>
+<td>2023-07-02 13:30:00</td>
+<td>956.75</td>
+<td>321.5</td>
+<td>693.75</td>
+<td>3885.25</td>
+<td>6961.25</td>
+<td>25.25</td>
+<td>0.00</td>
+<td>791.00</td>
+<td>215.00</td>
+<td>545.00</td>
+<td>0.00</td>
+<td>266.00</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">35038</td>
+<td>2023-12-31 23:30:00</td>
+<td>2023-12-31 23:45:00</td>
+<td>1053.25</td>
+<td>412.5</td>
+<td>1479.25</td>
+<td>7544.25</td>
+<td>0.50</td>
+<td>24.00</td>
+<td>0.00</td>
+<td>845.25</td>
+<td>444.50</td>
+<td>683.00</td>
+<td>122.75</td>
+<td>348.50</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">35039</td>
+<td>2023-12-31 23:45:00</td>
+<td>2024-01-01 00:00:00</td>
+<td>1051.50</td>
+<td>404.0</td>
+<td>1469.00</td>
+<td>7480.50</td>
+<td>0.50</td>
+<td>24.00</td>
+<td>0.00</td>
+<td>840.75</td>
+<td>442.25</td>
+<td>679.00</td>
+<td>58.25</td>
+<td>348.00</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div id="c0aa490c" class="cell" data-results="hold" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pd.concat([verbrauch0.head(<span class="dv">2</span>), <span class="op">\</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>verbrauch0.iloc[<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Datum von</th>
+<th data-quarto-table-cell-role="th">Datum bis</th>
+<th data-quarto-table-cell-role="th">Gesamt (Netzlast) [MWh]</th>
+<th data-quarto-table-cell-role="th">Residuallast [MWh]</th>
+<th data-quarto-table-cell-role="th">Pumpspeicher [MWh]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>2023-01-01 00:00:00</td>
+<td>2023-01-01 00:15:00</td>
+<td>9720.75</td>
+<td>1890.25</td>
+<td>424.75</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2023-01-01 00:15:00</td>
+<td>2023-01-01 00:30:00</td>
+<td>9641.25</td>
+<td>1739.25</td>
+<td>443.50</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">17520</td>
+<td>2023-07-02 13:00:00</td>
+<td>2023-07-02 13:15:00</td>
+<td>11564.00</td>
+<td>-233.25</td>
+<td>1147.75</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">17521</td>
+<td>2023-07-02 13:15:00</td>
+<td>2023-07-02 13:30:00</td>
+<td>11536.25</td>
+<td>-4.00</td>
+<td>1223.25</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">35038</td>
+<td>2023-12-31 23:30:00</td>
+<td>2023-12-31 23:45:00</td>
+<td>10495.75</td>
+<td>1471.75</td>
+<td>470.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">35039</td>
+<td>2023-12-31 23:45:00</td>
+<td>2024-01-01 00:00:00</td>
+<td>10289.25</td>
+<td>1339.25</td>
+<td>528.00</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>Schließlich ist eine Plausibilitätskontrolle der Daten sinnvoll. Einleitend wurde der deutsche Gesamtstromverbrauch im Jahr 2023 genannt, der 458,3 TWh beträgt. Der Stromverbrauch und die Summe der Stromerzeugung sollten diesem Wert ungefähr entsprechen.</p>
+<div id="c4282f96" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude columns with datetime</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Stromverbrauch in Millionen MWh:</span><span class="ch">\n</span><span class="st">"</span>, <span class="op">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>) <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>), sep <span class="op">=</span> <span class="st">""</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Stromerzeugung in Millionen MWh"</span>, <span class="op">\</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>erzeugung0.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>).<span class="bu">sum</span>() <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Stromverbrauch in Millionen MWh:
+Gesamt (Netzlast) [MWh]    458.0
+Residuallast [MWh]         260.0
+Pumpspeicher [MWh]          14.0
+dtype: float64
+
+Stromerzeugung in Millionen MWh 448.0</code></pre>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>Wenn alle Dateien korrekt eingelesen wurden, können Arbeitsdateien mit dem Befehl <code>df.copy()</code> angelegt werden. Mit diesen wird im folgenden gearbeitet. Dadurch bleiben die Rohdaten immer verfügbar und können bei Bedarf, beispielsweise nach einem versehentlichen Überschreiben der Arbeitsdateien, erneut geladen werden.</p>
+<div id="989d20bf" class="cell" data-results="hold" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>erzeugung <span class="op">=</span> erzeugung0.copy()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>verbrauch <span class="op">=</span> verbrauch0.copy()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>installierte_leistung <span class="op">=</span> installierte_leistung0.copy()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="beschreibende-datenanalyse" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Beschreibende Datenanalyse</h1>
+<p>Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und analytischen Datenanalyse vertieft werden.</p>
+<p>Einen ersten Überblick über die Daten liefert die Methode <code>pd.DataFrame.describe()</code>. Durch das Argument <code>include = [np.number]</code> kann die Ausgabe auf Spalten mit numerischen Daten beschränkt, also die Spalten mit Datumsinformationen ausgeschlossen, werden.</p>
+<div id="50b563cb" class="cell" data-results="hold" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Der DataFrame erzeugung hat </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> Zeilen und </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> Spalten.</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(erzeugung.describe(include <span class="op">=</span> [np.number]))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Der DataFrame erzeugung hat 35040 Zeilen und 14 Spalten.
+
+       Biomasse [MWh]  Wasserkraft [MWh]  Wind Offshore [MWh]  \
+count        35040.00           35040.00             35040.00   
+mean          1079.50             411.50               671.23   
+std             80.16              83.08               457.65   
+min            892.50             249.75                 0.00   
+25%           1017.50             334.00               259.00   
+50%           1066.75             420.50               612.25   
+75%           1133.25             481.00              1040.56   
+max           1293.25             618.25              1910.00   
+
+       Wind Onshore [MWh]  Photovoltaik [MWh]  Sonstige Erneuerbare [MWh]  \
+count            35040.00            35040.00                    35040.00   
+mean              3389.91             1590.11                       33.32   
+std               2627.46             2470.00                        7.69   
+min                 30.25                0.25                       21.75   
+25%               1237.25                0.50                       25.50   
+50%               2657.00               24.88                       32.50   
+75%               5017.19             2466.50                       39.25   
+max              12039.50            10361.25                       51.25   
+
+       Kernenergie [MWh]  Braunkohle [MWh]  Steinkohle [MWh]  Erdgas [MWh]  \
+count           35040.00          35040.00          35040.00      35040.00   
+mean              192.37           2221.58           1134.42       1431.02   
+std               305.80            939.80            838.85        682.72   
+min                 0.00            634.25            170.25        373.00   
+25%                 0.00           1396.25            506.75        893.25   
+50%                 0.00           2111.25            814.75       1300.00   
+75%               535.00           3000.31           1501.00       1810.75   
+max               771.00           4121.75           3814.00       4169.25   
+
+       Pumpspeicher [MWh]  Sonstige Konventionelle [MWh]  
+count            35040.00                       35040.00  
+mean               318.19                         330.81  
+std                425.94                          39.99  
+min                  0.00                         208.50  
+25%                 38.00                         304.50  
+50%                110.75                         337.00  
+75%                443.00                         356.00  
+max               2399.00                         512.50  </code></pre>
+</div>
+</div>
+<p><strong>shape, describe (erledigt)</strong><br>
+<strong>To Do: value.counts</strong></p>
+<p>&nbsp;</p>
+<p>Die beschreibende Statistik der Daten offenbart beispielsweise, dass Onshore Wind den größten Beitrag zur Stromerzeugung lieferte. Darüber hinaus ist auffällig, dass weder Onshore Wind noch Photovoltaik eine minimale Erzeugung von 0 aufweisen, was jedoch für Wind Offshore und Kernenergie der Fall ist.<br>
+<strong>Warum ist das bei Photovoltaik so? – Simone fragt nach</strong></p>
+<section id="ablesen-ist-pfui-visualisieren-ist-hui-arbeitstitel" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="ablesen-ist-pfui-visualisieren-ist-hui-arbeitstitel"><span class="header-section-number">6.1</span> Ablesen ist pfui, visualisieren ist hui (Arbeitstitel)</h2>
+<p>Die Auswertung der beschreibenden Statistik für 12 verschiedene Erzeugungsformen erfordert jedoch Konzentration. Komplexe Informationen sollten deshalb grafisch aufbereitet werden.</p>
+<p>Einen schnellen Überblick beispielsweise über die Verteilung der Gesamterzeugungsleistung nach Erzeugungsart verschafft ein Kreis- bzw. Ringdiagramm. Dieser Diagrammtyp hat, wie im <strong>Methodenbaustein Grundlagen der Statistik (Kapitel 2 einzelne Merkmale)</strong> erläutert, allerdings den Nachteil, dass dieser mit steigender Anzahl von Merkmalsausprägungen schnell unübersichtlich wird und Winkel kaum exakt abgelesen werden können.</p>
+<p>Im folgenden, mit der Methode <code>pd.DataFrame.plot.pie()</code> erstellten Ringdiagramm wurde deshalb zum einen die automatische Annotation der Anteilswerte mit dem entsprechenden Formatierungsstring <code>autopct='%1.1f%%'</code> aktiviert. Zum anderen wurde die Reihenfolge der Spalten im DataFrame getauscht, da sich die Prozentangaben und Beschriftungen kleiner Kreissegmente andernfalls überlappen. Außerdem wurde für die Beschriftung der Segmente die Zeichkette ” [MWh]” aus den Spaltennamen gekürzt. Dies verbessert zwar die Lesbarkeit des Diagramms. Das ist aber nicht der Grund, aus dem die Zeichenkette entfernt wurde. <strong>Was denken Sie, was der Grund dafür ist?</strong></p>
+<div id="tip-Ringdiagramm" class="callout callout-style-default callout-tip callout-titled" title="Lösung Zeichenkette">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip&nbsp;3: Lösung Zeichenkette
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Das Kreis- bzw. Ringdiagramm stellt Anteilswerte dar und ist deshalb einheitenlos.</p>
+</div>
+</div>
+</div>
+<p>Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Plotten mit Pandas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">To Do</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Code für Pandas</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div id="e0dc902f" class="cell" data-results="hold" data-execution_count="11">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Energiedatenauswertung_files/figure-html/cell-12-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="467" height="389"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>To Do:</p>
+<ul>
+<li><p>Grafiktitel</p></li>
+<li><p>Farbenblindenkompatible Farbpalette nach Styleguide</p></li>
+<li><p>Hinweis in Aufklapper. pie-chart with exploded bar erstellen. Aus der matplotlib Dokumentation:<br>
+<a href="https://matplotlib.org/stable/gallery/pie_and_polar_charts/bar_of_pie.html#sphx-glr-gallery-pie-and-polar-charts-bar-of-pie-py" class="uri">https://matplotlib.org/stable/gallery/pie_and_polar_charts/bar_of_pie.html#sphx-glr-gallery-pie-and-polar-charts-bar-of-pie-py</a></p></li>
+<li><p>fig-alt hinzufügen</p></li>
+<li><p>Farben sind trotz gleicher Palette bei matplotlib nicht identisch</p></li>
+<li><p>lange Codezeilenumbrechen</p></li>
+</ul>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div id="4846dc65" class="cell" data-results="hold" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># white space between pieces</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>explosion <span class="op">=</span> np.zeros(<span class="bu">sum</span>(<span class="bu">list</span>(erzeugung.dtypes <span class="op">==</span> np.number))) <span class="co"># way to count numeric columns</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>explosion <span class="op">=</span> explosion <span class="op">+</span> <span class="fl">0.02</span> <span class="co"># set spacing</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># erzeugung.sum(numeric_only = True).plot.pie(colormap = "Pastel1", startangle = 90, rotatelabels = True, explode = explosion)</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># rearrange columns, remove " [MWh]"</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>plotting_data <span class="op">=</span> erzeugung.copy()</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>column_to_move <span class="op">=</span> plotting_data.pop(<span class="st">"Kernenergie [MWh]"</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>plotting_data.insert(<span class="dv">4</span>, <span class="st">"Kernenergie [MWh]"</span>, column_to_move)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>column_to_move <span class="op">=</span> plotting_data.pop(<span class="st">"Pumpspeicher [MWh]"</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>plotting_data.insert(<span class="dv">10</span>, <span class="st">"Pumpspeicher [MWh]"</span>, column_to_move)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>plotting_data.columns <span class="op">=</span> plotting_data.columns.<span class="bu">str</span>.replace(pat <span class="op">=</span> <span class="st">" [MWh]"</span>, repl <span class="op">=</span> <span class="st">""</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the pie</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plotting_data.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>).plot.pie(colormap <span class="op">=</span> <span class="st">"Pastel1"</span>, startangle <span class="op">=</span> <span class="dv">90</span>, rotatelabels <span class="op">=</span> <span class="va">False</span>, explode <span class="op">=</span> explosion, autopct<span class="op">=</span><span class="st">'</span><span class="sc">%1.1f%%</span><span class="st">'</span>, pctdistance <span class="op">=</span> <span class="fl">0.85</span>, textprops <span class="op">=</span> <span class="bu">dict</span>(size <span class="op">=</span> <span class="dv">7</span>))</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="co"># make a donut</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>my_axis <span class="op">=</span> plt.gca() <span class="co"># plt.gca = get current axis</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>circle <span class="op">=</span> plt.Circle((<span class="dv">0</span>, <span class="dv">0</span>), radius <span class="op">=</span> <span class="fl">0.7</span>, color <span class="op">=</span> <span class="st">"white"</span>)</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>ax.add_patch(circle)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Plotten mit matplotlib</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">To Do</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Code für matplotlib</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div id="29f12f9c" class="cell" data-results="hold" data-execution_count="13">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Energiedatenauswertung_files/figure-html/cell-14-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="710" height="710"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>To Do:</p>
+<ul>
+<li><p>Grafiktitel, x-Achsenbeschriftung für Barplots</p></li>
+<li><p>Farbenblindenkompatible Farbpalette nach Styleguide</p></li>
+<li><p>Farben der Balken und der Kreissegmente “Erneuerbare” und “Konventionelle” gleich machen</p></li>
+<li><p>Farben sind trotz gleicher Palette zu Pandas nicht identisch<br>
+Option1: manuellen Farbvektor erstellen<br>
+Option2: Zugriff auf Farbpalette meistern</p></li>
+<li><p>Balken sortieren</p></li>
+<li><p>lange Codezeilenumbrechen</p></li>
+</ul>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div id="7bfbc6f6" class="cell" data-results="hold" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erneuerbare und Konventionelle bestimmen, jeweils summieren</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Erneuerbare</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>plotting_data <span class="op">=</span> erzeugung.copy()</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>plotting_data.drop(columns <span class="op">=</span> [<span class="st">'Datum von'</span>, <span class="st">'Datum bis'</span>, <span class="st">'Biomasse [MWh]'</span>, <span class="st">'Wasserkraft [MWh]'</span>, <span class="st">'Wind Offshore [MWh]'</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="st">'Sonstige Erneuerbare [MWh]'</span>], inplace <span class="op">=</span> <span class="va">True</span>) <span class="co"># Datumsspalten entfernen, inplace = False liefert eine Kopie und tut deshalb ohne Objektzuweisung 'nichts'</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>erneuerbare <span class="op">=</span> [<span class="st">'Biomasse [MWh]'</span>, <span class="st">'Wasserkraft [MWh]'</span>, <span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="st">'Sonstige Erneuerbare [MWh]'</span>]</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Erneuerbare"</span>] <span class="op">=</span> erzeugung[erneuerbare].<span class="bu">sum</span>(axis <span class="op">=</span> <span class="st">'columns'</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">## Konventionelle</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>plotting_data.drop(columns <span class="op">=</span> [<span class="st">'Braunkohle [MWh]'</span>,  <span class="st">'Steinkohle [MWh]'</span>, <span class="st">'Erdgas [MWh]'</span>, <span class="st">'Sonstige Konventionelle [MWh]'</span>], inplace <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>konventionelle <span class="op">=</span> [<span class="st">'Braunkohle [MWh]'</span>,  <span class="st">'Steinkohle [MWh]'</span>, <span class="st">'Erdgas [MWh]'</span>, <span class="st">'Sonstige Konventionelle [MWh]'</span>]</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Konventionelle"</span>] <span class="op">=</span> erzeugung[konventionelle].<span class="bu">sum</span>(axis <span class="op">=</span> <span class="st">'columns'</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Reihenfolge ändern</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>plotting_data <span class="op">=</span> plotting_data[[<span class="st">'Erneuerbare'</span>, <span class="st">'Pumpspeicher [MWh]'</span>, <span class="st">'Konventionelle'</span>, <span class="st">'Kernenergie [MWh]'</span>]]</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co"># zur Kontrolle - axis = columns addiert die Spalten zeilenweise</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co">## print(erneuerbare)</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co">## print(erzeugung[erneuerbare].sum(axis = 'columns'))</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co">## print(plotting_data.columns)</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="co">## print(plotting_data[0:3])</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafik mit drei subplots erzeugen</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="fl">7.5</span>, <span class="fl">7.5</span>))</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>nrows <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>ncols <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>font_size <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>x_lim <span class="op">=</span> erzeugung.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>).<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.1</span> <span class="co"># same axis for barplots</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="co"># use 6 out of 10 panels = middle 3 rows</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>plt.subplot(nrows, ncols, (<span class="dv">3</span>, <span class="dv">8</span>))</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>plt.pie(x <span class="op">=</span> plotting_data.<span class="bu">sum</span>(), colors <span class="op">=</span> plt.cm.Pastel1.colors, startangle <span class="op">=</span> <span class="dv">350</span>, labels <span class="op">=</span> <span class="bu">list</span>(plotting_data.columns), autopct<span class="op">=</span><span class="st">'</span><span class="sc">%1.1f%%</span><span class="st">'</span>, pctdistance <span class="op">=</span> <span class="fl">0.7</span>, textprops <span class="op">=</span> <span class="bu">dict</span>(size <span class="op">=</span> font_size <span class="op">+</span><span class="dv">2</span> ))</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="co"># top row  unstacked barplot </span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>plt.subplot(nrows, ncols, (<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>erzeugung[erneuerbare].<span class="bu">sum</span>().plot.barh(fontsize <span class="op">=</span> font_size, xlim <span class="op">=</span> (<span class="dv">0</span>, x_lim))</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Erneuerbare"</span>, fontsize <span class="op">=</span> font_size <span class="op">+</span> <span class="dv">2</span>)</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a><span class="co"># bottom row unstacked barplot </span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>plt.subplot(nrows, ncols, (<span class="dv">9</span>, <span class="dv">10</span>))</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>erzeugung[konventionelle].<span class="bu">sum</span>().plot.barh(fontsize <span class="op">=</span> font_size, xlim <span class="op">=</span> (<span class="dv">0</span>, x_lim))</span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Konventionelle"</span>, fontsize <span class="op">=</span> font_size <span class="op">+</span> <span class="dv">2</span>)</span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>summe über alle Erzeugungstypen und Visualisierung in einem Tortendiagramm –&gt; das ist aber nicht wirklich übersichtlich –&gt; wir gruppieren die Erneuerbaren und fügen eine eigene Legende für diese ein</p>
+<p>Daten beschreiben und visualisieren –&gt; Erst mal mit installierter Leistung, das ist am einfachsten.</p>
+<p>To Do:</p>
+<ul>
+<li><p>[MWh] im Kuchendiagramm unterdrücken.</p></li>
+<li><p>Farben im Kuchendiagramm und Balkendiagramm angleichen (Kuchenstück Erneuerbare gleiche Farbe wie Balken Erneuerbare) Erzeugung im Jahresverlauf plotten –&gt; Abschaltung der AKW erkennen.</p></li>
+</ul>
+<p>Datensätze verstehen, ein Gefühl dafür bekommen, mögliche Fehler im Datensatz erkennen. Vorbereitung der schließenden Datenanalyse (machen wir das überhaupt)</p>
+<p>gestapeltes Histogramm für die Erzeugung in einem Monat oder in einer Woche - eine Woche im Winter, eine Woche im Sommer</p>
+</section>
+</section>
+<section id="explorative-datenanalyse" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Explorative Datenanalyse</h1>
+<section id="übungen-beschreibende-statistik" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="übungen-beschreibende-statistik"><span class="header-section-number">7.1</span> Übungen beschreibende Statistik</h2>
+<p>2023 wurden die letzten deutschen Atomkraftwerke Emsland, Isar 2 und Neckarwestheim 2 vom Netz genommen. Wann begann die Abschaltung der deutschen Atomkraftwerke? Wie lange hat der Prozess gedauert?<br>
+<strong>Ermittlung mit Slicing und datetime-Operationen</strong></p>
+<ul>
+<li><p>Das Wichtigste (vielleicht als Video)</p></li>
+<li><p>Lernzielkontrolle</p>
+<ul>
+<li><p>Kompetenzquiz (ggf. aufklappbarer Callout Block, Textverweis für PDF, polierte Lösungen evntl. via Lumi später entscheiden)</p></li>
+<li><p>Übungsaufgaben (kleine Projekte)</p></li>
+</ul></li>
+<li><p>Prüfungsaufgaben (ohne Lösungen)</p></li>
+</ul>
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Literatur</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Arnold-2023-Strommarktdatenanalyse" class="csl-entry" role="listitem">
+Arnold, Simone. 2023. <span>„Datenanalyse mit Python. Das Modul Pandas.“</span> Fachhochschule Dortmund.
+</div>
+<div id="ref-energy-charts-strom" class="csl-entry" role="listitem">
+Fraunhofer Institut für Solare Energiesysteme ISE. o.&nbsp;J. <span>„Öffentliche Nettostromerzeugung in Deutschland“</span>. Zugegriffen 3. Juni 2024. <a href="https://energy-charts.info/charts/energy/chart.htm?l=de&amp;c=DE&amp;chartColumnSorting=default&amp;year=-1&amp;interval=year&amp;legendItems=lz1zb&amp;source=public">https://energy-charts.info/charts/energy/chart.htm?l=de&amp;c=DE&amp;chartColumnSorting=default&amp;year=-1&amp;interval=year&amp;legendItems=lz1zb&amp;source=public</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Kopiert");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Kopiert");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

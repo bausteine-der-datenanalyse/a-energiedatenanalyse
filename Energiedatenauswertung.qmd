@@ -1,0 +1,584 @@
+---
+# Metadaten / meta data
+title: "Anwendungsbaustein Energiedatenanalyse"
+author:
+  - Lukas Arnold
+  - Simone Arnold
+  - Florian Bagemihl
+  - Matthias Baitsch
+  - Marc Fehr
+  - Maik Poetzsch
+  - Sebastian Seipel
+date: today # "2024-03-05" Jahr-Monat-Tag / year-month-day
+
+## Spracheinstellungen / language settings
+lang: de
+# crossref: 
+  # nte-title: Beispiel -- so nicht :(
+  # nte-prefix: Beispiel -- so nicht :(
+
+## Formatoption / formating options
+format:
+  html:
+    default-image-extension: svg
+    code-copy: true # hover is default
+  pdf:
+    cite-method: biblatex
+    biblio-title: Quellen
+    default-image-extension: pdf # Vektorgrafiken werden als PDF eingebunden / vector grafics are embedded as PDF
+
+## Inhaltsverzeichnis / table of contents
+toc: true
+number-sections: true
+number-depth: 2
+
+## Bibliographie / bibliography
+bibliography: bibliography.bib
+biblio-style: authoryear
+
+## Objekteinstellungen / object options
+cap-location: bottom
+fig-align: center
+
+### Grafiken von R oder Matplotlib / Figures from R or Matplotlib
+# Empfehlung von / suggestion from https://r4ds.hadley.nz/quarto#sec-figures
+fig-width: 6
+fig-asp: 0.618
+---
+
+::: {.border #Lizenz}
+
+:::: {layout="[20, 80]"}
+![](skript/00-bilder/CC-BY.svg)
+
+Bausteine Computergestützter Datenanalyse. Anwendungsbaustein Energiedatenanalyse von Lukas Arnold, Simone Arnold, Florian Bagemihl, Matthias Baitsch, Marc Fehr, Maik Poetzsch und Sebastian Seipel ist lizensiert unter [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de). Das Werk ist abrufbar auf [GitHub](https://github.com/bausteine-der-datenanalyse/bcd-styleguide). Ausgenommen von der Lizenz sind alle Logos und anders gekennzeichneten Inhalte. 2024
+
+::::
+
+Zitiervorschlag
+
+Arnold, Lukas, Simone Arnold, Matthias Baitsch, Marc Fehr, Maik Poetzsch, und Sebastian Seipel. 2024. „Bausteine Computergestützter Datenanalyse. Anwendungsbaustein Energiedatenanalyse“. <https://github.com/bausteine-der-datenanalyse/a-energiedatenanalyse>.
+
+BibTeX-Vorlage
+
+```
+@misc{BCD-Styleguide-2024,
+ title={Bausteine Computergestützter Datenanalyse. Anwendungsbaustein Energiedatenanalyse},
+ author={Arnold, Lukas and Arnold, Simone and Baitsch, Matthias and Fehr, Marc and Poetzsch, Maik and Seipel, Sebastian},
+ year={2024},
+ url={https://github.com/bausteine-der-datenanalyse/a-energiedatenanalyse}} 
+```
+
+:::
+
+{{< pagebreak >}}
+
+{{< include _voraussetzungen.md >}}
+
+{{< include _lernziele.md >}}
+
+**Simones Skript als Quelle benennen und zitieren - ist Lukas auch Autor?**  
+[@Arnold-2023-Strommarktdatenanalyse]
+
+# Hintergrund
+Elektrischer Strom wird in Kraftwerken erzeugt und über das Stromnetz zu den Stromverbrauchern transportiert. Stromerzeugung und -verbrauch müssen dabei immer ausgeglichen sein. Der Anteil wetterabhängiger erneuerbarer Einspeisung steigt, Strom kann bislang aber nicht (kostengünstig) großtechnisch gespeichert werden. 2023 speisten die Pumpspeicherkraftwerke in Deutschland 11,1 TWh Strom ein, was 2,4 Prozent des deutschen Stromverbrauchs von 458,3 TWh entsprach [@energy-charts-strom]. Die Kraftwerkseinsatzplanung und Speicherauslegung auf Basis von Erzeugungs- und Verbrauchsdaten ist deshalb ein relevantes Anwendungsfeld für die Datenanalyse.  
+Die Bundesnetzagentur veröffentlicht auf [https://www.smard.de/](https://www.smard.de/home/downloadcenter/download-marktdaten/) unter anderem Daten zu Stromerzeugung, -verbrauch und Großhandelspreisen. (Hinweis: Kraftwerksdaten liegen für Erzeugungseinheiten mit einer installierten Erzeugungsleistung von mindestens 100 MW vor.)
+
+**idealerweise werden die Konzepte anhand der Daten der FH gezeigt, und mit den SMARD-Daten beübt**
+
+# Daten einlesen
+Die Strommarktdaten der Bundesnetzagentur müssen manuell auf [https://www.smard.de/](https://www.smard.de/home/downloadcenter/download-marktdaten/) heruntergeladen werden. In diesem Skript werden Daten für das Jahr 2023 benutzt.
+
+::: {style="font-size: 90%;"}
+| Daten | Dateiname |
+|---|---|
+| Installierte Erzeugungsleistung 2023 | Installierte_Erzeugungsleistung_202301010000_202401010000_Jahr.csv |
+| Realisierte Stromerzeugung 2023 | Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv |
+| Realisierter Stromverbrauch 2023 | Realisierter_Stromverbrauch_202301010000_202401010000_Viertelstunde.csv |
+:::
+
+:::{#wrn-SMARD .callout-warning appearance="simple" collapse="true"}
+# SMARD Daten herunterladen
+
+:::: {layout="[[50, 50], [50, 50], [1]]"}
+
+Beim der Auswahl des Zeitraums auf Akzeptieren klicken. 
+
+Daten zur installierten Leistung in Originalauflösung (Jahresbasis) auswählen.
+
+![&nbsp;](skript/00-bilder/smard-accept.png)
+
+![&nbsp;](skript/00-bilder/smard-installed-capacity-de.png)
+
+Das Datumsformat der Dateien ist abhängig von der auf der Internetseite eingestellten Sprache (Deutsch/English).
+::::
+:::
+
+Die semikolonseparierten Dateien werden als DataFrame mit dem Python Modul Pandas eingelesen, das mit dem Kürzel `pd` importiert wird. Dazu wird die Funktion `pd.read_csv()` verwendet. Dabei werden:
+
+  * das Zeichen-, Tausender- und Dezimaltrennzeichen spezifiziert.  
+  `sep = ";", thousands = ".", decimal = ","`
+
+  * die Spalten mit Datums- und Zeitangaben sowie das Datumsformat bestimmt.  
+  `parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M"` 
+
+```{python}
+#| output: false
+#| results: hold # process code first, then print output
+
+import pandas as pd
+pd.set_option("display.precision", 2) # places after decimal for floats
+import numpy as np
+import matplotlib.pyplot as plt
+
+installierte_leistung0 = pd.read_csv(filepath_or_buffer = \
+"skript/01-daten/Installierte_Erzeugungsleistung_202301010000_202401010000_Jahr.csv", \
+sep = ";", thousands = ".", decimal = ",", \
+parse_dates =  [0, 1], date_format = "%d.%m.%Y")
+
+erzeugung0 = pd.read_csv(filepath_or_buffer = \
+"skript/01-daten/Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv", \
+sep = ";", thousands = ".", decimal = ",", \
+parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+
+verbrauch0 = pd.read_csv(filepath_or_buffer = \
+"skript/01-daten/Realisierter_Stromverbrauch_202301010000_202401010000_Viertelstunde.csv", \
+sep = ";", thousands = ".", decimal = ",", \
+parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+```
+
+Sehen Sie sich die Zeichenkette zur Spezifikation des Datumsformats an: `"%d.%m.%Y %H:%M"`. Können Sie anhand der [Dokumentation](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior) bestimmen, welches Format die Datumsangaben in der Datei haben? Welches Format hat der 14. April 2023 um Viertel nach zwei nachmittags?  
+
+<textarea id=“date-format” name=“date-format” rows="4" cols="80">Hier können Sie Ihre Antwort eingeben. Die Lösung finden Sie im Aufklapper.</textarea>
+
+**Aufgabe eher für m-Baustein Einlesen strukturierter Datensätze geeignet. Als Folgeaufgabe könnte man mit Hilfe der Dokumentation die englische Datei 'Actual_generation_202301010000_202401010000_Quarterhour' einlesen lassen.**
+
+::: {.callout-note collapse="true"}
+## english version
+
+english version
+```{python}
+#| include: true
+#| results: hold # process code first, then print output
+
+import pandas as pd
+
+erzeugung0_en = pd.read_csv(filepath_or_buffer = \
+"skript/01-daten/english/Actual_generation_202301010000_202401010000_Quarterhour.csv", \
+sep = ";", thousands = ",", decimal = ".", \
+parse_dates =  [0, 1], date_format = "%b %d, %Y %I:%M %p") # leading zero is optional for formats %d, %m, %H, %I, %M, %S, %j, %U, %W, and %V
+
+pd.concat([erzeugung0_en.head(2), erzeugung0_en.tail(2)])
+```
+
+:::: {#tip-date-format .callout-tip title="Solution date format" collapse="true"}
+
+| Directive | Meaning |
+|---|---|
+| %b | Month as locale’s abbreviated name (Jan, Feb, ...) with delimiter " " |
+| %d | Day with delimiter ",&nbsp;" |
+| %Y | Year as four digit decimal with delimiter " " |
+| %I:| Hour as two digit decimal (leading zero is optional) with delimiter ":" |
+| %M | Minute as two digit decimal with delimiter " " |
+| %p | AM or PM |
+
+**Solution:** Apr 14, 2023 2:00 PM
+
+::::
+:::
+
+::: {#tip-datumsformat .callout-tip title="Lösung Datumsformat" collapse="true"}
+
+<!-- Das Format ist in den englischen Dateien unterschiedlich! -->
+
+| Kürzel | Bedeutung |
+|---|---|
+| %d. | Tag als zweistellige Ganzzahl mit Trennzeichen "."  |
+| %m. | Monat (ggf. mit führender Null) mit Trennzeichen "." |
+| %Y | Jahr als vierstellige Ganzzahl mit Trennzeichen " " |
+| %H: | Stunde als zweistellige Ganzzahl mit Trennzeichen ":" |
+| %M | Minute als zweistellige Ganzzahl |
+
+**Lösung**: 14.04.2023 14:15
+
+:::
+
+# Daten organisieren
+Vor der Datenanalyse sollte überprüft werden, ob die Daten korrekt eingelesen wurden. Dies bedeutet zum einen, zu kontrollieren, ob der Datentyp aller Spalten richtig erkannt wurde. Ob die Spaltentypen einer Datei korrekt eingelesen wurden, können Sie in Python mit dem Befehl `df.dtypes` überprüfen. Hier der Output des Befehls für den DataFrame `erzeugung0`.
+
+```{python}
+#| include: true
+#| results: hold # process code first, then print output
+
+print(f"Spalten:\n{erzeugung0.dtypes}")
+```
+
+&nbsp;
+
+Viele der Spaltennamen enthalten die Zeichenkette " Originalauflösungen", die der Übersichtlichkeit wegen entfernt werden kann (führendes Leerzeichen beachten). Auf diese Weise könnte auch die Einheitenangabe [MWh] entfernt werden, falls diese als störend empfunden wird.
+
+```{python}
+#| include: true
+#| results: hold # process code first, then print output
+
+# Zeichenkette " Originalauflösungen" entfernen
+installierte_leistung0.columns = installierte_leistung0.columns.str.replace(pat = " Originalauflösungen", repl = "")
+
+erzeugung0.columns = erzeugung0.columns.str.replace(pat = " Originalauflösungen", repl = "")
+print(f"Spalten:\n{erzeugung0.dtypes}")
+
+verbrauch0.columns = verbrauch0.columns.str.replace(pat = " Originalauflösungen", repl = "")
+```
+
+&nbsp;
+
+Zum anderen sollten die eingelesenen Daten betrachtet werden, um Fehler etwa bei der Umwandlung von Dezimal- und Tausendertrennzeichen, des Datumsformats oder eine unerwartete Anzahl fehlender Werte und sonstige Auffälligkeiten zu identifizieren. Dazu sollten nicht nur die ersten Zeilen des Datensatzes, sondern auch Ausschnitte aus der Mitte und dem Ende kontrolliert werden. Dafür ist der Befehl `pd.concat([a, b, c])` nützlich, dem eine Liste von Indexbereichen übergeben werden kann (siehe zweiter und dritter Reiter im folgenden Panel).
+
+::: {.panel-tabset}
+
+## installierte Leistung
+
+```{python}
+#| echo: true
+#| results: hold # process code first, then print output
+
+# der DataFrame installierte_leistung0 hat nur 1 Zeile
+installierte_leistung0
+```
+
+## realisierte Erzeugung
+```{python}
+#| echo: true
+#| results: hold # process code first, then print output
+
+pd.concat([erzeugung0.head(2), \
+erzeugung0.iloc[len(erzeugung0)//2:(len(erzeugung0)//2+2)], \
+erzeugung0.tail(2)])
+```
+
+## realisierter Verbrauch
+
+```{python}
+#| echo: true
+#| results: hold # process code first, then print output
+
+pd.concat([verbrauch0.head(2), \
+verbrauch0.iloc[len(verbrauch0)//2:(len(verbrauch0)//2+2)], \
+verbrauch0.tail(2)])
+```
+
+:::
+
+&nbsp;
+
+Schließlich ist eine Plausibilitätskontrolle der Daten sinnvoll. Einleitend wurde der deutsche Gesamtstromverbrauch im Jahr 2023 genannt, der 458,3 TWh beträgt. Der Stromverbrauch und die Summe der Stromerzeugung sollten diesem Wert ungefähr entsprechen.
+
+```{python}
+#| echo: true
+
+# exclude columns with datetime
+print("Stromverbrauch in Millionen MWh:\n", \
+verbrauch0.sum(numeric_only = True) // (1000 * 1000), sep = "")
+
+print("\nStromerzeugung in Millionen MWh", \
+erzeugung0.sum(numeric_only = True).sum() // (1000 * 1000))
+```
+
+&nbsp;
+
+Wenn alle Dateien korrekt eingelesen wurden, können Arbeitsdateien mit dem Befehl `df.copy()` angelegt werden. Mit diesen wird im folgenden gearbeitet. Dadurch bleiben die Rohdaten immer verfügbar und können bei Bedarf, beispielsweise nach einem versehentlichen Überschreiben der Arbeitsdateien, erneut geladen werden.
+
+```{python}
+#| output: false
+#| results: hold # process code first, then print output
+
+erzeugung = erzeugung0.copy()
+verbrauch = verbrauch0.copy()
+installierte_leistung = installierte_leistung0.copy()
+```
+
+# Beschreibende Datenanalyse
+Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und analytischen Datenanalyse vertieft werden.
+
+Einen ersten Überblick über die Daten liefert die Methode `pd.DataFrame.describe()`. Durch das Argument `include = [np.number]` kann die Ausgabe auf Spalten mit numerischen Daten beschränkt, also die Spalten mit Datumsinformationen ausgeschlossen, werden.
+
+```{python}
+#| output: true
+#| results: hold # process code first, then print output
+
+print(f"Der DataFrame erzeugung hat {erzeugung.shape[0]} Zeilen und {erzeugung.shape[1]} Spalten.\n")
+print(erzeugung.describe(include = [np.number]))
+```
+
+**shape, describe (erledigt)**  
+**To Do: value.counts**
+
+&nbsp;
+
+Die beschreibende Statistik der Daten offenbart beispielsweise, dass Onshore Wind den größten Beitrag zur Stromerzeugung lieferte. Darüber hinaus ist auffällig, dass weder Onshore Wind noch Photovoltaik eine minimale Erzeugung von 0 aufweisen, was jedoch für Wind Offshore und Kernenergie der Fall ist.  
+**Warum ist das bei Photovoltaik so? -- Simone fragt nach** 
+
+## Ablesen ist pfui, visualisieren ist hui (Arbeitstitel)
+Die Auswertung der beschreibenden Statistik für 12 verschiedene Erzeugungsformen erfordert jedoch Konzentration. Komplexe Informationen sollten deshalb grafisch aufbereitet werden.
+
+Einen schnellen Überblick beispielsweise über die Verteilung der Gesamterzeugungsleistung nach Erzeugungsart verschafft ein Kreis- bzw. Ringdiagramm. Dieser Diagrammtyp hat, wie im **Methodenbaustein Grundlagen der Statistik (Kapitel 2 einzelne Merkmale)** erläutert, allerdings den Nachteil, dass dieser mit steigender Anzahl von Merkmalsausprägungen schnell unübersichtlich wird und Winkel kaum exakt abgelesen werden können.
+
+Im folgenden, mit der Methode `pd.DataFrame.plot.pie()` erstellten Ringdiagramm wurde deshalb zum einen die automatische Annotation der Anteilswerte mit dem entsprechenden Formatierungsstring `autopct='%1.1f%%'` aktiviert. Zum anderen wurde die Reihenfolge der Spalten im DataFrame getauscht, da sich die Prozentangaben und Beschriftungen kleiner Kreissegmente andernfalls überlappen. Außerdem wurde für die Beschriftung der Segmente die Zeichkette " [MWh]" aus den Spaltennamen gekürzt. Dies verbessert zwar die Lesbarkeit des Diagramms. Das ist aber nicht der Grund, aus dem die Zeichenkette entfernt wurde. **Was denken Sie, was der Grund dafür ist?**
+
+:::{#tip-Ringdiagramm .callout-tip collapse="true" title="Lösung Zeichenkette"}
+Das Kreis- bzw. Ringdiagramm stellt Anteilswerte dar und ist deshalb einheitenlos.
+:::
+
+
+Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen.
+
+::: {.panel-tabset}
+
+## Plotten mit Pandas
+```{python}
+#| echo: false
+#| results: hold # process code first, then print output
+#| fig-align: center
+
+# white space between pieces
+explosion = np.zeros(sum(list(erzeugung.dtypes == np.number))) # way to count numeric columns
+explosion = explosion + 0.02 # set spacing
+
+# plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]
+# erzeugung.sum(numeric_only = True).plot.pie(colormap = "Pastel1", startangle = 90, rotatelabels = True, explode = explosion)
+
+# rearrange columns, remove " [MWh]"
+plotting_data = erzeugung.copy()
+column_to_move = plotting_data.pop("Kernenergie [MWh]")
+plotting_data.insert(4, "Kernenergie [MWh]", column_to_move)
+
+column_to_move = plotting_data.pop("Pumpspeicher [MWh]")
+plotting_data.insert(10, "Pumpspeicher [MWh]", column_to_move)
+
+plotting_data.columns = plotting_data.columns.str.replace(pat = " [MWh]", repl = "")
+
+# plot the pie
+ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Pastel1", startangle = 90, rotatelabels = False, explode = explosion, autopct='%1.1f%%', pctdistance = 0.85, textprops = dict(size = 7))
+
+# make a donut
+my_axis = plt.gca() # plt.gca = get current axis
+circle = plt.Circle((0, 0), radius = 0.7, color = "white")
+ax.add_patch(circle)
+```
+
+## To Do
+To Do:
+  
+  * Grafiktitel
+  
+  * Farbenblindenkompatible Farbpalette nach Styleguide
+
+  * Hinweis in Aufklapper. pie-chart with exploded bar erstellen. Aus der matplotlib Dokumentation:  
+    <https://matplotlib.org/stable/gallery/pie_and_polar_charts/bar_of_pie.html#sphx-glr-gallery-pie-and-polar-charts-bar-of-pie-py>
+
+  * fig-alt hinzufügen
+
+  * Farben sind trotz gleicher Palette bei matplotlib nicht identisch
+
+  * lange Codezeilenumbrechen
+
+## Code für Pandas
+```{python}
+#| output: false
+#| results: hold # process code first, then print output
+
+# white space between pieces
+explosion = np.zeros(sum(list(erzeugung.dtypes == np.number))) # way to count numeric columns
+explosion = explosion + 0.02 # set spacing
+
+# plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]
+# erzeugung.sum(numeric_only = True).plot.pie(colormap = "Pastel1", startangle = 90, rotatelabels = True, explode = explosion)
+
+# rearrange columns, remove " [MWh]"
+plotting_data = erzeugung.copy()
+column_to_move = plotting_data.pop("Kernenergie [MWh]")
+plotting_data.insert(4, "Kernenergie [MWh]", column_to_move)
+
+column_to_move = plotting_data.pop("Pumpspeicher [MWh]")
+plotting_data.insert(10, "Pumpspeicher [MWh]", column_to_move)
+
+plotting_data.columns = plotting_data.columns.str.replace(pat = " [MWh]", repl = "")
+
+# plot the pie
+ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Pastel1", startangle = 90, rotatelabels = False, explode = explosion, autopct='%1.1f%%', pctdistance = 0.85, textprops = dict(size = 7))
+
+# make a donut
+my_axis = plt.gca() # plt.gca = get current axis
+circle = plt.Circle((0, 0), radius = 0.7, color = "white")
+ax.add_patch(circle)
+```
+
+:::
+
+::: {.panel-tabset}
+
+## Plotten mit matplotlib
+
+```{python}
+#| echo: false
+#| results: hold # process code first, then print output
+#| fig-align: center
+
+# Erneuerbare und Konventionelle bestimmen, jeweils summieren
+
+## Erneuerbare
+plotting_data = erzeugung.copy()
+plotting_data.drop(columns = ['Datum von', 'Datum bis', 'Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]',
+'Wind Onshore [MWh]', 'Photovoltaik [MWh]',
+'Sonstige Erneuerbare [MWh]'], inplace = True) # Datumsspalten entfernen, inplace = False liefert eine Kopie und tut deshalb ohne Objektzuweisung 'nichts'
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]',
+'Sonstige Erneuerbare [MWh]']
+plotting_data["Erneuerbare"] = erzeugung[erneuerbare].sum(axis = 'columns')
+
+## Konventionelle
+plotting_data.drop(columns = ['Braunkohle [MWh]',  'Steinkohle [MWh]', 'Erdgas [MWh]', 'Sonstige Konventionelle [MWh]'], inplace = True)
+konventionelle = ['Braunkohle [MWh]',  'Steinkohle [MWh]', 'Erdgas [MWh]', 'Sonstige Konventionelle [MWh]']
+plotting_data["Konventionelle"] = erzeugung[konventionelle].sum(axis = 'columns')
+
+# Reihenfolge ändern
+plotting_data = plotting_data[['Erneuerbare', 'Pumpspeicher [MWh]', 'Konventionelle', 'Kernenergie [MWh]']]
+
+# zur Kontrolle - axis = columns addiert die Spalten zeilenweise
+## print(erneuerbare)
+## print(erzeugung[erneuerbare].sum(axis = 'columns'))
+## print(plotting_data.columns)
+## print(plotting_data[0:3])
+
+# Grafik mit drei subplots erzeugen
+plt.figure(figsize = (7.5, 7.5))
+
+nrows = 4
+ncols = 2
+font_size = 8
+x_lim = erzeugung.sum(numeric_only = True).max() * 1.1 # get value for shared x-axis on barplots
+
+# use 4 out of 8 panels = middle 2 rows
+plt.subplot(nrows, ncols, (3, 6))
+plt.pie(x = plotting_data.sum(), colors = plt.cm.Pastel1.colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.7, textprops = dict(size = font_size +2 ))
+
+# top row  unstacked barplot 
+plt.subplot(nrows, ncols, (1, 2))
+erzeugung[erneuerbare].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
+plt.title("Erneuerbare", fontsize = font_size + 2)
+
+# bottom row unstacked barplot 
+plt.subplot(nrows, ncols, (7, 8))
+erzeugung[konventionelle].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
+plt.title("Konventionelle", fontsize = font_size + 2)
+
+plt.tight_layout()
+plt.show()
+```
+
+## To Do
+To Do:
+  
+  * Grafiktitel, x-Achsenbeschriftung für Barplots
+  
+  * Farbenblindenkompatible Farbpalette nach Styleguide
+
+  * Farben der Balken und der Kreissegmente "Erneuerbare" und "Konventionelle" gleich machen 
+
+  * Farben sind trotz gleicher Palette zu Pandas nicht identisch  
+  Option1: manuellen Farbvektor erstellen  
+  Option2: Zugriff auf Farbpalette meistern
+
+  * Balken sortieren
+
+  * lange Codezeilenumbrechen
+
+## Code für matplotlib
+
+```{python}
+#| output: false
+#| results: hold # process code first, then print output
+
+# Erneuerbare und Konventionelle bestimmen, jeweils summieren
+
+## Erneuerbare
+plotting_data = erzeugung.copy()
+plotting_data.drop(columns = ['Datum von', 'Datum bis', 'Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]',
+'Wind Onshore [MWh]', 'Photovoltaik [MWh]',
+'Sonstige Erneuerbare [MWh]'], inplace = True) # Datumsspalten entfernen, inplace = False liefert eine Kopie und tut deshalb ohne Objektzuweisung 'nichts'
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]',
+'Sonstige Erneuerbare [MWh]']
+plotting_data["Erneuerbare"] = erzeugung[erneuerbare].sum(axis = 'columns')
+
+## Konventionelle
+plotting_data.drop(columns = ['Braunkohle [MWh]',  'Steinkohle [MWh]', 'Erdgas [MWh]', 'Sonstige Konventionelle [MWh]'], inplace = True)
+konventionelle = ['Braunkohle [MWh]',  'Steinkohle [MWh]', 'Erdgas [MWh]', 'Sonstige Konventionelle [MWh]']
+plotting_data["Konventionelle"] = erzeugung[konventionelle].sum(axis = 'columns')
+
+# Reihenfolge ändern
+plotting_data = plotting_data[['Erneuerbare', 'Pumpspeicher [MWh]', 'Konventionelle', 'Kernenergie [MWh]']]
+
+# zur Kontrolle - axis = columns addiert die Spalten zeilenweise
+## print(erneuerbare)
+## print(erzeugung[erneuerbare].sum(axis = 'columns'))
+## print(plotting_data.columns)
+## print(plotting_data[0:3])
+
+# Grafik mit drei subplots erzeugen
+plt.figure(figsize = (7.5, 7.5))
+
+nrows = 4
+ncols = 2
+font_size = 8
+x_lim = erzeugung.sum(numeric_only = True).max() * 1.1 # get value for shared x-axis on barplots
+
+# use 4 out of 8 panels = middle 2 rows
+plt.subplot(nrows, ncols, (3, 6))
+plt.pie(x = plotting_data.sum(), colors = plt.cm.Pastel1.colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.7, textprops = dict(size = font_size +2 ))
+
+# top row  unstacked barplot 
+plt.subplot(nrows, ncols, (1, 2))
+erzeugung[erneuerbare].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
+plt.title("Erneuerbare", fontsize = font_size + 2)
+
+# bottom row unstacked barplot 
+plt.subplot(nrows, ncols, (7, 8))
+erzeugung[konventionelle].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
+plt.title("Konventionelle", fontsize = font_size + 2)
+
+plt.tight_layout()
+plt.show()
+```
+
+:::
+summe über alle Erzeugungstypen und Visualisierung in einem Tortendiagramm
+--> das ist aber nicht wirklich übersichtlich --> wir gruppieren die Erneuerbaren und fügen eine eigene Legende für diese ein 
+
+Daten beschreiben und visualisieren --> Erst mal mit installierter Leistung, das ist am einfachsten.
+
+
+To Do:
+
+  * [MWh] im Kuchendiagramm unterdrücken.
+
+  * Farben im Kuchendiagramm und Balkendiagramm angleichen (Kuchenstück Erneuerbare gleiche Farbe wie Balken Erneuerbare)
+Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
+
+Datensätze verstehen, ein Gefühl dafür bekommen, mögliche Fehler im Datensatz erkennen. Vorbereitung der schließenden Datenanalyse (machen wir das überhaupt)
+
+gestapeltes Histogramm für die Erzeugung in einem Monat oder in einer Woche - eine Woche im Winter, eine Woche im Sommer
+
+# Explorative Datenanalyse
+
+## Übungen beschreibende Statistik
+2023 wurden die letzten deutschen Atomkraftwerke Emsland, Isar 2 und Neckarwestheim 2 vom Netz genommen. Wann begann die Abschaltung der deutschen Atomkraftwerke? Wie lange hat der Prozess gedauert?  
+**Ermittlung mit Slicing und datetime-Operationen**
+
+* Das Wichtigste (vielleicht als Video)
+
+* Lernzielkontrolle
+
+  * Kompetenzquiz (ggf. aufklappbarer Callout Block, Textverweis für PDF, polierte Lösungen evntl. via Lumi später entscheiden)
+
+  * Übungsaufgaben (kleine Projekte)
+
+* Prüfungsaufgaben (ohne Lösungen)
