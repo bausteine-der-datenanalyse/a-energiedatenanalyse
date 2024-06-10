@@ -286,7 +286,7 @@ erzeugung0.sum(numeric_only = True).sum() // (1000 * 1000))
 
 &nbsp;
 
-Wenn alle Dateien korrekt eingelesen wurden, können Arbeitsdateien mit dem Befehl `df.copy()` angelegt werden. Mit diesen wird im folgenden gearbeitet. Dadurch bleiben die Rohdaten immer verfügbar und können bei Bedarf, beispielsweise nach einem versehentlichen Überschreiben der Arbeitsdateien, erneut geladen werden.
+Wenn alle Dateien korrekt eingelesen wurden, können Arbeitsdateien mit dem Befehl `df.copy()` angelegt werden. Dadurch bleiben die Rohdaten immer verfügbar und können bei Bedarf, beispielsweise nach einem versehentlichen Überschreiben der Arbeitsdateien, erneut geladen werden.
 
 ```{python}
 #| output: false
@@ -315,17 +315,17 @@ print(erzeugung.describe(include = [np.number]))
 
 &nbsp;
 
-Die beschreibende Statistik der Daten offenbart beispielsweise, dass Onshore Wind den größten Beitrag zur Stromerzeugung lieferte. Darüber hinaus ist auffällig, dass weder Onshore Wind noch Photovoltaik eine minimale Erzeugung von 0 aufweisen, was jedoch für Wind Offshore und Kernenergie der Fall ist.  
-**Warum ist das bei Photovoltaik so? -- Simone fragt nach** 
+Aus der beschreibenden Statistik der Daten kann beispielsweise entnommen werden, dass Onshore Wind den größten Beitrag zur Stromerzeugung lieferte. Ebenfalls ist auffällig, dass weder Onshore Wind noch Photovoltaik eine minimale Erzeugung von 0 aufweisen, was jedoch für Wind Offshore und Kernenergie der Fall ist.  
+**Warum ist das bei Photovoltaik so? -- Simone fragt nach. In Österreich ist das nicht der Fall!** 
 
 ## Ablesen ist pfui, visualisieren ist hui (Arbeitstitel)
 Die Auswertung der beschreibenden Statistik für 12 verschiedene Erzeugungsformen erfordert jedoch Konzentration. Komplexe Informationen sollten deshalb grafisch aufbereitet werden.
 
-Einen schnellen Überblick beispielsweise über die Verteilung der Gesamterzeugungsleistung nach Erzeugungsart verschafft ein Kreis- bzw. Ringdiagramm. Dieser Diagrammtyp hat, wie im **Methodenbaustein Grundlagen der Statistik (Kapitel 2 einzelne Merkmale)** erläutert, allerdings den Nachteil, dass dieser mit steigender Anzahl von Merkmalsausprägungen schnell unübersichtlich wird und Winkel kaum exakt abgelesen werden können.
+Einen schnellen Überblick beispielsweise über die Verteilung der Gesamterzeugungsleistung nach Erzeugungsart verschafft ein Kreis- bzw. Ringdiagramm. Allerdings hat dieser Diagrammtyp, wie im **Methodenbaustein Grundlagen der Statistik (Kapitel 2 einzelne Merkmale)** erläutert, den Nachteil, dass dieser mit steigender Anzahl von Merkmalsausprägungen (bzw. hier darzustellenden Merkmalen) schnell unübersichtlich wird und Winkel kaum exakt abgelesen werden können.
 
 Im folgenden, mit der Methode `pd.DataFrame.plot.pie()` erstellten Ringdiagramm wurde deshalb zum einen die automatische Annotation der Anteilswerte mit dem entsprechenden Formatierungsstring `autopct='%1.1f%%'` aktiviert. Zum anderen wurde die Reihenfolge der Spalten im DataFrame getauscht, da sich die Prozentangaben und Beschriftungen kleiner Kreissegmente andernfalls überlappen. Außerdem wurde für die Beschriftung der Segmente die Zeichkette " [MWh]" aus den Spaltennamen gekürzt. Dies verbessert zwar die Lesbarkeit des Diagramms. Das ist aber nicht der Grund, aus dem die Zeichenkette entfernt wurde. **Was denken Sie, was der Grund dafür ist?**
 
-:::{#tip-Ringdiagramm .callout-tip collapse="true" title="Lösung Zeichenkette"}
+:::{#tip-Ringdiagramm .callout-tip collapse="true" title="Lösung Kreisdiagramm"}
 Das Kreis- bzw. Ringdiagramm stellt Anteilswerte dar und ist deshalb einheitenlos.
 :::
 
@@ -373,14 +373,11 @@ To Do:
   
   * Farbenblindenkompatible Farbpalette nach Styleguide
 
-  * Hinweis in Aufklapper. pie-chart with exploded bar erstellen. Aus der matplotlib Dokumentation:  
-    <https://matplotlib.org/stable/gallery/pie_and_polar_charts/bar_of_pie.html#sphx-glr-gallery-pie-and-polar-charts-bar-of-pie-py>
-
   * fig-alt hinzufügen
 
   * Farben sind trotz gleicher Palette bei matplotlib nicht identisch
 
-  * lange Codezeilenumbrechen
+  * lange Codezeilen umbrechen
 
 ## Code für Pandas
 ```{python}
@@ -414,6 +411,10 @@ ax.add_patch(circle)
 ```
 
 :::
+
+### Daten aggregieren
+
+Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visuellen Beschreibung der Erzeugungsleistung nicht unbedingt ein prägnanter Befund. Eine Möglichkeit, um Daten besser zu verstehen, besteht darin, ähnliche Merkmale zusammenzufassen. Im Folgenden werden Erneuerbare und Konventionelle (mit fossilen Brennstoffen betriebene) Erzeugungsarten für die Darstellung der Anteilswerte in einem Ringdiagramm zusammengefasst. Beide Gruppen werden zusätzlich in einem Balkendiagramm dargestellt. Für die Darstellung wird das Modul `matplotlib.pyplot` verwendet. Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen. **Marc fragen, ob er Erläuterungen zum Plot wünscht.**
 
 ::: {.panel-tabset}
 
@@ -453,14 +454,14 @@ plotting_data.columns = plotting_data.columns.str.replace(pat = " [MWh]", repl =
 # Grafik mit drei subplots erzeugen
 plt.figure(figsize = (7.5, 7.5))
 
-# white space between pieces
-explosion = np.zeros(sum(list(plotting_data.dtypes == np.number))) # way to count numeric columns
-explosion = explosion + 0.01 # set spacing
-
 nrows = 4
 ncols = 2
 font_size = 8
 x_lim = erzeugung.sum(numeric_only = True).max() * 1.1 # get value for shared x-axis on barplots
+
+# white space between pieces
+explosion = np.zeros(sum(list(plotting_data.dtypes == np.number))) # way to count numeric columns
+explosion = explosion + 0.01 # set spacing
 
 # plot the pie, use 4 out of 8 panels = middle 2 rows
 ax = plt.subplot(nrows, ncols, (3, 6))
@@ -471,7 +472,7 @@ my_axis = plt.gca() # plt.gca = get current axis
 circle = plt.Circle((0, 0), radius = 0.65, color = "white")
 ax.add_patch(circle)
 
-# top row  unstacked barplot 
+# top row unstacked barplot 
 plt.subplot(nrows, ncols, (1, 2))
 erzeugung[erneuerbare].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
 plt.title("Erneuerbare", fontsize = font_size + 2)
@@ -488,7 +489,7 @@ plt.show()
 ## To Do
 To Do:
   
-  * Grafiktitel, x-Achsenbeschriftung für Barplots
+  * Grafiktitel
   
   * Farbenblindenkompatible Farbpalette nach Styleguide
 
@@ -500,7 +501,7 @@ To Do:
 
   * Balken sortieren
 
-  * lange Codezeilenumbrechen
+  * lange Codezeilen umbrechen
 
 ## Code für matplotlib
 
@@ -536,14 +537,14 @@ plotting_data = plotting_data[['Erneuerbare', 'Pumpspeicher [MWh]', 'Konventione
 # Grafik mit drei subplots erzeugen
 plt.figure(figsize = (7.5, 7.5))
 
-# white space between pieces
-explosion = np.zeros(sum(list(plotting_data.dtypes == np.number))) # way to count numeric columns
-explosion = explosion + 0.01 # set spacing
-
 nrows = 4
 ncols = 2
 font_size = 8
 x_lim = erzeugung.sum(numeric_only = True).max() * 1.1 # get value for shared x-axis on barplots
+
+# white space between pieces
+explosion = np.zeros(sum(list(plotting_data.dtypes == np.number))) # way to count numeric columns
+explosion = explosion + 0.01 # set spacing
 
 # plot the pie, use 4 out of 8 panels = middle 2 rows
 ax = plt.subplot(nrows, ncols, (3, 6))
@@ -554,7 +555,7 @@ my_axis = plt.gca() # plt.gca = get current axis
 circle = plt.Circle((0, 0), radius = 0.65, color = "white")
 ax.add_patch(circle)
 
-# top row  unstacked barplot 
+# top row unstacked barplot 
 plt.subplot(nrows, ncols, (1, 2))
 erzeugung[erneuerbare].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
 plt.title("Erneuerbare", fontsize = font_size + 2)
@@ -569,24 +570,152 @@ plt.show()
 ```
 
 :::
-summe über alle Erzeugungstypen und Visualisierung in einem Tortendiagramm
---> das ist aber nicht wirklich übersichtlich --> wir gruppieren die Erneuerbaren und fügen eine eigene Legende für diese ein 
 
-Daten beschreiben und visualisieren --> Erst mal mit installierter Leistung, das ist am einfachsten.
+&nbsp;
+
+Durch die Aggregation ähnlicher Stromerzeugungsarten wurde das Ringdiagramm auf vier Erzeugungsarten reduziert. Die mit nur geringen Anteilen an der Gesamtstromerzeugung beteiligten Erzeugungsarten Pumpspeicher und Kernenergie treten dadurch gegenüber der Einzeldarstellung aller Erzeugungsarten deutlich hervor. Auf dieser Grundlage kann diskutiert werden, ob die gezeigte Aggregation zweckmäßig ist. So könnte einerseits die Kernenergie den Konventionellen zugeschlagen werden, wenn für diese Gruppe nicht auf das Merkmal einer Erzeugung mit fossilen Brennstoffen, sondern auf das Prinzip thermischer Dampfexpansion abgestellt wird. Andererseits sollte die Erzeugung durch Pumpspeicher kritisch hinterfragt werden, da es sich hierbei nicht um Primärenergieerzeugung, sondern um Energiespeicherung handelt. Dieser Aspekt wird im folgenden Abschnitt diskutiert.
+
+:::{#wrn-komplexe-grafiken .callout-warning appearance="simple"}
+# Hinweis
+Komplexe Grafiken, wie die hier gezeigte, sollten im Allgemeinen sparsam eingesetzt werden, da sie schwer zu erfassen und zu interpretieren sind. Die Zweck der Grafik und die wesentlichen Schlussfolgerungen sollten deshalb im Text erläutert werden.
+
+Tipp: Stellen Sie sich vor, Sie würden die Grafik spontan einem:einer Freund:in zeigen, die Ihre Arbeit nicht gelesen hat. Wie würden Sie Ihrer:Ihrem Freund:in die Grafik erklären? Schreiben Sie es in Ihrer Arbeit auf.
+:::
+
+### Erzeugung, Einspeisung, Speicherung und Verbrauch
+
+Diskussion Pumpspeicher **geschickt formliert, kann das Thema Speicherung eingeleitet werden**: 
+
+Als Speicher entspricht die realisierte Netzeinspeisung von Pumpspeicherkraftwerken der um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung usw.) verminderten Energieerzeugung anderer Stromerzeuger. Der Wirkungsgrad der Pumpspeicherkraftwerke kann mit den vorliegenden Daten für das Jahr 2023 berechnet werden. **Wie hoch war der Wirkungsgrad der Pumpspeicherkraftwerke 2023?**
+
+::: {#tip-wirkungsgrad-pumpspeicher .callout-tip title="Lösung Wirkungsgrad Pumpspeicher" collapse="true"}
+
+```{python}
+#| output: true
+#| results: hold # process code first, then print output
+
+print(f"Summe Erzeugung Pumpspeicher: {erzeugung["Pumpspeicher [MWh]"].sum():.2f}\n"
+      f"Summe Verbrauch Pumpspeicher: {verbrauch["Pumpspeicher [MWh]"].sum():.2f}\n"
+      f"{41 * "="}\n"
+      f"Wirkungsgrad in Prozent: \t\t\t{( erzeugung["Pumpspeicher [MWh]"].sum() / verbrauch["Pumpspeicher [MWh]"].sum() ) * 100:.2f}")
+
+```
+
+:::
+
+Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzagentur veröffentlichte kumulierte Stromerzeugung zuzüglich der Speicherverluste. Die Bundesnetzagentur führt diesen Wert im Datensatz Stromverbrauch. Im folgenden Programmcode wird der "Walross"-Operator `:=` benutzt, der Objektzuweisungen innerhalb von Anweisungen erlaubt. Mit dem Walross-Operator durchgeführte Zuweisungen müssen in runde Klammern eingefasst werden:
+
+```{python}
+#| output: true
+#| results: hold # process code first, then print output
+
+print(f"Speicherverluste:\t\t\t{ (speicherverluste := ( verbrauch["Pumpspeicher [MWh]"].sum() - erzeugung["Pumpspeicher [MWh]"].sum() ) / (1000 * 1000) ):>6.2f} TWh\n"
+      f"kumulierte Stromerzeugung:\t{ ( kumulierte_erzeugung := erzeugung.sum(numeric_only = True).sum() // (1000 * 1000) ):.2f} TWh\n"
+      f"Summe:\t\t\t\t\t\t{speicherverluste + kumulierte_erzeugung:.2f} TWh\n\n"
+      f"Erzeugung durch Pumpspeicher:\t\t\t\t{erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000):.2f} TWh\n"
+      f"Erzeugung Pumpspeicher + Speicherverluste:\t{(erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000)) + speicherverluste:.2f} TWh\n"
+      f"Verbrauch Pumpspeicherkraftwerke:\t\t\t{verbrauch["Pumpspeicher [MWh]"].sum() / (1000 * 1000):.2f} TWh")
+      
+```
+
+Die Differenz zwischen tatsächlich realisierter und von der Bundesnetzagentur veröffentlichter Stromerzeugung beträgt knapp 3 TWh, also weniger als 1 Prozent der Gesamtstromerzeugung. In anderen Netzen ist die korrekte Zuordnung der Daten auch betragsmäßig relevant.  
+
+## Aufgabe beschreibende Datenanalyse
+
+::: {.border}
+
+![&nbsp;](aufgaben/00-bilder/Schlegeisspeicher_von_Friesenberghaus.png){fig-align="center" fig-alt="Blick auf den in Österreich gelegenen, von den Alpen umrahmten Speichersee Schlegeisspeicher mit Staumauer." width="80%"}
+
+Blick vom Schlegeisspeicher von Höhenweg aus. von Klaus Kettner steht unter der Lizenz [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.de) und ist abrufbar auf [Wikimedia](https://commons.wikimedia.org/w/index.php?curid=20380105). Das Bild wurde zugeschnitten und im Format PNG gespeichert. 2012.
+:::
+
+&nbsp;
+
+In Österreich spielen Pumpspeicherkraftwere eine bedeutende Rolle im Strommix. Wie die Bundesnetzagentur veröffentlicht auch die Austrian Power Grid AG (APG) Strommarktdaten unter [https://markttransparenz.apg.at/](https://markttransparenz.apg.at/de/markt/Markttransparenz/erzeugung/Erzeugung-pro-Typ). Unter dem Link können Erzeugungsdaten für das Jahr 2023 heruntergeladen werden.
+
+::: {style="font-size: 90%;"}
+| Daten | Dateiname |
+|---|---|
+| Realisierte Stromerzeugung 2023 | AGPT_2022-12-31T23_00_00Z_2023-12-31T23_00_00Z_15M_de_2024-06-10T09_32_38Z.csv |
+:::
+
+**Lesen Sie die österreichischen Erzeugungsdaten ein und visualisieren Sie die Anteile der Erzeugungstypen. Was fällt Ihnen im Datensatz auf?** 
+
+**Hat Marc Lust, eine Musterlösung zu erstellen?**
+
+:::{#wrn-Strommarkt-Austria .callout-warning appearance="simple" collapse="true"}
+# Markttranzparenzdaten Österreich herunterladen
+
+Nach der Auswahl des Zeitraums auf Exportieren klicken, dann erscheint die Schaltfläche Download. 
+
+![&nbsp;](aufgaben/00-bilder/APG-erzeugungsdaten-2023-de.png)
+
+![&nbsp;](aufgaben/00-bilder/english/APG-generation-data-2023-en.png)
+
+Das Datumsformat der Dateien ist abhängig von der auf der Internetseite eingestellten Sprache (Deutsch/English).
+
+:::
+
+&nbsp;
+
+Diesem Skript ist folgende Datei angefügt. 
+
+:::{#tip-Austria .callout-tip collapse="true" label="Musterlösung Strommarktdaten Österreich"}
+Ich bin gemein und will noch nichts verraten. 
+
+::::{.callout-tip collapse="true"}
+Der Datensatz ist anders zusammengestellt. Pumpspeicher weisen teils negative Werte auf... die müssen natürlich bereinigt werden, um mit den Daten der Bundesnetzagentur verglichen zu werden. (**Ich habe aber bislang nur kurz reingeschaut.**)
+
+Alle negativen Werte = Einspeichern (entspricht Verbrauchsdaten der Bundesnetzagentur)
+
+Alle positiven Werte = Einspeisung (entspricht Erzeugungsdaten der Bundesnetzagentur)
+::::
+:::
+
+
+
+
+## Baustelle
+**eigentlich müsste man die Datensätze umstrukturieren, wenn man weiter damit arbeiten möchte:**
+
+  * column_to_transfer = erzeugung.columns.get_loc("Pumpspeicher [MWh]"); erzeugung.drop("Pumpspeicher [MWh]"); erzeugung.insert(column_to_transfer, verbrauch["Pumpspeicher [MWh]"])
+
+  * ...
+
+
+Das gehört zu das Wichtigste:
+Datensätze kontrollieren, plausibiliseren und visualisieren
+--> Einspeisung ist der korrekte Begriff.
+--> Einspeisung ist die um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung usw.) verminderte Energieerzeugung anderer Stromerzeuger
+--> Erzeugung und Verbrauch durch Pumpspeicher müssen eigentlich bereinigt werden: Realisierte Einspeisung ist anderen Energieträgern zuzuschreiben; Verbrauch = Realisierter Verbrauch - Realisierte Einspeisung. 
+...hier dann Diskussion, warum eine Zuordnung zu Erneuerbaren Energien plausibel ist (Austausch mit Simone)
+
+... Einordnung: 
+
+
+
+
+
+**Pumpspeicher sind keine Primärenergieträger --> sollen die hier mit rein? (Simone fragen)**  
+*Als Vorbereitung für die Thematik der Speicherung ist es nützlich. Als Erzeugungsleistung aber irreführend.*
+
+--> **Das könnte ja eine Schlussfolgerung aus der Darstellung sein. In der gemeinsamen Darstellung aller Erzeuger gehen die Pumpspeicher in der Masse unter. In der aggregierten Darstellung wird dieser 'Ausreißer' sichtbar.**
+
 
 
 To Do:
 
-  * [MWh] im Kuchendiagramm unterdrücken.
+  * Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
 
-  * Farben im Kuchendiagramm und Balkendiagramm angleichen (Kuchenstück Erneuerbare gleiche Farbe wie Balken Erneuerbare)
-Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
-
-Datensätze verstehen, ein Gefühl dafür bekommen, mögliche Fehler im Datensatz erkennen. Vorbereitung der schließenden Datenanalyse (machen wir das überhaupt)
-
-gestapeltes Histogramm für die Erzeugung in einem Monat oder in einer Woche - eine Woche im Winter, eine Woche im Sommer
+  * gestapeltes Histogramm (das ist schwer, wenn man es nicht manuell macht) für die Erzeugung in einem Monat oder in einer Woche - eine Woche im Winter, eine Woche im Sommer
 
 # Explorative Datenanalyse
+
+Einleitung von Hadley Wickham klauen: Explorative Datenanalyse bedeutet, Fragen an die Daten zu stellen.
+
+  - welche Erzeuger sind Grundlastfähig? (Standardabweichung brauchbar?!)
+
+  - Residuallast bestimmen
 
 ## Übungen beschreibende Statistik
 2023 wurden die letzten deutschen Atomkraftwerke Emsland, Isar 2 und Neckarwestheim 2 vom Netz genommen. Wann begann die Abschaltung der deutschen Atomkraftwerke? Wie lange hat der Prozess gedauert?  
