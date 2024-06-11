@@ -329,7 +329,6 @@ Im folgenden, mit der Methode `pd.DataFrame.plot.pie()` erstellten Ringdiagramm 
 Das Kreis- bzw. Ringdiagramm stellt Anteilswerte dar und ist deshalb einheitenlos.
 :::
 
-
 Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen.
 
 ::: {.panel-tabset}
@@ -573,7 +572,7 @@ plt.show()
 
 &nbsp;
 
-Durch die Aggregation ähnlicher Stromerzeugungsarten wurde das Ringdiagramm auf vier Erzeugungsarten reduziert. Die mit nur geringen Anteilen an der Gesamtstromerzeugung beteiligten Erzeugungsarten Pumpspeicher und Kernenergie treten dadurch gegenüber der Einzeldarstellung aller Erzeugungsarten deutlich hervor. Auf dieser Grundlage kann diskutiert werden, ob die gezeigte Aggregation zweckmäßig ist. So könnte einerseits die Kernenergie den Konventionellen zugeschlagen werden, wenn für diese Gruppe nicht auf das Merkmal einer Erzeugung mit fossilen Brennstoffen, sondern auf das Prinzip thermischer Dampfexpansion abgestellt wird. Andererseits sollte die Erzeugung durch Pumpspeicher kritisch hinterfragt werden, da es sich hierbei nicht um Primärenergieerzeugung, sondern um Energiespeicherung handelt. Dieser Aspekt wird im folgenden Abschnitt diskutiert.
+Durch die Aggregation ähnlicher Stromerzeugungsarten wurde das Ringdiagramm auf vier Erzeugungsarten reduziert. Die mit nur geringen Anteilen an der Gesamtstromerzeugung beteiligten Erzeugungsarten Pumpspeicher und Kernenergie treten dadurch gegenüber der Einzeldarstellung aller Erzeugungsarten deutlich hervor. Auf dieser Grundlage kann diskutiert werden, ob die gezeigte Aggregation zweckmäßig ist. So könnte einerseits die Kernenergie den Konventionellen zugeschlagen werden, wenn für diese Gruppe nicht auf das Merkmal einer Erzeugung mit fossilen Brennstoffen, sondern auf das Prinzip thermischer Dampfexpansion abgestellt wird. Andererseits sollte die Erzeugung durch Pumpspeicher kritisch hinterfragt werden. Dieser Aspekt wird im folgenden Abschnitt diskutiert.
 
 :::{#wrn-komplexe-grafiken .callout-warning appearance="simple"}
 # Hinweis
@@ -582,11 +581,9 @@ Komplexe Grafiken, wie die hier gezeigte, sollten im Allgemeinen sparsam eingese
 Tipp: Stellen Sie sich vor, Sie würden die Grafik spontan einem:einer Freund:in zeigen, die Ihre Arbeit nicht gelesen hat. Wie würden Sie Ihrer:Ihrem Freund:in die Grafik erklären? Schreiben Sie es in Ihrer Arbeit auf.
 :::
 
-### Erzeugung, Einspeisung, Speicherung und Verbrauch
-
-Diskussion Pumpspeicher **geschickt formliert, kann das Thema Speicherung eingeleitet werden**: 
-
-Als Speicher entspricht die realisierte Netzeinspeisung von Pumpspeicherkraftwerken der um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung usw.) verminderten Energieerzeugung anderer Stromerzeuger. Der Wirkungsgrad der Pumpspeicherkraftwerke kann mit den vorliegenden Daten für das Jahr 2023 berechnet werden. **Wie hoch war der Wirkungsgrad der Pumpspeicherkraftwerke 2023?**
+### Erzeugung, Speicherung, Einspeisung
+Pumpspeicherkraftwerke sind Energiespeicher, die keine Primärenergieerzeugung leisten, sondern den von anderen Erzeugern produzierten Strom speichern und bei Bedarf wieder ins Netz einspeisen. Die realisierte Netzeinspeisung von Pumpspeicherkraftwerken entspricht somit der um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung) verminderten Energieerzeugung anderer Stromerzeuger. Der Wirkungsgrad der Pumpspeicherkraftwerke kann mit den vorliegenden Daten für das Jahr 2023 berechnet werden. **Wie hoch war der Wirkungsgrad der Pumpspeicherkraftwerke 2023?**  
+Welche Erzeuger zum Befüllen der Pumpspeicher Strom lieferten, wird in [@sec-explorative-datenanalyse] untersucht.
 
 ::: {#tip-wirkungsgrad-pumpspeicher .callout-tip title="Lösung Wirkungsgrad Pumpspeicher" collapse="true"}
 
@@ -603,7 +600,7 @@ print(f"Summe Erzeugung Pumpspeicher: {erzeugung["Pumpspeicher [MWh]"].sum():.2f
 
 :::
 
-Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzagentur veröffentlichte kumulierte Stromerzeugung zuzüglich der Speicherverluste. Die Bundesnetzagentur führt diesen Wert im Datensatz Stromverbrauch. Im folgenden Programmcode wird der "Walross"-Operator `:=` benutzt, der Objektzuweisungen innerhalb von Anweisungen erlaubt. Mit dem Walross-Operator durchgeführte Zuweisungen müssen in runde Klammern eingefasst werden:
+Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzagentur veröffentlichte kumulierte Stromerzeugung der Pumpspeicherkraftwerke zuzüglich der Speicherverluste. Die Bundesnetzagentur führt diesen Wert im Datensatz Stromverbrauch. Im folgenden Programmcode wird der "Walross"-Operator `:=` benutzt, der Objektzuweisungen innerhalb von Anweisungen erlaubt. Mit dem Walross-Operator durchgeführte Zuweisungen müssen in runde Klammern eingefasst werden:
 
 ```{python}
 #| output: true
@@ -612,15 +609,19 @@ Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzag
 print(f"Speicherverluste:\t\t\t{ (speicherverluste := ( verbrauch["Pumpspeicher [MWh]"].sum() - erzeugung["Pumpspeicher [MWh]"].sum() ) / (1000 * 1000) ):>6.2f} TWh\n"
       f"kumulierte Stromerzeugung:\t{ ( kumulierte_erzeugung := erzeugung.sum(numeric_only = True).sum() // (1000 * 1000) ):.2f} TWh\n"
       f"Summe:\t\t\t\t\t\t{speicherverluste + kumulierte_erzeugung:.2f} TWh\n\n"
+
       f"Erzeugung durch Pumpspeicher:\t\t\t\t{erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000):.2f} TWh\n"
       f"Erzeugung Pumpspeicher + Speicherverluste:\t{(erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000)) + speicherverluste:.2f} TWh\n"
       f"Verbrauch Pumpspeicherkraftwerke:\t\t\t{verbrauch["Pumpspeicher [MWh]"].sum() / (1000 * 1000):.2f} TWh")
       
 ```
 
-Die Differenz zwischen tatsächlich realisierter und von der Bundesnetzagentur veröffentlichter Stromerzeugung beträgt knapp 3 TWh, also weniger als 1 Prozent der Gesamtstromerzeugung. In anderen Netzen ist die korrekte Zuordnung der Daten auch betragsmäßig relevant.  
+&nbsp;
+
+Die Differenz zwischen tatsächlich realisierter und von der Bundesnetzagentur veröffentlichter Stromerzeugung beträgt knapp 3 TWh, also weniger als 1 Prozent der Gesamtstromerzeugung. In anderen Netzen ist die korrekte Zuordnung der Daten auch betragsmäßig relevant. 
 
 ## Aufgabe beschreibende Datenanalyse
+In Österreich spielen Pumpspeicherkraftwere eine bedeutende Rolle im Strommix. 
 
 ::: {.border}
 
@@ -631,7 +632,9 @@ Blick vom Schlegeisspeicher von Höhenweg aus. von Klaus Kettner steht unter der
 
 &nbsp;
 
-In Österreich spielen Pumpspeicherkraftwere eine bedeutende Rolle im Strommix. Wie die Bundesnetzagentur veröffentlicht auch die Austrian Power Grid AG (APG) Strommarktdaten unter [https://markttransparenz.apg.at/](https://markttransparenz.apg.at/de/markt/Markttransparenz/erzeugung/Erzeugung-pro-Typ). Unter dem Link können Erzeugungsdaten für das Jahr 2023 heruntergeladen werden.
+Wie die Bundesnetzagentur veröffentlicht auch die Austrian Power Grid AG (APG) Strommarktdaten unter [https://markttransparenz.apg.at/](https://markttransparenz.apg.at/de/markt/Markttransparenz/erzeugung/Erzeugung-pro-Typ). Unter dem Link können Erzeugungsdaten für das Jahr 2023 heruntergeladen werden.
+
+Diesem Skript ist folgende Datei angefügt. 
 
 ::: {style="font-size: 90%;"}
 | Daten | Dateiname |
@@ -658,20 +661,22 @@ Das Datumsformat der Dateien ist abhängig von der auf der Internetseite eingest
 
 &nbsp;
 
-Diesem Skript ist folgende Datei angefügt. 
-
 :::{#tip-Austria .callout-tip collapse="true" label="Musterlösung Strommarktdaten Österreich"}
 Ich bin gemein und will noch nichts verraten. 
 
 ::::{.callout-tip collapse="true"}
-Der Datensatz ist anders zusammengestellt. Pumpspeicher weisen teils negative Werte auf... die müssen natürlich bereinigt werden, um mit den Daten der Bundesnetzagentur verglichen zu werden. (**Ich habe aber bislang nur kurz reingeschaut.**)
+Der Datensatz ist anders zusammengestellt. Pumpspeicher weisen teils negative Werte auf... die müssen natürlich bereinigt werden, um mit den Daten der Bundesnetzagentur verglichen zu werden.
 
 Alle negativen Werte = Einspeichern (entspricht Verbrauchsdaten der Bundesnetzagentur)
 
 Alle positiven Werte = Einspeisung (entspricht Erzeugungsdaten der Bundesnetzagentur)
+
+(**Hinweis: Ich habe bislang nur kurz in den Datensatz reingeschaut.**)
 ::::
 :::
 
+**Pumpspeicher sind keine Primärenergieträger --> sollen die hier mit rein? (Simone fragen)**  
+*Als Vorbereitung für die Thematik der Speicherung ist es nützlich. Als Erzeugungsleistung aber irreführend.*
 
 
 
@@ -683,39 +688,40 @@ Alle positiven Werte = Einspeisung (entspricht Erzeugungsdaten der Bundesnetzage
   * ...
 
 
-Das gehört zu das Wichtigste:
-Datensätze kontrollieren, plausibiliseren und visualisieren
---> Einspeisung ist der korrekte Begriff.
---> Einspeisung ist die um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung usw.) verminderte Energieerzeugung anderer Stromerzeuger
---> Erzeugung und Verbrauch durch Pumpspeicher müssen eigentlich bereinigt werden: Realisierte Einspeisung ist anderen Energieträgern zuzuschreiben; Verbrauch = Realisierter Verbrauch - Realisierte Einspeisung. 
-...hier dann Diskussion, warum eine Zuordnung zu Erneuerbaren Energien plausibel ist (Austausch mit Simone)
 
-... Einordnung: 
-
-
-
-
-
-**Pumpspeicher sind keine Primärenergieträger --> sollen die hier mit rein? (Simone fragen)**  
-*Als Vorbereitung für die Thematik der Speicherung ist es nützlich. Als Erzeugungsleistung aber irreführend.*
-
---> **Das könnte ja eine Schlussfolgerung aus der Darstellung sein. In der gemeinsamen Darstellung aller Erzeuger gehen die Pumpspeicher in der Masse unter. In der aggregierten Darstellung wird dieser 'Ausreißer' sichtbar.**
-
-
-
-To Do:
-
-  * Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
+### Optionen beschreibende Statistik
 
   * gestapeltes Histogramm (das ist schwer, wenn man es nicht manuell macht) für die Erzeugung in einem Monat oder in einer Woche - eine Woche im Winter, eine Woche im Sommer
 
-# Explorative Datenanalyse
+# Explorative Datenanalyse {#sec-explorative-datenanalyse}
 
 Einleitung von Hadley Wickham klauen: Explorative Datenanalyse bedeutet, Fragen an die Daten zu stellen.
 
-  - welche Erzeuger sind Grundlastfähig? (Standardabweichung brauchbar?!)
 
-  - Residuallast bestimmen
+
+### Grenzstromanalyse
+
+    - Vorbereitung 1: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? (Standardabweichung brauchbar?! Optisch? Abweichung von einer Geraden?)
+
+      - Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
+      
+      - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)
+    
+    - Vorbereitung 2: Residuallast bestimmen
+
+      - Herkunft Pumpspeicherenergie abschätzen: in wie vielen Intervallen war die Residuallast negativ
+
+      - Herkunft Pumpspeicherenergie genauer bestimmen: Abgleich Null oder negative Residuallast mit Verbrauch der Pumpspeicher (Befüllen)
+
+        - Wenn Residuallast 0 oder negativ = Befüllung mit EE, wenn Residuallast > 0 = Befüllung mit Lastfolgeerzeugern
+
+Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überprüfen.
+
+Grenzstrom - 2 Regime (EE-Überschuss, fossile Lastfolgebetrieb)
+
+Was rein kommt, ist, was raus kommt. Dabei sind 2 Regime zu unterscheiden: a) EE-Überschuss, b) fossiler Lastfolgebetrieb. Der Grenzstrom ist vermutlich fast immer fossil (wenn gerade keine Überproduktion an EE vorliegt.  
+**--> das gucken wir bei der explorativen Datenanalyse, in wie vielen Intervallen die Residuallast negativ war**)
+
 
 ## Übungen beschreibende Statistik
 2023 wurden die letzten deutschen Atomkraftwerke Emsland, Isar 2 und Neckarwestheim 2 vom Netz genommen. Wann begann die Abschaltung der deutschen Atomkraftwerke? Wie lange hat der Prozess gedauert?  
@@ -730,3 +736,10 @@ Einleitung von Hadley Wickham klauen: Explorative Datenanalyse bedeutet, Fragen 
   * Übungsaufgaben (kleine Projekte)
 
 * Prüfungsaufgaben (ohne Lösungen)
+
+# Das Wichtigste
+Datensätze kontrollieren, plausibiliseren und visualisieren
+--> Am Beispiel der Pumpspeicher hat man gesehen, das Datensätze unerwartet zusammengestellt sein können. (Berücksichtigung von Einspeisung aus Pumpspeicherkraftwerken im Datensatz Stromerzeugung.)
+--> deskritive und explorative Statistik sowie Visualisierungstechniken sind wichtige Instrumente, um Datensätze "zu verstehen" und ggf. Fehler oder Eigenheiten zu bereinigen.
+
+--> Erzeugung und Verbrauch durch Pumpspeicher müssten für eine weitergehende Erzeugungsanalyse bereinigt werden: Realisierte Einspeisung ist anderen Energieträgern zuzuschreiben; Verbrauch = Realisierter Verbrauch - Realisierte Einspeisung. 
