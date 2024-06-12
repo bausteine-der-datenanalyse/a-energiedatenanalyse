@@ -616,6 +616,7 @@ print(f"Speicherverluste:\t\t\t{ (speicherverluste := ( verbrauch["Pumpspeicher 
       
 ```
 
+**Braucht es hier einen Hinweis, dass hier keine Erkenntnis produziert wird, sondern nur zur Veranschauung hin- und hergerechnet wird?**
 &nbsp;
 
 Die Differenz zwischen tatsächlich realisierter und von der Bundesnetzagentur veröffentlichter Stromerzeugung beträgt knapp 3 TWh, also weniger als 1 Prozent der Gesamtstromerzeugung. In anderen Netzen ist die korrekte Zuordnung der Daten auch betragsmäßig relevant. 
@@ -675,31 +676,39 @@ Alle positiven Werte = Einspeisung (entspricht Erzeugungsdaten der Bundesnetzage
 ::::
 :::
 
-**Pumpspeicher sind keine Primärenergieträger --> sollen die hier mit rein? (Simone fragen)**  
-*Als Vorbereitung für die Thematik der Speicherung ist es nützlich. Als Erzeugungsleistung aber irreführend.*
-
-
-
-## Baustelle
-**eigentlich müsste man die Datensätze umstrukturieren, wenn man weiter damit arbeiten möchte:**
-
-  * column_to_transfer = erzeugung.columns.get_loc("Pumpspeicher [MWh]"); erzeugung.drop("Pumpspeicher [MWh]"); erzeugung.insert(column_to_transfer, verbrauch["Pumpspeicher [MWh]"])
-
-  * ...
-
-
-
-### Optionen beschreibende Statistik
+### Optionen für Abschnitt beschreibende Statistik
 
   * gestapeltes Histogramm (das ist schwer, wenn man es nicht manuell macht) für die Erzeugung in einem Monat oder in einer Woche - eine Woche im Winter, eine Woche im Sommer
 
+**Eigentlich müsste man die Datensätze umstrukturieren, wenn man weiter damit arbeiten möchte, um Erzeugung von Speicherung zu trennen.**
+
 # Explorative Datenanalyse {#sec-explorative-datenanalyse}
+Explorative Datenanalyse bedeutet, Fragen an die vorliegenden Daten zu stellen und diese mittels datenanalytischer Methoden zu beantworten. Die so gewonnenen Erkenntnisse können helfen, die Fragen zu verfeinern oder neue Fragen zu generieren. Es handelt sich also um einen iterativen Prozess. Dadurch soll vor allem ein tieferes Verständnis der Daten gewonnen werden. [@R-for-Data-Science, Kapitel 10  Exploratory data analysis]
 
-Einleitung von Hadley Wickham klauen: Explorative Datenanalyse bedeutet, Fragen an die Daten zu stellen.
+Im vorliegenden Fall ist die Zusammensetzung der in Pumpspeicherkraftwerken gespeicherten Energie von Interesse. Das heißt, wir interessieren uns für die Beziehung der Variablen im Datensatz erzeugung.
 
+## Grenzstromanalyse
+In Deutschland gilt seit dem Jahr 2000 das Erneuerbare-Energien-Gesetz, das ursprünglich als Gesetz für den Vorrang Erneuerbarer Energien eingeführt wurde [Dokumentations- und Informationssystem für Parlamentsmaterialien](https://dip.bundestag.de/vorgang/gesetz-f%C3%BCr-den-vorrang-erneuerbarer-energien-erneuerbare-energien-gesetz-eeg-sowie/111957). Dieses regelte in § 3 den Einspeisevorrang Erneuerbarer Energien:
 
+::: {.border layout="[[5, 90, 5], [1]]"}
 
-### Grenzstromanalyse
+&nbsp;
+
+**Abnahme- und Vergütungspflicht**  
+(1) Netzbetreiber sind verpflichtet, Anlagen zur Erzeu-
+gung von Strom nach § 2 an ihr Netz anzuschließen, den
+gesamten angebotenen Strom aus diesen Anlagen vor-
+rangig abzunehmen und den eingespeisten Strom nach
+§§ 4 bis 8 zu vergüten.
+
+&nbsp;
+
+&nbsp;  
+Gesetz für den Vorrang Erneuerbarer Energien (Erneuerbare-Energien-Gesetz – EEG) sowie zur Änderung des Energiewirtschaftsgesetzes und des Mineralölsteuergesetzes. Bundesgesetzblatt Jahrgang 2000 Teil I Nr. 13, ausgegeben zu Bonn am 31. März 2000. [Bundesanzeiger](https://www.bgbl.de/xaver/bgbl/start.xav?startbk=Bundesanzeiger_BGBl&start=//*%5b@attr_id=%27bgbl100s0305.pdf%27%5d#__bgbl__%2F%2F*%5B%40attr_id%3D%27bgbl100s0305.pdf%27%5D__1718177313490)
+:::
+
+Einspeisevorrang EE
+
 
     - Vorbereitung 1: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? (Standardabweichung brauchbar?! Optisch? Abweichung von einer Geraden?)
 
