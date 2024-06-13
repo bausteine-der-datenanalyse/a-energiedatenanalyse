@@ -339,12 +339,8 @@ Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen.
 #| results: hold # process code first, then print output
 #| fig-align: center
 
-# white space between pieces
-explosion = np.zeros(sum(list(erzeugung.dtypes == np.number))) # way to count numeric columns
-explosion = explosion + 0.02 # set spacing
-
 # plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]
-# erzeugung.sum(numeric_only = True).plot.pie(colormap = "Pastel1", startangle = 90, rotatelabels = True, explode = explosion)
+# erzeugung.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = True, explode = explosion)
 
 # rearrange columns, remove " [MWh]"
 plotting_data = erzeugung.copy()
@@ -357,7 +353,7 @@ plotting_data.insert(10, "Pumpspeicher [MWh]", column_to_move)
 plotting_data.columns = plotting_data.columns.str.replace(pat = " [MWh]", repl = "")
 
 # plot the pie
-ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Pastel1", startangle = 90, rotatelabels = False, explode = explosion, autopct='%1.1f%%', pctdistance = 0.85, textprops = dict(size = 7))
+ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = False, autopct='%1.1f%%', pctdistance = 0.6, textprops = dict(size = 7, color = 'black'), wedgeprops = {"linewidth": 0.5, "edgecolor": "white"})
 
 # make a donut
 my_axis = plt.gca() # plt.gca = get current axis
@@ -383,12 +379,8 @@ To Do:
 #| output: false
 #| results: hold # process code first, then print output
 
-# white space between pieces
-explosion = np.zeros(sum(list(erzeugung.dtypes == np.number))) # way to count numeric columns
-explosion = explosion + 0.02 # set spacing
-
 # plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]
-# erzeugung.sum(numeric_only = True).plot.pie(colormap = "Pastel1", startangle = 90, rotatelabels = True, explode = explosion)
+# erzeugung.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = True, explode = explosion)
 
 # rearrange columns, remove " [MWh]"
 plotting_data = erzeugung.copy()
@@ -401,7 +393,7 @@ plotting_data.insert(10, "Pumpspeicher [MWh]", column_to_move)
 plotting_data.columns = plotting_data.columns.str.replace(pat = " [MWh]", repl = "")
 
 # plot the pie
-ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Pastel1", startangle = 90, rotatelabels = False, explode = explosion, autopct='%1.1f%%', pctdistance = 0.85, textprops = dict(size = 7))
+ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = False, autopct='%1.1f%%', pctdistance = 0.6, textprops = dict(size = 7, color = 'black'), wedgeprops = {"linewidth": 0.5, "edgecolor": "white"})
 
 # make a donut
 my_axis = plt.gca() # plt.gca = get current axis
@@ -413,7 +405,7 @@ ax.add_patch(circle)
 
 ### Daten aggregieren
 
-Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visuellen Beschreibung der Erzeugungsleistung nicht unbedingt ein prägnanter Befund. Eine Möglichkeit, um Daten besser zu verstehen, besteht darin, ähnliche Merkmale zusammenzufassen. Im Folgenden werden Erneuerbare und Konventionelle (mit fossilen Brennstoffen betriebene) Erzeugungsarten für die Darstellung der Anteilswerte in einem Ringdiagramm zusammengefasst. Beide Gruppen werden zusätzlich in einem Balkendiagramm dargestellt. Für die Darstellung wird das Modul `matplotlib.pyplot` verwendet. Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen. **Marc fragen, ob er Erläuterungen zum Plot wünscht.**
+Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visuellen Beschreibung der Erzeugungsleistung nicht unbedingt ein prägnanter Befund. Eine Möglichkeit, um Daten besser zu verstehen, besteht darin, ähnliche Merkmale zusammenzufassen. Im Folgenden werden erneuerbare und konventionelle (mit fossilen Brennstoffen betriebene) Erzeugungsarten für die Darstellung der Anteilswerte in einem Ringdiagramm zusammengefasst. Beide Gruppen werden zusätzlich in einem Balkendiagramm dargestellt. Für die Darstellung wird das Modul `matplotlib.pyplot` verwendet. Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen. **Marc fragen, ob er Erläuterungen zum Plot wünscht.**
 
 ::: {.panel-tabset}
 
@@ -423,6 +415,7 @@ Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visu
 #| echo: false
 #| results: hold # process code first, then print output
 #| fig-align: center
+#| fig-cap: Absolute Stromerzeugung und relative Anteile nach Erzeugungstyp
 
 # Erneuerbare und Konventionelle bestimmen, jeweils summieren
 
@@ -456,15 +449,16 @@ plt.figure(figsize = (7.5, 7.5))
 nrows = 4
 ncols = 2
 font_size = 8
-x_lim = erzeugung.sum(numeric_only = True).max() * 1.1 # get value for shared x-axis on barplots
 
-# white space between pieces
-explosion = np.zeros(sum(list(plotting_data.dtypes == np.number))) # way to count numeric columns
-explosion = explosion + 0.01 # set spacing
+# value for shared x-axis on barplots
+x_lim = erzeugung.sum(numeric_only = True).max() * 1.1
+
+# array of colors
+my_colors = plt.get_cmap('Blues')(np.linspace(0.2, 1, len(plotting_data.sum())))
 
 # plot the pie, use 4 out of 8 panels = middle 2 rows
 ax = plt.subplot(nrows, ncols, (3, 6))
-plt.pie(x = plotting_data.sum(), colors = plt.cm.Pastel1.colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.85, textprops = dict(size = font_size + 1), explode = explosion)
+plt.pie(x = plotting_data.sum(), colors = my_colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.5, textprops = dict(size = font_size + 1), wedgeprops = {"linewidth": 0.5, "edgecolor": "white"})
 
 # make a donut
 my_axis = plt.gca() # plt.gca = get current axis
@@ -473,12 +467,12 @@ ax.add_patch(circle)
 
 # top row unstacked barplot 
 plt.subplot(nrows, ncols, (1, 2))
-erzeugung[erneuerbare].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
+erzeugung[erneuerbare].sum().sort_values(ascending = False).plot.barh(fontsize = font_size, xlim = (0, x_lim), color = my_colors[0], edgecolor = 'darkgrey')
 plt.title("Erneuerbare", fontsize = font_size + 2)
 
 # bottom row unstacked barplot 
 plt.subplot(nrows, ncols, (7, 8))
-erzeugung[konventionelle].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
+erzeugung[konventionelle].sum().sort_values(ascending = False).plot.barh(fontsize = font_size, xlim = (0, x_lim), color = my_colors[2], edgecolor = 'darkgrey')
 plt.title("Konventionelle", fontsize = font_size + 2)
 
 plt.tight_layout()
@@ -488,18 +482,6 @@ plt.show()
 ## To Do
 To Do:
   
-  * Grafiktitel
-  
-  * Farbenblindenkompatible Farbpalette nach Styleguide
-
-  * Farben der Balken und der Kreissegmente "Erneuerbare" und "Konventionelle" gleich machen 
-
-  * Farben sind trotz gleicher Palette zu Pandas nicht identisch  
-  Option1: manuellen Farbvektor erstellen  
-  Option2: Zugriff auf Farbpalette meistern
-
-  * Balken sortieren
-
   * lange Codezeilen umbrechen
 
 ## Code für matplotlib
@@ -524,8 +506,9 @@ plotting_data.drop(columns = ['Braunkohle [MWh]',  'Steinkohle [MWh]', 'Erdgas [
 konventionelle = ['Braunkohle [MWh]',  'Steinkohle [MWh]', 'Erdgas [MWh]', 'Sonstige Konventionelle [MWh]']
 plotting_data["Konventionelle"] = erzeugung[konventionelle].sum(axis = 'columns')
 
-# Reihenfolge ändern
+# rearrange columns, remove " [MWh]"
 plotting_data = plotting_data[['Erneuerbare', 'Pumpspeicher [MWh]', 'Konventionelle', 'Kernenergie [MWh]']]
+plotting_data.columns = plotting_data.columns.str.replace(pat = " [MWh]", repl = "")
 
 # zur Kontrolle - axis = columns addiert die Spalten zeilenweise
 ## print(erneuerbare)
@@ -539,15 +522,16 @@ plt.figure(figsize = (7.5, 7.5))
 nrows = 4
 ncols = 2
 font_size = 8
-x_lim = erzeugung.sum(numeric_only = True).max() * 1.1 # get value for shared x-axis on barplots
 
-# white space between pieces
-explosion = np.zeros(sum(list(plotting_data.dtypes == np.number))) # way to count numeric columns
-explosion = explosion + 0.01 # set spacing
+# value for shared x-axis on barplots
+x_lim = erzeugung.sum(numeric_only = True).max() * 1.1
+
+# array of colors
+my_colors = plt.get_cmap('Blues')(np.linspace(0.2, 1, len(plotting_data.sum())))
 
 # plot the pie, use 4 out of 8 panels = middle 2 rows
 ax = plt.subplot(nrows, ncols, (3, 6))
-plt.pie(x = plotting_data.sum(), colors = plt.cm.Pastel1.colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.85, textprops = dict(size = font_size + 1), explode = explosion)
+plt.pie(x = plotting_data.sum(), colors = my_colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.5, textprops = dict(size = font_size + 1), wedgeprops = {"linewidth": 0.5, "edgecolor": "white"})
 
 # make a donut
 my_axis = plt.gca() # plt.gca = get current axis
@@ -556,12 +540,12 @@ ax.add_patch(circle)
 
 # top row unstacked barplot 
 plt.subplot(nrows, ncols, (1, 2))
-erzeugung[erneuerbare].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
+erzeugung[erneuerbare].sum().sort_values(ascending = False).plot.barh(fontsize = font_size, xlim = (0, x_lim), color = my_colors[0], edgecolor = 'darkgrey')
 plt.title("Erneuerbare", fontsize = font_size + 2)
 
 # bottom row unstacked barplot 
 plt.subplot(nrows, ncols, (7, 8))
-erzeugung[konventionelle].sum().plot.barh(fontsize = font_size, xlim = (0, x_lim))
+erzeugung[konventionelle].sum().sort_values(ascending = False).plot.barh(fontsize = font_size, xlim = (0, x_lim), color = my_colors[2], edgecolor = 'darkgrey')
 plt.title("Konventionelle", fontsize = font_size + 2)
 
 plt.tight_layout()
@@ -582,8 +566,8 @@ Tipp: Stellen Sie sich vor, Sie würden die Grafik spontan einem:einer Freund:in
 :::
 
 ### Erzeugung, Speicherung, Einspeisung
-Pumpspeicherkraftwerke sind Energiespeicher, die keine Primärenergieerzeugung leisten, sondern den von anderen Erzeugern produzierten Strom speichern und bei Bedarf wieder ins Netz einspeisen. Die realisierte Netzeinspeisung von Pumpspeicherkraftwerken entspricht somit der um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung) verminderten Energieerzeugung anderer Stromerzeuger. Der Wirkungsgrad der Pumpspeicherkraftwerke kann mit den vorliegenden Daten für das Jahr 2023 berechnet werden. **Wie hoch war der Wirkungsgrad der Pumpspeicherkraftwerke 2023?**  
-Welche Erzeuger zum Befüllen der Pumpspeicher Strom lieferten, wird in [@sec-explorative-datenanalyse] untersucht.
+Pumpspeicherkraftwerke sind Energiespeicher, die keine Primärenergie erzeugen, sondern den von anderen Erzeugern produzierten Strom speichern und bei Bedarf wieder ins Netz einspeisen. Die realisierte Netzeinspeisung von Pumpspeicherkraftwerken entspricht somit der um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung) verminderten Energieerzeugung anderer Stromerzeuger. Der Wirkungsgrad der Pumpspeicherkraftwerke kann mit den vorliegenden Daten für das Jahr 2023 berechnet werden. **Wie hoch war der Wirkungsgrad der Pumpspeicherkraftwerke 2023?**  
+Welche Erzeuger Strom zum Befüllen der Pumpspeicher lieferten, wird in [@sec-explorative-datenanalyse] untersucht.
 
 ::: {#tip-wirkungsgrad-pumpspeicher .callout-tip title="Lösung Wirkungsgrad Pumpspeicher" collapse="true"}
 
@@ -662,7 +646,7 @@ Das Datumsformat der Dateien ist abhängig von der auf der Internetseite eingest
 
 &nbsp;
 
-:::{#tip-Austria .callout-tip collapse="true" label="Musterlösung Strommarktdaten Österreich"}
+:::{#tip-Austria .callout-tip collapse="true" title="Musterlösung Strommarktdaten Österreich"}
 Ich bin gemein und will noch nichts verraten. 
 
 ::::{.callout-tip collapse="true"}
@@ -685,21 +669,31 @@ Alle positiven Werte = Einspeisung (entspricht Erzeugungsdaten der Bundesnetzage
 # Explorative Datenanalyse {#sec-explorative-datenanalyse}
 Explorative Datenanalyse bedeutet, Fragen an die vorliegenden Daten zu stellen und diese mittels datenanalytischer Methoden zu beantworten. Die so gewonnenen Erkenntnisse können helfen, die Fragen zu verfeinern oder neue Fragen zu generieren. Es handelt sich also um einen iterativen Prozess. Dadurch soll vor allem ein tieferes Verständnis der Daten gewonnen werden. [@R-for-Data-Science, Kapitel 10  Exploratory data analysis]
 
-Im vorliegenden Fall ist die Zusammensetzung der in Pumpspeicherkraftwerken gespeicherten Energie von Interesse. Das heißt, wir interessieren uns für die Beziehung der Variablen im Datensatz erzeugung.
-
 ## Grenzstromanalyse
-In Deutschland gilt seit dem Jahr 2000 das Erneuerbare-Energien-Gesetz, das ursprünglich als Gesetz für den Vorrang Erneuerbarer Energien eingeführt wurde [Dokumentations- und Informationssystem für Parlamentsmaterialien](https://dip.bundestag.de/vorgang/gesetz-f%C3%BCr-den-vorrang-erneuerbarer-energien-erneuerbare-energien-gesetz-eeg-sowie/111957). Dieses regelte in § 3 den Einspeisevorrang Erneuerbarer Energien:
+Im vorliegenden Fall interessiert, welche Erzeuger Strom lieferten, um *zusätzlich* zur Netzlast die Pumpspeicher zu befüllen. Dazu soll bestimmt werden, welche Stromerzeuger an den Zeitpunkten, an denen die Pumpspeicher befüllt wurden, in der Lage waren zusätzliche Leistung abzurufen. In Anlehung an in der Wirtschaftslehre gebräuchliche Grenzbetrachtungen kann dieser zusätzliche Strom kurz als Grenzstrom bezeichnet werden. 
+
+:::{.callout-note collapse="true"}
+# Platzhalter Grenzbetrachtung - ggf. löschen
+Grenzbetrachtungen untersuchen die Bedingungen, die bei der Produktion oder dem Verbrauch einer zusätzlichen Einheit herrschen. Die Grenzbetrachtung verdeutlicht folgendes Beispiel.
+
+Ein Industriebetrieb hat einen variablen Stromverbrauch zwischen 400 und 600 MW. Zur Eigenstromversorgung wurden ein Kohlekraftwerk mit einer Leistung von 350 MW zur Deckung der Grundlast sowie ein Gaskraftwerk mit einer Leistung von 250 MW für den Lastfolgebetrieb errichtet. 
+
+... Beispiele für fixe Erzeugung und variable Erzeugung bei bestimmten Lasten und Veränderung des mittleren und Grenz-CO2-Ausstoßes.
+
+Steinkohle 338,2 kg CO2 je MWh (Primärenergiegehalt) / Wirkungsgrad 39 % / 867 kg CO2-Emmission je MWHel
+Erdgas 200,8 kg CO2 je MWh (Primärenergiegehalt) / Wirkungsgrad 56,1 % / 358 kg CO2-Emission je MWhel
+<https://volker-quaschning.de/datserv/CO2-spez/index.php>
+:::
+ 
+### Hintergrund Einspeisevorrang erneuerbarer Energien
+In Deutschland gilt seit dem Jahr 2000 das Erneuerbare-Energien-Gesetz, das ursprünglich als Gesetz für den Vorrang Erneuerbarer Energien eingeführt wurde [Dokumentations- und Informationssystem für Parlamentsmaterialien](https://dip.bundestag.de/vorgang/gesetz-f%C3%BCr-den-vorrang-erneuerbarer-energien-erneuerbare-energien-gesetz-eeg-sowie/111957). Dieses regelte in § 3 den Einspeisevorrang erneuerbarer Energien:
 
 ::: {.border layout="[[5, 90, 5], [1]]"}
 
 &nbsp;
 
 **Abnahme- und Vergütungspflicht**  
-(1) Netzbetreiber sind verpflichtet, Anlagen zur Erzeu-
-gung von Strom nach § 2 an ihr Netz anzuschließen, den
-gesamten angebotenen Strom aus diesen Anlagen vor-
-rangig abzunehmen und den eingespeisten Strom nach
-§§ 4 bis 8 zu vergüten.
+(1) Netzbetreiber sind verpflichtet, Anlagen zur Erzeugung von Strom nach § 2 an ihr Netz anzuschließen, den gesamten angebotenen Strom aus diesen Anlagen vorrangig abzunehmen und den eingespeisten Strom nach §§ 4 bis 8 zu vergüten.
 
 &nbsp;
 
@@ -707,30 +701,107 @@ rangig abzunehmen und den eingespeisten Strom nach
 Gesetz für den Vorrang Erneuerbarer Energien (Erneuerbare-Energien-Gesetz – EEG) sowie zur Änderung des Energiewirtschaftsgesetzes und des Mineralölsteuergesetzes. Bundesgesetzblatt Jahrgang 2000 Teil I Nr. 13, ausgegeben zu Bonn am 31. März 2000. [Bundesanzeiger](https://www.bgbl.de/xaver/bgbl/start.xav?startbk=Bundesanzeiger_BGBl&start=//*%5b@attr_id=%27bgbl100s0305.pdf%27%5d#__bgbl__%2F%2F*%5B%40attr_id%3D%27bgbl100s0305.pdf%27%5D__1718177313490)
 :::
 
-Einspeisevorrang EE
+&nbsp;
+
+Als erneuerbare Energien klassifizierte Erzeuger speisen vorrangig in das Netz ein. Dies sind nach der aktuellen Fassung des Gesetztes:
+
+::: {.border}
+
+  a) Wasserkraft einschließlich der Wellen-, Gezeiten-, Salzgradienten- und Strömungsenergie,
+
+  b) Windenergie,
+
+  c) solare Strahlungsenergie,
+
+  d) Geothermie,
+  
+  e) Energie aus Biomasse einschließlich Biogas, Biomethan, Deponiegas und Klärgas sowie aus dem biologisch abbaubaren Anteil von Abfällen aus Haushalten und Industrie
+
+Gesetz für den Ausbau erneuerbarer Energien (Erneuerbare-Energien-Gesetz - EEG 2023). § 3 Begriffsbestimmungen. >https://www.gesetze-im-internet.de/eeg_2014/__3.html>
+:::
+
+&nbsp;
+
+Die nicht erneuerbaren Erzeuger arbeiten im Lastfolgebetrieb zur Deckung der Restlast, das heißt der Netzlast abzüglich der erneuerbaren Erzeugungsleistung. Dies bedeutet, dass zwei Szenarien zu unterscheiden sind:
+
+1. Überschuss an erneuerbaren Energien: Der Stromverbrauch wird vollständig durch die Erzeugung erneuerbarer Energien gedeckt und es besteht ein Erzeugungsüberschuss (bzw. Erzeuger wurden abgeregelt), aus dem zusätzlicher Stromverbrauch bedient werden kann. 
+
+2. Strommix aus erneuerbarer Einspeisung und Lastfolgebetrieb nicht erneuerbarer Erzeuger: Erneuerbare Energien speisen mit voller Leistung ein, die Restlast wird von nicht erneuerbaren Erzeugern gedeckt.
+
+Die welches Szenario im Stromnetz zu einem bestimmten Zeitpunkt besteht, lässt sich also an der Restlast ablesen.
+
+### Restlast bestimmen
+Die Bundesnetzagentur veröffentlicht im Datensatz zum realisierten Stromverbrauch Netzlast, Residuallast und den Stromverbrauch durch Pumpspeicherkraftwerke.
+
+```{python}
+
+print(verbrauch.sum(numeric_only = True))
+```
+
+Die Restlast kann ebenfalls mit den vorliegenden Daten als Differenz aus Stromverbrauch und Erzeugung durch Erneuerbare bestimmt werden.
+
+```{python}
+
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
+
+plotting_data = pd.DataFrame()
+plotting_data["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
+plotting_data["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
+plotting_data["Residuallast BNetzA [MWh]"] = verbrauch["Residuallast [MWh]"].copy() 
+plotting_data["Restlast [MWh]"] = plotting_data["Netzlast [MWh]"] - plotting_data["Erneuerbare [MWh]"]
+
+plotting_data.head()
+```
+
+&nbsp;
+
+Die selbst errechnete Restlast ist kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast. Die Ursache hierfür ist, dass die Residuallast definiert ist als:
+
+::: {.border}
+
+Die Residuallast [...] entspricht dem
+gesamten Realisierten Stromverbrauch, abzüglich der Einspeisung von Photovoltaik-, Wind Onshore- und Wind Offshore-Anlagen.
+
+[SMARD.de Benutzerhandbuch (S. 53)](https://www.smard.de/resource/blob/212924/61a75e052eddb43a8d3cc4c6e1653fa3/smard-benutzerhandbuch-02-2024-data.pdf)
+:::
+
+### Grundlastbetrieb und Lastfolgebetrieb
+Allerdings sind aus technischen oder aus wirtschaftlichen Gründen nicht alle Erzeuger gleichermaßen für den Lastfolgebetrieb geeignet. 
+
+Welche Erzeugungsleistung nehmen wir... erst mal gucken, ob Pumpspeicher gleichzeitig ein- und ausspeisen (sollte nicht so sein, ist aber möglich, wegen Regelzonen.)
 
 
-    - Vorbereitung 1: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? (Standardabweichung brauchbar?! Optisch? Abweichung von einer Geraden?)
+
+
+    - Vorbereitung 1: Restlast bestimmen
+
+      - Herkunft Pumpspeicherenergie top-down abschätzen: in wie vielen Intervallen war die Restlast negativ
+
+      - Herkunft Pumpspeicherenergie genauer bestimmen: Abgleich Null oder negative Restlast mit Verbrauch der Pumpspeicher (Befüllen)
+
+        - Wenn Restlast 0 oder negativ = Befüllung mit EE, wenn Restlast > 0 = Befüllung mit Lastfolgeerzeugern
+
+    - Vorbereitung 2: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? (Standardabweichung brauchbar?! Optisch? Abweichung von einer Geraden?)
 
       - Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
       
       - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)
     
-    - Vorbereitung 2: Residuallast bestimmen
-
-      - Herkunft Pumpspeicherenergie abschätzen: in wie vielen Intervallen war die Residuallast negativ
-
-      - Herkunft Pumpspeicherenergie genauer bestimmen: Abgleich Null oder negative Residuallast mit Verbrauch der Pumpspeicher (Befüllen)
-
-        - Wenn Residuallast 0 oder negativ = Befüllung mit EE, wenn Residuallast > 0 = Befüllung mit Lastfolgeerzeugern
-
 Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überprüfen.
 
 Grenzstrom - 2 Regime (EE-Überschuss, fossile Lastfolgebetrieb)
 
 Was rein kommt, ist, was raus kommt. Dabei sind 2 Regime zu unterscheiden: a) EE-Überschuss, b) fossiler Lastfolgebetrieb. Der Grenzstrom ist vermutlich fast immer fossil (wenn gerade keine Überproduktion an EE vorliegt.  
-**--> das gucken wir bei der explorativen Datenanalyse, in wie vielen Intervallen die Residuallast negativ war**)
+**--> das gucken wir bei der explorativen Datenanalyse, in wie vielen Intervallen die Restlast negativ war**)
 
+# Informationen zu Speichern
+Viele Zahlen in diesem Artikel: https://www.msn.com/de-de/finanzen/top-stories/energiewende-das-riesige-potenzial-der-e-autos-f%C3%BCr-die-energiewende/ar-BB1mErcB?ocid=entnewsntp&pc=U531&cvid=3d61906f85914af89a3255239a2138f0&ei=23
+
+  - dort Referenz auf [Fraunhofer ISE Studie 2021: Wege zu einem klimaneutralen Energiesystem](https://www.ise.fraunhofer.de/de/veroeffentlichungen/studien/wege-zu-einem-klimaneutralen-energiesystem.html)
+
+     - Szenario Referenz: ohne weitere, die Zielerreichung fördernde oder erschwerende Randbedingungen. Bedarf Speicherkapazität 2045: 514,6 GWh **Das ist ja "nur" rund ein Tausendstel der aktuellen Jahresproduktion. Das heißt neben jedes Kraftwerk käme ein Speicher mit einer Kapazität von einem Drittel der Tagesproduktion.**
+
+     - Link zur Grafik mit verschiedenen Szenarien: <https://energy-charts.info/charts/remod_installed_power/chart.htm?l=de&c=DE&source=storage#scenarios>
 
 ## Übungen beschreibende Statistik
 2023 wurden die letzten deutschen Atomkraftwerke Emsland, Isar 2 und Neckarwestheim 2 vom Netz genommen. Wann begann die Abschaltung der deutschen Atomkraftwerke? Wie lange hat der Prozess gedauert?  
