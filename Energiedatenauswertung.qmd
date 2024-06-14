@@ -338,6 +338,8 @@ Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen.
 #| echo: false
 #| results: hold # process code first, then print output
 #| fig-align: center
+#| fig-cap: Anteil an der Stromerzeugung
+#| fig-alt: "In einem Ringdiagramm sind die Anteile verschiedener Erzeugungsarten an der Stromerzeugung dargestellt. Die Kreissegmente sind nicht nach Größe sortiert, sondern so angeordnet, dass sich die Beschriftung der Segmente nicht überlappt."
 
 # plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]
 # erzeugung.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = True, explode = explosion)
@@ -364,15 +366,7 @@ ax.add_patch(circle)
 ## To Do
 To Do:
   
-  * Grafiktitel
-  
-  * Farbenblindenkompatible Farbpalette nach Styleguide
-
-  * fig-alt hinzufügen
-
-  * Farben sind trotz gleicher Palette bei matplotlib nicht identisch
-
-  * lange Codezeilen umbrechen
+    * lange Codezeilen umbrechen
 
 ## Code für Pandas
 ```{python}
@@ -416,6 +410,7 @@ Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visu
 #| results: hold # process code first, then print output
 #| fig-align: center
 #| fig-cap: Absolute Stromerzeugung und relative Anteile nach Erzeugungstyp
+#| fig-alt: "Die Grafik besteht aus drei, übereinander angeordneten Teilgrafiken. In der Mitte ist ein Kreisdiagramm der Erzeugungsanteile erneuerbarer Energien (56%), konventioneller Energien (40%) sowie Pumpspeicher (2.5%) und Kernergie (1.5%) zu sehen. Die Kreissegmente sind in Blautönen eingefärbt. Oben ist in einem horizontalen Balkendiagramm die absolute Erzeugung der erneuerbaren Energien von oben nach unten aufsteigend dargestellt. Beginnend mit der geringsten Erzeugung: Sonstige Erneuerbare, Wasserkraft, Wind Offshore, Biomasse, Photovoltaik, Wind Onshore. Unten ist ein einem horizontalen Balkendiagramm die absolute Erzeugung der konventionellen Energie von oben nach unten aufsteigend dargestellt. Beginnend mit der geringsten Erzeugung: Sonstige Konventionelle, Steinkohle, Erdgas, Braunkohle."
 
 # Erneuerbare und Konventionelle bestimmen, jeweils summieren
 
@@ -685,7 +680,7 @@ Erdgas 200,8 kg CO2 je MWh (Primärenergiegehalt) / Wirkungsgrad 56,1 % / 358 kg
 <https://volker-quaschning.de/datserv/CO2-spez/index.php>
 :::
  
-### Hintergrund Einspeisevorrang erneuerbarer Energien
+### Hintergrund: Einspeisevorrang erneuerbarer Energien
 In Deutschland gilt seit dem Jahr 2000 das Erneuerbare-Energien-Gesetz, das ursprünglich als Gesetz für den Vorrang Erneuerbarer Energien eingeführt wurde [Dokumentations- und Informationssystem für Parlamentsmaterialien](https://dip.bundestag.de/vorgang/gesetz-f%C3%BCr-den-vorrang-erneuerbarer-energien-erneuerbare-energien-gesetz-eeg-sowie/111957). Dieses regelte in § 3 den Einspeisevorrang erneuerbarer Energien:
 
 ::: {.border layout="[[5, 90, 5], [1]]"}
@@ -717,7 +712,7 @@ Als erneuerbare Energien klassifizierte Erzeuger speisen vorrangig in das Netz e
   
   e) Energie aus Biomasse einschließlich Biogas, Biomethan, Deponiegas und Klärgas sowie aus dem biologisch abbaubaren Anteil von Abfällen aus Haushalten und Industrie
 
-Gesetz für den Ausbau erneuerbarer Energien (Erneuerbare-Energien-Gesetz - EEG 2023). § 3 Begriffsbestimmungen. >https://www.gesetze-im-internet.de/eeg_2014/__3.html>
+Gesetz für den Ausbau erneuerbarer Energien (Erneuerbare-Energien-Gesetz - EEG 2023). § 3 Begriffsbestimmungen. <https://www.gesetze-im-internet.de/eeg_2014/__3.html>
 :::
 
 &nbsp;
@@ -734,28 +729,10 @@ Die welches Szenario im Stromnetz zu einem bestimmten Zeitpunkt besteht, lässt 
 Die Bundesnetzagentur veröffentlicht im Datensatz zum realisierten Stromverbrauch Netzlast, Residuallast und den Stromverbrauch durch Pumpspeicherkraftwerke.
 
 ```{python}
-
 print(verbrauch.sum(numeric_only = True))
 ```
 
-Die Restlast kann ebenfalls mit den vorliegenden Daten als Differenz aus Stromverbrauch und Erzeugung durch Erneuerbare bestimmt werden.
-
-```{python}
-
-erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
-
-plotting_data = pd.DataFrame()
-plotting_data["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
-plotting_data["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
-plotting_data["Residuallast BNetzA [MWh]"] = verbrauch["Residuallast [MWh]"].copy() 
-plotting_data["Restlast [MWh]"] = plotting_data["Netzlast [MWh]"] - plotting_data["Erneuerbare [MWh]"]
-
-plotting_data.head()
-```
-
-&nbsp;
-
-Die selbst errechnete Restlast ist kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast. Die Ursache hierfür ist, dass die Residuallast definiert ist als:
+ Die Residuallast ist folgendermaßen definiert:
 
 ::: {.border}
 
@@ -765,17 +742,168 @@ gesamten Realisierten Stromverbrauch, abzüglich der Einspeisung von Photovoltai
 [SMARD.de Benutzerhandbuch (S. 53)](https://www.smard.de/resource/blob/212924/61a75e052eddb43a8d3cc4c6e1653fa3/smard-benutzerhandbuch-02-2024-data.pdf)
 :::
 
-### Grundlastbetrieb und Lastfolgebetrieb
-Allerdings sind aus technischen oder aus wirtschaftlichen Gründen nicht alle Erzeuger gleichermaßen für den Lastfolgebetrieb geeignet. 
+&nbsp;
 
+Die nicht durch erneuerbare Energien bediente Restlast ist die Differenz aus Stromverbrauch und Erzeugung durch erneuerbare Energien. Die Restlast ist folglich kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast.
+
+```{python}
+
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
+
+plotting_data = pd.DataFrame()
+plotting_data["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
+plotting_data["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
+plotting_data["Residuallast [MWh]"] = verbrauch["Residuallast [MWh]"].copy() 
+plotting_data["Restlast [MWh]"] = plotting_data["Netzlast [MWh]"] - plotting_data["Erneuerbare [MWh]"]
+
+plotting_data.head()
+```
+
+&nbsp;
+
+### Jahresgang grafisch darstellen
+Die Netzlast, die Erzeugung durch erneuerbare Energien sowie die Residual- und Restlast sollen im Jahresgang dargestellt werden. Zur besseren Darstellung wird nur jeder 100. Wert eingezeichnet.
+
+::: {.panel-tabset}
+
+## Netzlast im Jahresgang
+```{python}
+#| include: false
+#| results: hold # process code first, then print output
+
+# Position und Inhalt der x-Achsenbeschriftung finden
+monate = erzeugung["Datum von"].dt.month.unique().tolist() # gibt die Zahlen 1-12 aus
+print(monate)
+
+## mit einer Listenoperation
+monate_index = []
+monatsnamen = []
+
+for i in monate:
+  monate_index.append(erzeugung.index[erzeugung["Datum von"].dt.month == i].min())
+  monatsnamen.append(erzeugung["Datum von"].iloc[monate_index[i - 1]].strftime("%B"))
+
+print(monate_index)
+print(monatsnamen)
+
+```
+
+```{python}
+#| echo: false
+#| results: hold # process code first, then print output
+#| fig-align: center
+#| fig-cap: Netzlast im Jahresgang
+#| fig-alt: "Gemeinsame Darstellung in vier übereinander angeordneten Teilgrafiken der Netzlast, der kumulierten Erzeugung durch erneuerbare Energien, der Residuallast und der Restlast im Jahresverlauf."
+
+# plotten jedes 100. Werts
+plotting_data[::100].plot(figsize = (9, 8), subplots = True, sharey = True, xlim = (plotting_data.index.min() - (len(plotting_data.index)) / 100, plotting_data.index.max() * 1.01), rot = 45, grid = True)
+plt.minorticks_off()
+plt.xticks(monate_index, monatsnamen);
+
+```
+
+## To Do
+
+  - fig-alt
+
+  - xticks mit Pandas bestimmen: pandas.Series.unique returns unique values of series
+
+## Code für den Plot
+```{python}
+#| output: true
+#| results: hold # process code first, then print output
+
+# Position und Inhalt der x-Achsenbeschriftung finden
+monate = erzeugung["Datum von"].dt.month.unique().tolist() # gibt die Zahlen 1-12 aus
+print(monate)
+
+## mit einer Listenoperation
+monate_index = []
+monatsnamen = []
+
+for i in monate:
+  monate_index.append(erzeugung.index[erzeugung["Datum von"].dt.month == i].min())
+  monatsnamen.append(erzeugung["Datum von"].iloc[monate_index[i - 1]].strftime("%B"))
+
+print(monate_index)
+print(monatsnamen)
+
+```
+
+```{python}
+#| output: false
+#| results: hold # process code first, then print output
+
+# plotten jedes 100. Werts
+plotting_data[::100].plot(figsize = (9, 8), subplots = True, sharey = True, xlim = (plotting_data.index.min() - (len(plotting_data.index)) / 100, plotting_data.index.max() * 1.01), rot = 45, grid = True)
+plt.minorticks_off()
+plt.xticks(monate_index, monatsnamen);
+
+```
+
+:::
+
+Eine vollständige Deckung der Netzlast durch erneuerbare Stromerzeugung ist nur selten der Fall. Zumeist ist die Restlast größer Null. Auf dieser Grundlage ist zu vermuten, dass die Pumpspeicher überwiegend durch nicht erneuerbare Stromerzeuger befüllt werden. Ob dies auch tatächlich der Fall ist, wird in der weiteren Analyse geprüft.
+
+Zunächst aber eine kleine Aufgabe: **Wie würde sich eine Verdopplung der erneuerbaren Erzeugung auf die Restlast auswirken? Stellen Sie den Effekt auf vergleichbare Weise grafisch dar (z. B. durch eine zusätzliche Spalte 'Netzlast - 2 EE').**
+
+::: {#tip-verdopplung-EE .callout-tip title="Musterlösung Verdopplung EE" collapse="true"}
+**Ist schnell gemacht, aber optisch vielleicht etwas lieblos. Trotzdem ist das Ergebnis klar: Da könnte was gehen mit diesen "Erneuerbaren".**
+
+To Do:
+
+  - grafisch aufhübschen
+
+  - fig-alt, fig-cap ergänzen
+
+```{python}
+plotting_data_2EE = plotting_data.copy()
+plotting_data_2EE["2x EE"] = plotting_data_2EE["Erneuerbare [MWh]"] * 2
+plotting_data_2EE["Netzlast - 2x EE"] = plotting_data_2EE["Netzlast [MWh]"] - plotting_data_2EE["2x EE"]
+
+# plotten jedes 100. Werts
+plotting_data_2EE[::100].plot(figsize = (9, 10), subplots = True, sharey = True, xlim = (plotting_data_2EE.index.min() - (len(plotting_data_2EE.index)) / 100, plotting_data_2EE.index.max() * 1.01), rot = 45, grid = True)
+plt.minorticks_off()
+plt.xticks(monate_index, monatsnamen);
+```
+
+:::
+
+### Grundlastbetrieb und Lastfolgebetrieb
+Allerdings sind aus technischen oder aus wirtschaftlichen Gründen nicht alle Erzeuger gleichermaßen für den Lastfolgebetrieb geeignet. Beispielsweise sind Kohlekraftwerke weniger flexibel regelbar als Gaskraftwerke.
+
+Erst mal für alle Erzeuger zeigen, dann für die nicht erneuerbaren (plotting_data_non_EE).
+
+  - Quantifizierung mit Jahresvolllaststunden
+
+  - Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
+      
+  - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)
+
+```{python}
+
+
+# print(erzeugung.dtypes == np.number)
+print(erzeugung.loc[: , list(erzeugung.dtypes == np.number)].columns) # die hier summieren
+
+print(installierte_leistung.loc[: , list(erzeugung.dtypes == np.number)].columns) # und durch die teilen
+
+## kommt dabei die richtige Größe raus?
+
+
+
+```
+
+
+In Volllast betriebene Erzeuger können den Grenzstrom nicht decken.
 Welche Erzeugungsleistung nehmen wir... erst mal gucken, ob Pumpspeicher gleichzeitig ein- und ausspeisen (sollte nicht so sein, ist aber möglich, wegen Regelzonen.)
 
 
-
+Grenzstrom: 2 Regime (EE-Überschuss, fossile Lastfolgebetrieb)
 
     - Vorbereitung 1: Restlast bestimmen
 
-      - Herkunft Pumpspeicherenergie top-down abschätzen: in wie vielen Intervallen war die Restlast negativ
+      - Herkunft Pumpspeicherenergie grob abschätzen: in wie vielen Intervallen war die Restlast negativ
 
       - Herkunft Pumpspeicherenergie genauer bestimmen: Abgleich Null oder negative Restlast mit Verbrauch der Pumpspeicher (Befüllen)
 
@@ -783,13 +911,14 @@ Welche Erzeugungsleistung nehmen wir... erst mal gucken, ob Pumpspeicher gleichz
 
     - Vorbereitung 2: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? (Standardabweichung brauchbar?! Optisch? Abweichung von einer Geraden?)
 
+      - Quantifizierung mit Jahresvolllaststunden
+
       - Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
       
       - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)
     
 Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überprüfen.
-
-Grenzstrom - 2 Regime (EE-Überschuss, fossile Lastfolgebetrieb)
+*Befüllung der Pumpspeicher und die Restlast im Jahresgang anzeigen und anschließend nur die Werte zeigen, zu denen der Verbrauch der Pumpspeicher > 0 ist* 
 
 Was rein kommt, ist, was raus kommt. Dabei sind 2 Regime zu unterscheiden: a) EE-Überschuss, b) fossiler Lastfolgebetrieb. Der Grenzstrom ist vermutlich fast immer fossil (wenn gerade keine Überproduktion an EE vorliegt.  
 **--> das gucken wir bei der explorativen Datenanalyse, in wie vielen Intervallen die Restlast negativ war**)
