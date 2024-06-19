@@ -98,6 +98,35 @@ div.csl-indent {
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -131,7 +160,7 @@ div.csl-indent {
   <li><a href="#grenzstromanalyse" id="toc-grenzstromanalyse" class="nav-link" data-scroll-target="#grenzstromanalyse"><span class="header-section-number">7.1</span> Grenzstromanalyse</a>
   <ul class="collapse">
   <li><a href="#hintergrund-einspeisevorrang-erneuerbarer-energien" id="toc-hintergrund-einspeisevorrang-erneuerbarer-energien" class="nav-link" data-scroll-target="#hintergrund-einspeisevorrang-erneuerbarer-energien">Hintergrund: Einspeisevorrang erneuerbarer Energien</a></li>
-  <li><a href="#restlast-bestimmen" id="toc-restlast-bestimmen" class="nav-link" data-scroll-target="#restlast-bestimmen">Restlast bestimmen</a></li>
+  <li><a href="#residual--und-restlast-bestimmen" id="toc-residual--und-restlast-bestimmen" class="nav-link" data-scroll-target="#residual--und-restlast-bestimmen">Residual- und Restlast bestimmen</a></li>
   <li><a href="#jahresgang-grafisch-darstellen" id="toc-jahresgang-grafisch-darstellen" class="nav-link" data-scroll-target="#jahresgang-grafisch-darstellen">Jahresgang grafisch darstellen</a></li>
   <li><a href="#grundlastbetrieb-und-lastfolgebetrieb" id="toc-grundlastbetrieb-und-lastfolgebetrieb" class="nav-link" data-scroll-target="#grundlastbetrieb-und-lastfolgebetrieb">Grundlastbetrieb und Lastfolgebetrieb</a></li>
   </ul></li>
@@ -171,7 +200,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">14. Juni 2024</p>
+      <p class="date">19. Juni 2024</p>
     </div>
   </div>
   
@@ -332,7 +361,7 @@ Warning&nbsp;1: SMARD Daten herunterladen
 <li><p>die Spalten mit Datums- und Zeitangaben sowie das Datumsformat bestimmt.<br>
 <code>parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M"</code></p></li>
 </ul>
-<div id="24eab0c3" class="cell" data-results="hold" data-execution_count="1">
+<div id="209f2102" class="cell" data-results="hold" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.precision"</span>, <span class="dv">2</span>) <span class="co"># places after decimal for floats</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -369,7 +398,7 @@ english version
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>english version</p>
-<div id="f07fbe63" class="cell" data-results="hold" data-execution_count="2">
+<div id="7c8c50b2" class="cell" data-results="hold" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>erzeugung0_en <span class="op">=</span> pd.read_csv(filepath_or_buffer <span class="op">=</span> <span class="op">\</span></span>
@@ -378,7 +407,7 @@ english version
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>parse_dates <span class="op">=</span>  [<span class="dv">0</span>, <span class="dv">1</span>], date_format <span class="op">=</span> <span class="st">"%b </span><span class="sc">%d</span><span class="st">, %Y %I:%M %p"</span>) <span class="co"># leading zero is optional for formats %d, %m, %H, %I, %M, %S, %j, %U, %W, and %V</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0_en.head(<span class="dv">2</span>), erzeugung0_en.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="170">
+<div class="cell-output cell-output-display" data-execution_count="218">
 <div>
 <div>
 
@@ -587,7 +616,7 @@ Tip&nbsp;2: Lösung Datumsformat
 <section id="daten-organisieren" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Daten organisieren</h1>
 <p>Vor der Datenanalyse sollte überprüft werden, ob die Daten korrekt eingelesen wurden. Dies bedeutet zum einen, zu kontrollieren, ob der Datentyp aller Spalten richtig erkannt wurde. Ob die Spaltentypen einer Datei korrekt eingelesen wurden, können Sie in Python mit dem Befehl <code>df.dtypes</code> überprüfen. Hier der Output des Befehls für den DataFrame <code>erzeugung0</code>.</p>
-<div id="dce4c5f9" class="cell" data-results="hold" data-execution_count="3">
+<div id="71db40c5" class="cell" data-results="hold" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Spalten:</span><span class="ch">\n</span><span class="sc">{</span>erzeugung0<span class="sc">.</span>dtypes<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Spalten:
@@ -610,7 +639,7 @@ dtype: object</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Viele der Spaltennamen enthalten die Zeichenkette ” Originalauflösungen”, die der Übersichtlichkeit wegen entfernt werden kann (führendes Leerzeichen beachten). Auf diese Weise könnte auch die Einheitenangabe [MWh] entfernt werden, falls diese als störend empfunden wird.</p>
-<div id="84de6bd8" class="cell" data-results="hold" data-execution_count="4">
+<div id="ef6d3b4a" class="cell" data-results="hold" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Zeichenkette " Originalauflösungen" entfernen</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0.columns <span class="op">=</span> installierte_leistung0.columns.<span class="bu">str</span>.replace(pat <span class="op">=</span> <span class="st">" Originalauflösungen"</span>, repl <span class="op">=</span> <span class="st">""</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -643,10 +672,10 @@ dtype: object</code></pre>
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">installierte Leistung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">realisierte Erzeugung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">realisierter Verbrauch</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="3063e2d4" class="cell" data-results="hold" data-execution_count="5">
+<div id="dff77a07" class="cell" data-results="hold" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># der DataFrame installierte_leistung0 hat nur 1 Zeile</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="173">
+<div class="cell-output cell-output-display" data-execution_count="221">
 <div>
 <div>
 
@@ -698,11 +727,11 @@ dtype: object</code></pre>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="0d4c68aa" class="cell" data-results="hold" data-execution_count="6">
+<div id="eb7d6dd8" class="cell" data-results="hold" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0.head(<span class="dv">2</span>), <span class="op">\</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>erzeugung0.iloc[<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>erzeugung0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="174">
+<div class="cell-output cell-output-display" data-execution_count="222">
 <div>
 <div>
 
@@ -839,11 +868,11 @@ dtype: object</code></pre>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div id="03b57b11" class="cell" data-results="hold" data-execution_count="7">
+<div id="d6ebc715" class="cell" data-results="hold" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pd.concat([verbrauch0.head(<span class="dv">2</span>), <span class="op">\</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>verbrauch0.iloc[<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="175">
+<div class="cell-output cell-output-display" data-execution_count="223">
 <div>
 <div>
 
@@ -920,7 +949,7 @@ dtype: object</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Schließlich ist eine Plausibilitätskontrolle der Daten sinnvoll. Einleitend wurde der deutsche Gesamtstromverbrauch im Jahr 2023 genannt, der 458,3 TWh beträgt. Der Stromverbrauch und die Summe der Stromerzeugung sollten diesem Wert ungefähr entsprechen.</p>
-<div id="db877119" class="cell" data-execution_count="8">
+<div id="90dbb900" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude columns with datetime</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Stromverbrauch in Millionen MWh:</span><span class="ch">\n</span><span class="st">"</span>, <span class="op">\</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>) <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>), sep <span class="op">=</span> <span class="st">""</span>)</span>
@@ -939,7 +968,7 @@ Stromerzeugung in Millionen MWh 448.0</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Wenn alle Dateien korrekt eingelesen wurden, können Arbeitsdateien mit dem Befehl <code>df.copy()</code> angelegt werden. Dadurch bleiben die Rohdaten immer verfügbar und können bei Bedarf, beispielsweise nach einem versehentlichen Überschreiben der Arbeitsdateien, erneut geladen werden.</p>
-<div id="abc15f4e" class="cell" data-results="hold" data-execution_count="9">
+<div id="659f0a5e" class="cell" data-results="hold" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>erzeugung <span class="op">=</span> erzeugung0.copy()</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>verbrauch <span class="op">=</span> verbrauch0.copy()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>installierte_leistung <span class="op">=</span> installierte_leistung0.copy()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -949,7 +978,7 @@ Stromerzeugung in Millionen MWh 448.0</code></pre>
 <h1 data-number="6"><span class="header-section-number">6</span> Beschreibende Datenanalyse</h1>
 <p>Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und analytischen Datenanalyse vertieft werden.</p>
 <p>Einen ersten Überblick über die Daten liefert die Methode <code>pd.DataFrame.describe()</code>. Durch das Argument <code>include = [np.number]</code> kann die Ausgabe auf Spalten mit numerischen Daten beschränkt, also die Spalten mit Datumsinformationen ausgeschlossen, werden.</p>
-<div id="daef5930" class="cell" data-results="hold" data-execution_count="10">
+<div id="2bf5fa2f" class="cell" data-results="hold" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Der DataFrame erzeugung hat </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> Zeilen und </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> Spalten.</span><span class="ch">\n</span><span class="ss">"</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(erzeugung.describe(include <span class="op">=</span> [np.number]))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1027,7 +1056,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Plotten mit Pandas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">To Do</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Code für Pandas</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div id="5a6176b5" class="cell" data-results="hold" data-execution_count="11">
+<div id="d27eceaa" class="cell" data-results="hold" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1043,7 +1072,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <pre><code>* lange Codezeilen umbrechen</code></pre>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<div id="6cf3232b" class="cell" data-results="hold" data-execution_count="12">
+<div id="59c4daec" class="cell" data-results="hold" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># erzeugung.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = True, explode = explosion)</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1075,7 +1104,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Plotten mit matplotlib</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">To Do</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Code für matplotlib</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div id="49da1b61" class="cell" data-results="hold" data-execution_count="13">
+<div id="fe5b729b" class="cell" data-results="hold" data-execution_count="13">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1093,7 +1122,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 </ul>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<div id="93516bb0" class="cell" data-results="hold" data-execution_count="14">
+<div id="2644b4a6" class="cell" data-results="hold" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erneuerbare und Konventionelle bestimmen, jeweils summieren</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Erneuerbare</span></span>
@@ -1191,7 +1220,7 @@ Tip&nbsp;4: Lösung Wirkungsgrad Pumpspeicher
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="8fb4e01f" class="cell" data-results="hold" data-execution_count="15">
+<div id="dd2a5fc3" class="cell" data-results="hold" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Summe Erzeugung Pumpspeicher: </span><span class="sc">{</span>erzeugung[<span class="st">"Pumpspeicher [MWh]"</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Summe Verbrauch Pumpspeicher: </span><span class="sc">{</span>verbrauch[<span class="st">"Pumpspeicher [MWh]"</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span><span class="dv">41</span> <span class="op">*</span> <span class="st">"="</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
@@ -1207,7 +1236,7 @@ Wirkungsgrad in Prozent:            79.10</code></pre>
 </div>
 </div>
 <p>Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzagentur veröffentlichte kumulierte Stromerzeugung der Pumpspeicherkraftwerke zuzüglich der Speicherverluste. Die Bundesnetzagentur führt diesen Wert im Datensatz Stromverbrauch. Im folgenden Programmcode wird der “Walross”-Operator <code>:=</code> benutzt, der Objektzuweisungen innerhalb von Anweisungen erlaubt. Mit dem Walross-Operator durchgeführte Zuweisungen müssen in runde Klammern eingefasst werden:</p>
-<div id="748ae938" class="cell" data-results="hold" data-execution_count="16">
+<div id="0ab9f867" class="cell" data-results="hold" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Speicherverluste:</span><span class="ch">\t\t\t</span><span class="sc">{</span> (speicherverluste <span class="op">:=</span> ( verbrauch[<span class="st">"Pumpspeicher [MWh]"</span>].<span class="bu">sum</span>() <span class="op">-</span> erzeugung[<span class="st">"Pumpspeicher [MWh]"</span>].<span class="bu">sum</span>() ) <span class="op">/</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>) )<span class="sc">:&gt;6.2f}</span><span class="ss"> TWh</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"kumulierte Stromerzeugung:</span><span class="ch">\t</span><span class="sc">{</span> ( kumulierte_erzeugung <span class="op">:=</span> erzeugung.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>).<span class="bu">sum</span>() <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ss"> TWh</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Summe:</span><span class="ch">\t\t\t\t\t\t</span><span class="sc">{</span>speicherverluste <span class="op">+</span> kumulierte_erzeugung<span class="sc">:.2f}</span><span class="ss"> TWh</span><span class="ch">\n\n</span><span class="ss">"</span></span>
@@ -1345,7 +1374,7 @@ Tipp
 <p>Explorative Datenanalyse bedeutet, Fragen an die vorliegenden Daten zu stellen und diese mittels datenanalytischer Methoden zu beantworten. Die so gewonnenen Erkenntnisse können helfen, die Fragen zu verfeinern oder neue Fragen zu generieren. Es handelt sich also um einen iterativen Prozess. Dadurch soll vor allem ein tieferes Verständnis der Daten gewonnen werden. <span class="citation" data-cites="R-for-Data-Science">(<a href="#ref-R-for-Data-Science" role="doc-biblioref">Wickham, Çetinkaya-Rundel, und Grolemund 2023, Kap. 10</a> Exploratory data analysis)</span></p>
 <section id="grenzstromanalyse" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="grenzstromanalyse"><span class="header-section-number">7.1</span> Grenzstromanalyse</h2>
-<p>Im vorliegenden Fall interessiert, welche Erzeuger Strom lieferten, um <em>zusätzlich</em> zur Netzlast die Pumpspeicher zu befüllen. Dazu soll bestimmt werden, welche Stromerzeuger an den Zeitpunkten, an denen die Pumpspeicher befüllt wurden, in der Lage waren zusätzliche Leistung abzurufen. In Anlehung an in der Wirtschaftslehre gebräuchliche Grenzbetrachtungen kann dieser zusätzliche Strom kurz als Grenzstrom bezeichnet werden.</p>
+<p>Im vorliegenden Fall interessiert, welche Erzeuger Strom lieferten, um <em>zusätzlich</em> zur Netzlast die Pumpspeicher zu befüllen. Dazu soll bestimmt werden, welche Stromerzeuger an den Zeitpunkten, an denen die Pumpspeicher befüllt wurden, in der Lage waren, zusätzliche Leistung bereitzustellen. In Anlehung an in der Wirtschaftslehre gebräuchliche Grenzbetrachtungen kann dieser zusätzliche Strom kurz als Grenzstrom bezeichnet werden.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -1411,10 +1440,10 @@ Gesetz für den Vorrang Erneuerbarer Energien (Erneuerbare-Energien-Gesetz – E
 </ol>
 <p>Die welches Szenario im Stromnetz zu einem bestimmten Zeitpunkt besteht, lässt sich also an der Restlast ablesen.</p>
 </section>
-<section id="restlast-bestimmen" class="level3">
-<h3 class="anchored" data-anchor-id="restlast-bestimmen">Restlast bestimmen</h3>
+<section id="residual--und-restlast-bestimmen" class="level3">
+<h3 class="anchored" data-anchor-id="residual--und-restlast-bestimmen">Residual- und Restlast bestimmen</h3>
 <p>Die Bundesnetzagentur veröffentlicht im Datensatz zum realisierten Stromverbrauch Netzlast, Residuallast und den Stromverbrauch durch Pumpspeicherkraftwerke.</p>
-<div id="c4ab8ee1" class="cell" data-execution_count="17">
+<div id="a9073d40" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(verbrauch.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Gesamt (Netzlast) [MWh]    4.58e+08
@@ -1423,24 +1452,36 @@ Pumpspeicher [MWh]         1.41e+07
 dtype: float64</code></pre>
 </div>
 </div>
-<p>Die Residuallast ist folgendermaßen definiert:</p>
-<div class="border">
-<p>Die Residuallast […] entspricht dem gesamten Realisierten Stromverbrauch, abzüglich der Einspeisung von Photovoltaik-, Wind Onshore- und Wind Offshore-Anlagen.</p>
-<p><a href="https://www.smard.de/resource/blob/212924/61a75e052eddb43a8d3cc4c6e1653fa3/smard-benutzerhandbuch-02-2024-data.pdf">SMARD.de Benutzerhandbuch (S. 53)</a></p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition Residuallast
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Residuallast […] entspricht dem gesamten Realisierten Stromverbrauch, abzüglich der Einspeisung von Photovoltaik-, Wind Onshore- und Wind Offshore-Anlagen. <a href="https://www.smard.de/resource/blob/212924/61a75e052eddb43a8d3cc4c6e1653fa3/smard-benutzerhandbuch-02-2024-data.pdf">SMARD.de Benutzerhandbuch (S. 53)</a></p>
+</div>
 </div>
 <p>&nbsp;</p>
-<p>Die nicht durch erneuerbare Energien bediente Restlast ist die Differenz aus Stromverbrauch und Erzeugung durch erneuerbare Energien. Die Restlast ist folglich kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast.</p>
-<div id="6025948c" class="cell" data-execution_count="18">
+<p>Die nicht durch erneuerbare Energien bediente Restlast ist die Differenz aus Stromverbrauch und Erzeugung durch erneuerbare Energien. Die Restlast ist folglich kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast. Residual- und Restlast können aus der Differenz von Netzlast und der jeweiligen erneuerbaren Stromerzeugung berechnet werden.</p>
+<div id="64e7c9cb" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>erneuerbare <span class="op">=</span> [<span class="st">'Biomasse [MWh]'</span>, <span class="st">'Wasserkraft [MWh]'</span>, <span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>, <span class="st">'Sonstige Erneuerbare [MWh]'</span>]</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>plotting_data <span class="op">=</span> pd.DataFrame()</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Netzlast [MWh]"</span>] <span class="op">=</span> verbrauch[<span class="st">"Gesamt (Netzlast) [MWh]"</span>].copy() </span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Erneuerbare [MWh]"</span>] <span class="op">=</span> erzeugung[erneuerbare].<span class="bu">sum</span>(axis <span class="op">=</span> <span class="st">"columns"</span>).copy()</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Residuallast [MWh]"</span>] <span class="op">=</span> verbrauch[<span class="st">"Residuallast [MWh]"</span>].copy() </span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Restlast [MWh]"</span>] <span class="op">=</span> plotting_data[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data[<span class="st">"Erneuerbare [MWh]"</span>]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>PV_WindOnshore_WindOffshore <span class="op">=</span> [<span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>] </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>plotting_data <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Netzlast [MWh]"</span>] <span class="op">=</span> verbrauch[<span class="st">"Gesamt (Netzlast) [MWh]"</span>].copy() </span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"volatile EE [MWh]"</span>] <span class="op">=</span> erzeugung[PV_WindOnshore_WindOffshore].<span class="bu">sum</span>(axis <span class="op">=</span> <span class="st">"columns"</span>).copy()</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Erneuerbare [MWh]"</span>] <span class="op">=</span> erzeugung[erneuerbare].<span class="bu">sum</span>(axis <span class="op">=</span> <span class="st">"columns"</span>).copy()</span>
 <span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>plotting_data.head()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="186">
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Residuallast BNetzA [MWh]"</span>] <span class="op">=</span> verbrauch[<span class="st">"Residuallast [MWh]"</span>].copy()</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Residuallast [MWh]"</span>] <span class="op">=</span> plotting_data[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data[<span class="st">"volatile EE [MWh]"</span>]</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Restlast [MWh]"</span>] <span class="op">=</span> plotting_data[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data[<span class="st">"Erneuerbare [MWh]"</span>]</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>plotting_data.head()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="234">
 <div>
 <div>
 
@@ -1450,7 +1491,9 @@ dtype: float64</code></pre>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">Netzlast [MWh]</th>
+<th data-quarto-table-cell-role="th">volatile EE [MWh]</th>
 <th data-quarto-table-cell-role="th">Erneuerbare [MWh]</th>
+<th data-quarto-table-cell-role="th">Residuallast BNetzA [MWh]</th>
 <th data-quarto-table-cell-role="th">Residuallast [MWh]</th>
 <th data-quarto-table-cell-role="th">Restlast [MWh]</th>
 </tr>
@@ -1459,35 +1502,45 @@ dtype: float64</code></pre>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>9720.75</td>
+<td>7830.50</td>
 <td>9277.00</td>
+<td>1890.25</td>
 <td>1890.25</td>
 <td>443.75</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>9641.25</td>
+<td>7902.00</td>
 <td>9343.00</td>
+<td>1739.25</td>
 <td>1739.25</td>
 <td>298.25</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
 <td>9609.50</td>
+<td>8119.50</td>
 <td>9559.50</td>
+<td>1490.00</td>
 <td>1490.00</td>
 <td>50.00</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
 <td>9565.00</td>
+<td>7919.00</td>
 <td>9362.25</td>
+<td>1646.00</td>
 <td>1646.00</td>
 <td>202.75</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
 <td>9473.50</td>
+<td>8107.75</td>
 <td>9540.50</td>
+<td>1365.75</td>
 <td>1365.75</td>
 <td>-67.00</td>
 </tr>
@@ -1499,19 +1552,30 @@ dtype: float64</code></pre>
 </div>
 </div>
 <p>&nbsp;</p>
+<p>Die von der Bundesnetzagentur veröffentlichte Residuallast <code>Residuallast BNetzA [MWh]</code> entspricht nach der Betrachtung der ersten Zeilen der selbst berechneten Residuallast <code>Residuallast [MWh]</code>. Ob dies für die gesamte Zeitreihe gilt, kann leicht mit der Methode <code>pd.Series.equals()</code> überprüft werden.</p>
+<div id="5738850e" class="cell" data-results="hold" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">'Residuallast BNetzA [MWh]'</span>].equals(plotting_data[<span class="st">'Residuallast [MWh]'</span>])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="235">
+<pre><code>True</code></pre>
+</div>
+</div>
+<p>Somit kann die redundante Spalte entfernt werden.</p>
+<div id="c6c45655" class="cell" data-results="hold" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>plotting_data.drop([<span class="st">'Residuallast BNetzA [MWh]'</span>], axis <span class="op">=</span> <span class="st">'columns'</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="jahresgang-grafisch-darstellen" class="level3">
 <h3 class="anchored" data-anchor-id="jahresgang-grafisch-darstellen">Jahresgang grafisch darstellen</h3>
 <p>Die Netzlast, die Erzeugung durch erneuerbare Energien sowie die Residual- und Restlast sollen im Jahresgang dargestellt werden. Zur besseren Darstellung wird nur jeder 100. Wert eingezeichnet.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Netzlast im Jahresgang</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">To Do</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Code für den Plot</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Netzlast im Jahresgang</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div id="4519d8d5" class="cell" data-results="hold" data-execution_count="20">
+<div id="898b751f" class="cell" data-results="hold" data-execution_count="22">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Energiedatenauswertung_files/figure-html/cell-21-output-1.png" width="740" height="681" class="figure-img"></p>
+<p><img src="Energiedatenauswertung_files/figure-html/cell-23-output-1.png" width="740" height="681" class="figure-img"></p>
 <figcaption>Netzlast im Jahresgang</figcaption>
 </figure>
 </div>
@@ -1519,46 +1583,35 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<ul>
-<li><p>fig-alt</p></li>
-<li><p>xticks mit Pandas bestimmen: pandas.Series.unique returns unique values of series</p></li>
-</ul>
+<div id="e3099168" class="cell" data-results="hold" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Position und Inhalt der x-Achsenbeschriftung finden</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>monate <span class="op">=</span> erzeugung[<span class="st">"Datum von"</span>].dt.month.unique().tolist() <span class="co"># gibt die Zahlen 1-12 aus</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">## mit Pandas</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>monate_index <span class="op">=</span> erzeugung[<span class="op">~</span>erzeugung[<span class="st">"Datum von"</span>].dt.month.duplicated()].index</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>monatsnamen <span class="op">=</span> erzeugung[<span class="st">"Datum von"</span>].iloc[monate_index].dt.strftime(<span class="st">"%B"</span>) </span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co">## alternativ mit einer Listenoperation</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co"># monate_index = []</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co"># monatsnamen = []</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co"># for i in monate:</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   monate_index.append(erzeugung.index[erzeugung["Datum von"].dt.month == i].min())</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   monatsnamen.append(erzeugung["Datum von"].iloc[monate_index[i - 1]].strftime("%B"))</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
-<div id="4f42cd67" class="cell" data-results="hold" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Position und Inhalt der x-Achsenbeschriftung finden</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>monate <span class="op">=</span> erzeugung[<span class="st">"Datum von"</span>].dt.month.unique().tolist() <span class="co"># gibt die Zahlen 1-12 aus</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(monate)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">## mit einer Listenoperation</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>monate_index <span class="op">=</span> []</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>monatsnamen <span class="op">=</span> []</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> monate:</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  monate_index.append(erzeugung.index[erzeugung[<span class="st">"Datum von"</span>].dt.month <span class="op">==</span> i].<span class="bu">min</span>())</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  monatsnamen.append(erzeugung[<span class="st">"Datum von"</span>].iloc[monate_index[i <span class="op">-</span> <span class="dv">1</span>]].strftime(<span class="st">"%B"</span>))</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(monate_index)</span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(monatsnamen)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-[0, 2976, 5664, 8636, 11516, 14492, 17372, 20348, 23324, 26204, 29184, 32064]
-['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']</code></pre>
-</div>
-</div>
-<div id="56f00bba" class="cell" data-results="hold" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plotten jedes 100. Werts</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>plotting_data[::<span class="dv">100</span>].plot(figsize <span class="op">=</span> (<span class="dv">9</span>, <span class="dv">8</span>), subplots <span class="op">=</span> <span class="va">True</span>, sharey <span class="op">=</span> <span class="va">True</span>, xlim <span class="op">=</span> (plotting_data.index.<span class="bu">min</span>() <span class="op">-</span> (<span class="bu">len</span>(plotting_data.index)) <span class="op">/</span> <span class="dv">100</span>, plotting_data.index.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.01</span>), rot <span class="op">=</span> <span class="dv">45</span>, grid <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>plt.minorticks_off()</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>plt.xticks(monate_index, monatsnamen)<span class="op">;</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="490ba499" class="cell" data-results="hold" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plotten jedes 100. Werts</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>plotting_data[::<span class="dv">100</span>].plot(figsize <span class="op">=</span> (<span class="dv">9</span>, <span class="dv">8</span>), subplots <span class="op">=</span> <span class="va">True</span>, sharey <span class="op">=</span> <span class="va">True</span>, xlim <span class="op">=</span> (plotting_data.index.<span class="bu">min</span>() <span class="op">-</span> (<span class="bu">len</span>(plotting_data.index)) <span class="op">/</span> <span class="dv">100</span>, plotting_data.index.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.01</span>), rot <span class="op">=</span> <span class="dv">45</span>, grid <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>plt.minorticks_off()</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>plt.xticks(monate_index, monatsnamen)<span class="op">;</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
 </div>
-<p>Eine vollständige Deckung der Netzlast durch erneuerbare Stromerzeugung ist nur selten der Fall. Zumeist ist die Restlast größer Null. Auf dieser Grundlage ist zu vermuten, dass die Pumpspeicher überwiegend durch nicht erneuerbare Stromerzeuger befüllt werden. Ob dies auch tatächlich der Fall ist, wird in der weiteren Analyse geprüft.</p>
+<p>Eine vollständige Deckung der Netzlast durch erneuerbare Stromerzeugung ist nur selten der Fall. Zumeist ist die Restlast größer Null. Somit ist bereits durch die graphische Darstellung zu vermuten, dass die Pumpspeicher überwiegend durch nicht erneuerbare Stromerzeuger befüllt werden. Ob dies auch tatächlich der Fall ist, wird in der weiteren Analyse geprüft.</p>
 <p>Zunächst aber eine kleine Aufgabe: <strong>Wie würde sich eine Verdopplung der erneuerbaren Erzeugung auf die Restlast auswirken? Stellen Sie den Effekt auf vergleichbare Weise grafisch dar (z. B. durch eine zusätzliche Spalte ‘Netzlast - 2 EE’).</strong></p>
 <div id="tip-verdopplung-EE" class="callout callout-style-default callout-tip callout-titled" title="Musterlösung Verdopplung EE">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1567,28 +1620,43 @@ Tip&nbsp;6: Musterlösung Verdopplung EE
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><strong>Ist schnell gemacht, aber optisch vielleicht etwas lieblos. Trotzdem ist das Ergebnis klar: Da könnte was gehen mit diesen “Erneuerbaren”.</strong></p>
 <p>To Do:</p>
 <ul>
 <li><p>grafisch aufhübschen</p></li>
 <li><p>fig-alt, fig-cap ergänzen</p></li>
 </ul>
-<div id="a4fb079c" class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE <span class="op">=</span> plotting_data.copy()</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Erneuerbare [MWh]"</span>] <span class="op">*</span> <span class="dv">2</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"Netzlast - 2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data_2EE[<span class="st">"2x EE"</span>]</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plotten jedes 100. Werts</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[::<span class="dv">100</span>].plot(figsize <span class="op">=</span> (<span class="dv">9</span>, <span class="dv">10</span>), subplots <span class="op">=</span> <span class="va">True</span>, sharey <span class="op">=</span> <span class="va">True</span>, xlim <span class="op">=</span> (plotting_data_2EE.index.<span class="bu">min</span>() <span class="op">-</span> (<span class="bu">len</span>(plotting_data_2EE.index)) <span class="op">/</span> <span class="dv">100</span>, plotting_data_2EE.index.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.01</span>), rot <span class="op">=</span> <span class="dv">45</span>, grid <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>plt.minorticks_off()</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>plt.xticks(monate_index, monatsnamen)<span class="op">;</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">Mögliche Interpretation</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div id="63712072" class="cell" data-execution_count="25">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Energiedatenauswertung_files/figure-html/cell-24-output-1.png" width="740" height="829" class="figure-img"></p>
+<p><img src="Energiedatenauswertung_files/figure-html/cell-26-output-1.png" width="751" height="390" class="figure-img"></p>
+<figcaption>Musterlösung Verdopplung EE</figcaption>
 </figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div id="0c8afc24" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE <span class="op">=</span> plotting_data.copy()</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Erneuerbare [MWh]"</span>] <span class="op">*</span> <span class="dv">2</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"Netzlast - 2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data_2EE[<span class="st">"2x EE"</span>]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE <span class="op">=</span> plotting_data_2EE[[<span class="st">"Netzlast [MWh]"</span>, <span class="st">"Netzlast - 2x EE"</span>]]</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plotten jedes 100. Werts</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[::<span class="dv">100</span>].plot(figsize <span class="op">=</span> (<span class="dv">9</span>, <span class="dv">6</span>), subplots <span class="op">=</span> <span class="va">True</span>, sharey <span class="op">=</span> <span class="va">True</span>, xlim <span class="op">=</span> (plotting_data_2EE.index.<span class="bu">min</span>() <span class="op">-</span> (<span class="bu">len</span>(plotting_data_2EE.index)) <span class="op">/</span> <span class="dv">100</span>, plotting_data_2EE.index.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.01</span>), rot <span class="op">=</span> <span class="dv">45</span>, grid <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>plt.minorticks_off()</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>plt.xticks(monate_index, monatsnamen)<span class="op">;</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<p>Die Netzlast abzüglich der verdoppelten erneuerbaren Stromerzeugung nähert sich einer symmetrischen Verteilung um die Nullinie an. Das heißt, Phasen erneuerbarer Über- und Unterproduktion halten sich ungefähr die Waage.</p>
 </div>
 </div>
 </div>
@@ -1598,33 +1666,54 @@ Tip&nbsp;6: Musterlösung Verdopplung EE
 </section>
 <section id="grundlastbetrieb-und-lastfolgebetrieb" class="level3">
 <h3 class="anchored" data-anchor-id="grundlastbetrieb-und-lastfolgebetrieb">Grundlastbetrieb und Lastfolgebetrieb</h3>
-<p>Allerdings sind aus technischen oder aus wirtschaftlichen Gründen nicht alle Erzeuger gleichermaßen für den Lastfolgebetrieb geeignet. Beispielsweise sind Kohlekraftwerke weniger flexibel regelbar als Gaskraftwerke.</p>
+<p>Nicht alle Erzeuer sind aus technischen oder aus wirtschaftlichen Gründen gleichermaßen für den Lastfolgebetrieb geeignet. Beispielsweise sind Kohlekraftwerke weniger flexibel regelbar als Gaskraftwerke. Kernkraftwerke werden aufgrund ihrer hohen Fix- und geringen variablen Kosten bevorzugt im Grundlastbetrieb betrieben.</p>
+<p>Die Auslastung eines Kraftwerks (bzw. einer Gruppe von Kraftwerken) kann mittels seiner Jahresvolllaststunden quantifiziert werden.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition Jahresvolllaststunden
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Jahresvolllaststunden geben an, wie viel der 8.760 Stunden eines Jahres ein Kraftwerk bei maximaler Leistung laufen müsste, um seine Jahresproduktion zu erzeugen. <a href="https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/">statista</a></p>
+<p><span class="math display">\[
+Jahresvollaststunden ~ in ~ h = \frac{Summe ~ erzeugten ~ Stroms ~ in ~ MWh}{installierte ~ Leistung ~ in ~ MW}
+\]</span></p>
+</div>
+</div>
+<p>Summe erzeugten Stroms MWh / installierte Leistung MW = h</p>
 <p>Erst mal für alle Erzeuger zeigen, dann für die nicht erneuerbaren (plotting_data_non_EE).</p>
 <ul>
 <li><p>Quantifizierung mit Jahresvolllaststunden</p></li>
 <li><p>Erzeugung im Jahresverlauf plotten –&gt; Abschaltung der AKW erkennen.</p></li>
 <li><p>die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)</p></li>
 </ul>
-<div id="4da8e6f4" class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># print(erzeugung.dtypes == np.number)</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(installierte_leistung.loc[: , <span class="bu">list</span>(erzeugung.dtypes <span class="op">==</span> np.number)].columns)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(erzeugung.loc[: , <span class="bu">list</span>(erzeugung.dtypes <span class="op">==</span> np.number)].columns)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="16aae8b3" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># print(erzeugung.dtypes == np.number)</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(erzeugung.loc[: , <span class="bu">list</span>(erzeugung.dtypes <span class="op">==</span> np.number)].columns) <span class="co"># die hier summieren</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(installierte_leistung.loc[: , <span class="bu">list</span>(erzeugung.dtypes <span class="op">==</span> np.number)].columns) <span class="co"># und durch die teilen</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">## kommt dabei die richtige Größe raus?</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Index(['Biomasse [MW]', 'Wasserkraft [MW]', 'Wind Offshore [MW]',
-       'Wind Onshore [MW]', 'Photovoltaik [MW]', 'Sonstige Erneuerbare [MW]',
-       'Kernenergie [MW]', 'Braunkohle [MW]', 'Steinkohle [MW]', 'Erdgas [MW]',
-       'Pumpspeicher [MW]', 'Sonstige Konventionelle [MW]'],
-      dtype='object')
-Index(['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]',
+<pre><code>Index(['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]',
        'Wind Onshore [MWh]', 'Photovoltaik [MWh]',
        'Sonstige Erneuerbare [MWh]', 'Kernenergie [MWh]', 'Braunkohle [MWh]',
        'Steinkohle [MWh]', 'Erdgas [MWh]', 'Pumpspeicher [MWh]',
        'Sonstige Konventionelle [MWh]'],
+      dtype='object')
+Index(['Biomasse [MW]', 'Wasserkraft [MW]', 'Wind Offshore [MW]',
+       'Wind Onshore [MW]', 'Photovoltaik [MW]', 'Sonstige Erneuerbare [MW]',
+       'Kernenergie [MW]', 'Braunkohle [MW]', 'Steinkohle [MW]', 'Erdgas [MW]',
+       'Pumpspeicher [MW]', 'Sonstige Konventionelle [MW]'],
       dtype='object')</code></pre>
 </div>
 </div>
 <p>In Volllast betriebene Erzeuger können den Grenzstrom nicht decken. Welche Erzeugungsleistung nehmen wir… erst mal gucken, ob Pumpspeicher gleichzeitig ein- und ausspeisen (sollte nicht so sein, ist aber möglich, wegen Regelzonen.)</p>
-<p>Grenzstrom: 2 Regime (EE-Überschuss, fossile Lastfolgebetrieb)</p>
+<p>Grenzstrom: 2 (3) Regime (EE-Überschuss, fossile Lastfolgebetrieb, Wenn Restlast kleiner gleich die Einspeisung in Pumpspeicher ist, kann der Anteil EE genau bestimmt werden.)</p>
 <pre><code>- Vorbereitung 1: Restlast bestimmen
 
   - Herkunft Pumpspeicherenergie grob abschätzen: in wie vielen Intervallen war die Restlast negativ
@@ -1641,8 +1730,9 @@ Index(['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]',
   
   - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)</code></pre>
 <p>Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überprüfen. <em>Befüllung der Pumpspeicher und die Restlast im Jahresgang anzeigen und anschließend nur die Werte zeigen, zu denen der Verbrauch der Pumpspeicher &gt; 0 ist</em></p>
-<p>Was rein kommt, ist, was raus kommt. Dabei sind 2 Regime zu unterscheiden: a) EE-Überschuss, b) fossiler Lastfolgebetrieb. Der Grenzstrom ist vermutlich fast immer fossil (wenn gerade keine Überproduktion an EE vorliegt.<br>
-<strong>–&gt; das gucken wir bei der explorativen Datenanalyse, in wie vielen Intervallen die Restlast negativ war</strong>)</p>
+<p>Was rein kommt, ist, was raus kommt. Dabei sind 3 Regime zu unterscheiden: a) EE-Überschuss, b) fossiler Lastfolgebetrieb, c) Restlast kleiner Verbrauch Pumpspeicher (= Mischung aus a) und b)). Der Grenzstrom ist vermutlich fast immer fossil (wenn gerade keine Überproduktion an EE vorliegt).<br>
+<strong>–&gt; das gucken wir bei der explorativen Datenanalyse, in wie vielen Intervallen die Restlast negativ war</strong><br>
+<strong>Hinweis: ökologischer Fehlschluss möglich, da mit Salden für das Gesamtnetz gerechnet wird, die Regelzonen aber kleinteiliger organisiert sind und die physischen Stromflüsse unbekannt sind.</strong></p>
 </section>
 </section>
 </section>
