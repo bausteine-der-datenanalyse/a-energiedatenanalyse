@@ -26,6 +26,8 @@ format:
     cite-method: biblatex
     biblio-title: Quellen
     default-image-extension: pdf # Vektorgrafiken werden als PDF eingebunden / vector grafics are embedded as PDF
+execute:
+  cache: true # remove when document is finished as cache: true can cause issues from time to time
 
 ## Inhaltsverzeichnis / table of contents
 toc: true
@@ -742,7 +744,7 @@ gesamten Realisierten Stromverbrauch, abzüglich der Einspeisung von Photovoltai
 
 &nbsp;
 
-Die nicht durch erneuerbare Energien bediente Restlast ist die Differenz aus Stromverbrauch und Erzeugung durch erneuerbare Energien. Die Restlast ist folglich kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast. Residual- und Restlast können aus der Differenz von Netzlast und der jeweiligen erneuerbaren Stromerzeugung berechnet werden.
+Die nicht durch erneuerbare Energien bediente Restlast ist die Differenz aus Stromverbrauch und der Erzeugung durch erneuerbare Energien. Die Restlast ist folglich kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast. Residual- und Restlast können aus der Differenz von Netzlast und der entsprechenden erneuerbaren Stromerzeugung berechnet werden.
 
 ```{python}
 
@@ -794,14 +796,15 @@ Die Netzlast, die Erzeugung durch erneuerbare Energien sowie die Residual- und R
 #| include: false
 #| results: hold # process code first, then print output
 
-# Position und Inhalt der x-Achsenbeschriftung finden
-monate = erzeugung["Datum von"].dt.month.unique().tolist() # gibt die Zahlen 1-12 aus
-
 ## mit Pandas
 monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
 monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
 
 ## alternativ mit einer Listenoperation
+
+### Position und Inhalt der x-Achsenbeschriftung finden
+# monate = erzeugung["Datum von"].dt.month.unique().tolist() # gibt die Zahlen 1-12 aus
+
 # monate_index = []
 # monatsnamen = []
 
@@ -864,11 +867,6 @@ Eine vollständige Deckung der Netzlast durch erneuerbare Stromerzeugung ist nur
 Zunächst aber eine kleine Aufgabe: **Wie würde sich eine Verdopplung der erneuerbaren Erzeugung auf die Restlast auswirken? Stellen Sie den Effekt auf vergleichbare Weise grafisch dar (z. B. durch eine zusätzliche Spalte 'Netzlast - 2 EE').**
 
 ::: {#tip-verdopplung-EE .callout-tip title="Musterlösung Verdopplung EE" collapse="true"}
-To Do:
-
-  - grafisch aufhübschen
-
-  - fig-alt, fig-cap ergänzen
 
 :::: {.panel-tabset}
 
@@ -918,9 +916,208 @@ Die Auslastung eines Kraftwerks (bzw. einer Gruppe von Kraftwerken) kann mittels
 Die Jahresvolllaststunden geben an, wie viel der 8.760 Stunden eines Jahres ein Kraftwerk bei maximaler Leistung laufen müsste, um seine Jahresproduktion zu erzeugen. [statista](https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/)
 
 $$
-Jahresvollaststunden ~ in ~ h = \frac{Summe ~ erzeugten ~ Stroms ~ in ~ MWh}{installierte ~ Leistung ~ in ~ MW}
+Jahresvolllaststunden ~ in ~ h = \frac{Summe ~ erzeugten ~ Stroms ~ in ~ MWh}{installierte ~ Leistung ~ in ~ MW}
 $$
 :::
+
+Die Jahresvolllaststunden können wie folgt berechnet werden. Die Anwendung der Methode `.sum` auf den Datensatz installierte_leistung ist nicht erforderlich, da dieser nur eine Zeile hat. Die Methode `.sum` erlaubt es aber, über den Parameter `numeric_only = True`  die Datumsspalten auszuschließen.  
+**f-string Formatierung .2f geht leider nicht mit pd.Series: TypeError: unsupported format string passed to function .__format__**  
+**Einfache Division SeriesA / SeriesB funktioniert nicht, möglicherweise weil die Spaltennamen nicht übereinstimmen. Deshalb muss der Index für beide Series mit der Methode .reset_index(drop = True) zurückgesetzt und manuell nachgetragen werden.**
+```{python}
+# print(f"{erzeugung.sum(numeric_only = True)}\n")
+# print(installierte_leistung.sum(numeric_only = True), "\n")
+
+# Für die Division müssen die Indizes zurücksetzt werden
+jahresvolllaststunden = erzeugung.sum(numeric_only = True).reset_index(drop = True).divide(installierte_leistung.sum(numeric_only = True).reset_index(drop = True))
+
+# Index neu setzen
+jahresvolllaststunden.index = erzeugung.sum(numeric_only = True).index.str.replace(pat = " [MWh]", repl = " [h]")
+
+print(f"\n\nJahresvolllaststunden\n\n{jahresvolllaststunden.sort_values(ascending = False)}")
+
+```
+
+Die Berechnung der Jahresstunden zeigt, dass kein Kraftwerkstyp auch nur annähernd in Volllast lief. Die höchste Auslastung weisen Biomasse und Braunkohle auf. Biomasse ist umgerechnet in 51 Prozent der 8760 Jahresstunden in Volllast gelaufen, Braunkohle in 50 Prozent. Demgegenüber erreichten die klassischen Grundlasterzeuger Steinkohle und Kernenergie nur 25 Prozent bzw. 19 Prozent. Das Jahr 2023 war insbesondere für die Kernenergie ein ungewöhnliches Jahr, wie der Vergleich zu den erreichten Jahresvolllaststunden im Jahr 2021 zeigt [statista](https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/). 2021 erreichte Kernenergie mit 8.070 Jahresvolllaststunden beinahe einen durchgehenden Volllastbetrieb.
+
+Deshalb wird der Jahresgang ausgewählter konventioneller Erzeuger dargestellt. Für eine höhere Auflösung wird eine Darstellung auf Monatsbasis gewählt.  **... für eine hohe Auflösung in Monatsauflösung?!** **KKW: Streckbetrieb**
+**Steinkohle wird wie Erdgas gefahren**  
+**es wäre nett, Phasen des EE-Überschusses farblich zu hinterlegen (mit einem flotten Grau)**
+
+::: {.panel-tabset}
+
+## Beispielcode Kernenergie
+```{python}
+#| output: false
+#| fig-cap: Jahresgang Kernenergie
+#| fig-alt: "Für jeden Monat stellen 12 Teilgrafiken die Stromerzeugung durch Kernenergie dar. Während die Produktion von Januar bis März in einem engen Band bleibt, sinkt diese am 15. April auf Null."
+plotting_data = erzeugung.copy()
+
+erzeuger = "Kernenergie"
+
+fig = plt.figure(figsize = (8, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+for i in range(1, 13):
+  plotting_data_monthly = plotting_data[plotting_data['Datum von'].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MWh")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+```
+
+## Kernenergie
+```{python}
+#| echo: false
+#| fig-cap: Jahresgang Kernenergie
+#| fig-alt: "Für jeden Monat stellen 12 Teilgrafiken die Stromerzeugung durch Kernenergie dar. Während die Produktion von Januar bis März in einem engen Band bleibt, sinkt diese am 15. April auf Null."
+plotting_data = erzeugung.copy()
+
+erzeuger = "Kernenergie"
+
+fig = plt.figure(figsize = (8, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+for i in range(1, 13):
+  plotting_data_monthly = plotting_data[plotting_data['Datum von'].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MWh")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+```
+
+## Braunkohle
+```{python}
+#| echo: false
+#| fig-cap: Jahresgang Braunkohle
+#| fig-alt: "Der Jahresgang der Stromerzeugung durch Braunkohle wird monatsweise in 12 Grafiken gezeigt. Der Jahresgang ist durch starke Bewegungen gekennzeichnet. Phasen der Volllastproduktion im Bereich von 4000 MWh je Viertelstunde werden nur selten über Perioden von einer Woche gefahren. Häufig werden die Produktionsspitzen nur stundenweise erreicht, um anschließend die Produktion teils stark zu drosseln. Geringe Produktionsniveaus im Bereich von 1000 MWh je Viertelstunde sind keine Seltenheit."
+plotting_data = erzeugung.copy()
+
+erzeuger = "Braunkohle"
+
+fig = plt.figure(figsize = (8, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+for i in range(1, 13):
+  plotting_data_monthly = plotting_data[plotting_data['Datum von'].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MWh")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+```
+
+## Steinkohle
+```{python}
+#| echo: false
+#| fig-cap: Jahresgang Steinkohle
+#| fig-alt: "Der Jahresgang der Stromerzeugung durch Steinkohle wird monatsweise in 12 Grafiken gezeigt. Die Produktionsspitzen erreichen nur selten 3000 MWh je Viertelstunde und dauern nur wenige Stunden an. Es dominieren untertägige An- und Runterfahrzyklen. Häufig sind auch Phasen niedriger Produktion im Bereich von 1000 MWh."
+plotting_data = erzeugung.copy()
+
+erzeuger = "Steinkohle"
+
+fig = plt.figure(figsize = (8, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+for i in range(1, 13):
+  plotting_data_monthly = plotting_data[plotting_data['Datum von'].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MWh")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+```
+
+## Erdgas
+```{python}
+#| echo: false
+#| fig-cap: Jahresgang Erdgas
+#| fig-alt: "Der Jahresgang der Stromerzeugung durch Erdgas wird monatsweise in 12 Grafiken gezeigt. Der Jahresgang von Erdgas ähnelt der von Steinkohle, wenngleich auf einem deutlich niedrigeren Produktionsniveau. Obwohl die installierte Leistung der Gaskraftwerke um ein Dreiviertel höher ist als die der Braun- und Steinkohlekraftwerke, werden auf Viertelstundenbasis in der Spitze nur 4000 MWh produziert. Typisch sind jedoch Produktionsniveaus unterhalb von 2000 MWh, häufig auch deutlich unterhalb von 1000 MWh."
+plotting_data = erzeugung.copy()
+
+erzeuger = "Erdgas"
+
+fig = plt.figure(figsize = (8, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+for i in range(1, 13):
+  plotting_data_monthly = plotting_data[plotting_data['Datum von'].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MWh")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+```
+
+:::
+
+rausfinden, warum das nicht geht:
+
+```
+# xticks auf Monatsbasis anlegen geht
+  # monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+  # monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# xticks auf Tagesbasis anlegen geht nicht
+  # tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+  # tagesnamen = plotting_data_monthly["Datum von"].iloc[tage_index].dt.strftime("%d")
+    # Ersatz: tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+```
+
+**Überraschend läuft eigentlich kein Erzeuger in Grundlast, sondern die bedeutenden konventiellen Erzeuger werden mit Ausnahme der Kernergie mehr oder weniger wie Erdgas im Lastfolgebetrieb gefahren. Der Grundlastbetrieb ist 2023, streng wissenschaftlich gesprochen, tot!**  
+**Man könnte noch in jeden Graph die Restlast einzeichnen.**
+
+```
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
+
+plotting_data = pd.DataFrame()
+plotting_data["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
+plotting_data["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
+
+plotting_data["Restlast [MWh]"] = plotting_data["Netzlast [MWh]"] - plotting_data["Erneuerbare [MWh]"]
+
+```
 
 Erst mal für alle Erzeuger zeigen, dann für die nicht erneuerbaren (plotting_data_non_EE).
 
@@ -929,20 +1126,6 @@ Erst mal für alle Erzeuger zeigen, dann für die nicht erneuerbaren (plotting_d
   - Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
       
   - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)
-
-```{python}
-
-
-# print(erzeugung.dtypes == np.number)
-print(erzeugung.loc[: , list(erzeugung.dtypes == np.number)].columns) # die hier summieren
-
-print(installierte_leistung.loc[: , list(erzeugung.dtypes == np.number)].columns) # und durch die teilen
-
-## kommt dabei die richtige Größe raus?
-
-
-
-```
 
 
 In Volllast betriebene Erzeuger können den Grenzstrom nicht decken.
