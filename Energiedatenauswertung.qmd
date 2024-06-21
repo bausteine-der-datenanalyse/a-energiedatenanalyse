@@ -782,7 +782,6 @@ Somit kann die redundante Spalte entfernt werden.
 #| results: hold # process code first, then print output
 
 plotting_data.drop(['Residuallast BNetzA [MWh]'], axis = 'columns', inplace = True)
-
 ```
 
 
@@ -821,7 +820,8 @@ monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B")
 #| fig-alt: "Gemeinsame Darstellung in fünf übereinander angeordneten Teilgrafiken 1. der Netzlast, 2. der kumulierten Erzeugung durch Photovoltaik, Wind Onshore und Wind Offshore, 3. der kumulierten Erzeugung durch erneuerbare Energien, 4. der Residuallast und der 5. Restlast im Jahresverlauf."
 
 # plotten jedes 100. Werts
-plotting_data[::100].plot(figsize = (9, 8), subplots = True, sharey = True, xlim = (plotting_data.index.min() - (len(plotting_data.index)) / 100, plotting_data.index.max() * 1.01), rot = 45, grid = True)
+plotting_data[::100].plot(figsize = (9, 8), subplots = True, sharey = True, xlim = (plotting_data.index.min() - (len(plotting_data.index) / 100), plotting_data.index.max() * 1.01), rot = 45, grid = True)
+plt.ylim(top = 20000)
 plt.minorticks_off()
 plt.xticks(monate_index, monatsnamen);
 
@@ -854,7 +854,8 @@ monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B")
 #| results: hold # process code first, then print output
 
 # plotten jedes 100. Werts
-plotting_data[::100].plot(figsize = (9, 8), subplots = True, sharey = True, xlim = (plotting_data.index.min() - (len(plotting_data.index)) / 100, plotting_data.index.max() * 1.01), rot = 45, grid = True)
+plotting_data[::100].plot(figsize = (9, 8), subplots = True, sharey = True, xlim = (plotting_data.index.min() - (len(plotting_data.index) / 100), plotting_data.index.max() * 1.01), rot = 45, grid = True)
+plt.ylim(top = 20000)
 plt.minorticks_off()
 plt.xticks(monate_index, monatsnamen);
 
@@ -862,7 +863,12 @@ plt.xticks(monate_index, monatsnamen);
 
 :::
 
-Eine vollständige Deckung der Netzlast durch erneuerbare Stromerzeugung ist nur selten der Fall. Zumeist ist die Restlast größer Null. Somit ist bereits durch die graphische Darstellung zu vermuten, dass die Pumpspeicher überwiegend durch nicht erneuerbare Stromerzeuger befüllt werden. Ob dies auch tatächlich der Fall ist, wird in der weiteren Analyse geprüft.
+Es ist zu erkennen, dass die Netzlast dauerhaft oberhalb von 9000 MWh liegt. Darüber hinausgehend schwankt die Netzlast im Monatsgang stark. In jedem Monat werden Leistungen nahe des absolumten Minimums und Maximums erreicht. Im Sommer ist die Netzlast im Allgemeinen etwas niedriger als im Winter.  
+Die Stromerzeugung durch erneuerbare Energien ist stark volatil. Phasen hoher Produktion wechseln sich mit Phasen geringer Produktion ab und dauern jeweils nur einige Tage und höchstens für zwei Wochen an. Dies geht maßgeblich auf die Stromerzeugung durch Photovoltaik und Off- und Onshore Wind zurück, deren deutschlandweit kombinierte Erzeugungsleistung häufig nahe Null liegt, um anschließend ein (lokales) Produktionsmaximum zu erreichen. Die zusätzliche Einspeisung weniger volatiler erneuerbarer Energien wie Biomasse und Wasserkraft vergleichsweise gering, sodass auch die über alle Erzeugungsformen summierte erneuerbare Stromerzeugung zwar nie Null, häufig aber eine geringe Gesamtleistung erreicht. Gleichwohl gibt es auch kurze Phasen erneuerbarer Vollversorgung bzw. Überschussproduktion, wie am Jahresgang der nicht erneuerbaren Restlast abzulesen ist. 
+
+Für die Frage nach der Herkunft des in den Pumpspeicherkraftwerken gespeicherten Stroms kann bereits durch die graphische Darstellung gefolgert werden, dass dieser überwiegend durch nicht erneuerbare Stromerzeuger erzeugt wurde, da die Restlast nur selten Null oder negativ ist.
+
+Der Jahresgang der Restlast gleicht dem Erzeugungsverlauf der volatilen erneuerbaren Energien. Dies stellt für die konventionellen Kraftwerke eine Herausforderung dar. Dieser Aspekt wird im nächsten Abschnitt vertieft. 
 
 Zunächst aber eine kleine Aufgabe: **Wie würde sich eine Verdopplung der erneuerbaren Erzeugung auf die Restlast auswirken? Stellen Sie den Effekt auf vergleichbare Weise grafisch dar (z. B. durch eine zusätzliche Spalte 'Netzlast - 2 EE').**
 
@@ -905,8 +911,22 @@ Die Netzlast abzüglich der verdoppelten erneuerbaren Stromerzeugung nähert sic
 ::::
 :::
 
-### Grundlastbetrieb und Lastfolgebetrieb
-Nicht alle Erzeuer sind aus technischen oder aus wirtschaftlichen Gründen gleichermaßen für den Lastfolgebetrieb geeignet. Beispielsweise sind Kohlekraftwerke weniger flexibel regelbar als Gaskraftwerke. Kernkraftwerke werden aufgrund ihrer hohen Fix- und geringen variablen Kosten bevorzugt im Grundlastbetrieb betrieben.
+### Hintergrund: Grund-, Mittel und Spitzenlast
+Nicht alle Erzeuer sind aus technischen oder aus wirtschaftlichen Gründen gleichermaßen für den Lastfolgebetrieb geeignet. Beispielsweise sind Kohlekraftwerke weniger flexibel regelbar als Gaskraftwerke. Kernkraftwerke werden aufgrund ihrer hohen Fix- und geringen variablen Kosten bevorzugt im Grundlastbetrieb betrieben. Im Stromnetz werden drei Einsatzprofile für Kraftwerke unterschieden: Grundlast, Mittellast und Spitzenlast.
+
+::: {.callout-important}
+## Definition Grund-, Mittel- und Spitzenlast
+
+  * Grundlast: Die im Jahresgang dauerhaft nachgefragte Leistung.  
+    Kraftwerkstypen: Braunkohle, Kernkraft, Laufwasser 
+
+  * Mittellast: Über die Grundlast hinausgehende, im Tages- und Jahresgang planbar nachgefragte Leistung.  
+    Kraftwerkstypen: Gas-und-Dampfturbinen-Kraftwerk, Steinkohle
+
+  * Spitzenlast: Über die Mittellast hinausgehende, im Tages- und Jahresgang nur kurzzeitig oder ungeplant nachgefragte Leistung.  
+    Kraftwerkstypen: Gaskraftwerke, Pumpspeicherkraftwerke
+
+::: 
 
 Die Auslastung eines Kraftwerks (bzw. einer Gruppe von Kraftwerken) kann mittels seiner Jahresvolllaststunden quantifiziert werden.
 
@@ -918,10 +938,10 @@ Die Jahresvolllaststunden geben an, wie viel der 8.760 Stunden eines Jahres ein 
 $$
 Jahresvolllaststunden ~ in ~ h = \frac{Summe ~ erzeugten ~ Stroms ~ in ~ MWh}{installierte ~ Leistung ~ in ~ MW}
 $$
+
 :::
 
 Die Jahresvolllaststunden können wie folgt berechnet werden. Die Anwendung der Methode `.sum` auf den Datensatz installierte_leistung ist nicht erforderlich, da dieser nur eine Zeile hat. Die Methode `.sum` erlaubt es aber, über den Parameter `numeric_only = True`  die Datumsspalten auszuschließen.  
-**f-string Formatierung .2f geht leider nicht mit pd.Series: TypeError: unsupported format string passed to function .__format__**  
 **Einfache Division SeriesA / SeriesB funktioniert nicht, möglicherweise weil die Spaltennamen nicht übereinstimmen. Deshalb muss der Index für beide Series mit der Methode .reset_index(drop = True) zurückgesetzt und manuell nachgetragen werden.**
 ```{python}
 # print(f"{erzeugung.sum(numeric_only = True)}\n")
@@ -937,10 +957,10 @@ print(f"\n\nJahresvolllaststunden\n\n{jahresvolllaststunden.sort_values(ascendin
 
 ```
 
-Die Berechnung der Jahresstunden zeigt, dass kein Kraftwerkstyp auch nur annähernd in Volllast lief. Die höchste Auslastung weisen Biomasse und Braunkohle auf. Biomasse ist umgerechnet in 51 Prozent der 8760 Jahresstunden in Volllast gelaufen, Braunkohle in 50 Prozent. Demgegenüber erreichten die klassischen Grundlasterzeuger Steinkohle und Kernenergie nur 25 Prozent bzw. 19 Prozent. Das Jahr 2023 war insbesondere für die Kernenergie ein ungewöhnliches Jahr, wie der Vergleich zu den erreichten Jahresvolllaststunden im Jahr 2021 zeigt [statista](https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/). 2021 erreichte Kernenergie mit 8.070 Jahresvolllaststunden beinahe einen durchgehenden Volllastbetrieb.
+Die Berechnung der Jahresstunden zeigt, dass kein Kraftwerkstyp auch nur annähernd in Volllast lief. Die höchste Auslastung weisen Biomasse und Braunkohle auf. Biomasse ist umgerechnet in 51 Prozent der 8760 Jahresstunden in Volllast gelaufen, Braunkohle in 50 Prozent. Demgegenüber erreichte der klassische Grundlasterzeuger Kernenergie nur 25 Prozent. Die in Deutschland hauptsächlich für den Mittellastbetrieb eingesetzte Steinkohle erreichte 19 Prozent. Das Jahr 2023 war insbesondere für die Kernenergie ein ungewöhnliches Jahr, wie der Vergleich zu den erreichten Jahresvolllaststunden im Jahr 2021 zeigt [statista](https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/). 2021 erreichte Kernenergie mit 8.070 Jahresvolllaststunden beinahe einen durchgehenden Volllastbetrieb.
 
-Deshalb wird der Jahresgang ausgewählter konventioneller Erzeuger dargestellt. Für eine höhere Auflösung wird eine Darstellung auf Monatsbasis gewählt.  **... für eine hohe Auflösung in Monatsauflösung?!** **KKW: Streckbetrieb**
-**Steinkohle wird wie Erdgas gefahren**  
+Deshalb wird der Jahresgang ausgewählter konventioneller Erzeuger dargestellt. Um eine hohe Auflösung zu erreichen, wird eine Darstellung auf Monatsbasis gewählt.
+**Steinkohle wird wie Erdgas gefahren --> Jahresdauerlinie Braun-, Steinkohle und Gas (übereinanderlegen?!).**  
 **es wäre nett, Phasen des EE-Überschusses farblich zu hinterlegen (mit einem flotten Grau)**
 
 ::: {.panel-tabset}
@@ -1090,8 +1110,7 @@ for i in range(1, 13):
 plt.tight_layout()
 ```
 
-:::
-
+## To Do
 rausfinden, warum das nicht geht:
 
 ```
@@ -1105,7 +1124,39 @@ rausfinden, warum das nicht geht:
     # Ersatz: tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
 ```
 
-**Überraschend läuft eigentlich kein Erzeuger in Grundlast, sondern die bedeutenden konventiellen Erzeuger werden mit Ausnahme der Kernergie mehr oder weniger wie Erdgas im Lastfolgebetrieb gefahren. Der Grundlastbetrieb ist 2023, streng wissenschaftlich gesprochen, tot!**  
+:::
+
+Im Reiter Kernenergie ist zu erkennen, dass 2023 die letzten deutschen Atomkraftwerke Emsland, Isar 2 und Neckarwestheim 2 vom Netz genommen wurden. Für diese wurde im Herbst 2022 ein zusätzlicher Streckbetrieb beschlossen. [BMWK](https://www.bmwk.de/Redaktion/DE/Pressemitteilungen/2023/04/20230413-deutschland-beendet-das-zeitalter-der-atomkraft.html)
+
+**Bis zu welchem Tag wurde der Streckbetrieb genehmigt? Bestimmen Sie den Zeitpunkt der Abschaltung anhand des Datensatzes erzeugung. Geben Sie den Zeitpunkt über die Spalte 'Datum bis' in deutscher Datumsformtierung `TT. Monat YYYY um HH:MM Uhr' aus.**
+
+::: {#tip-abschaltung-akw .callout-tip title="Lösungshinweis und Musterlösung" collapse="true"}
+## Lösungshinweis
+Mit der Abschaltung erreichte die Stromproduktion durch Kernenergie den Wert 0. Die Abschaltung wurde in der Periode vollendet, die der ersten Periode mit der Stromproduktion durch Kernenergie mit dem Wert 0 vorausging.
+
+Die Ausgabe einer als datetime formatierten Spalten können Sie mit der Methode `[pandas.Series.dt.strftime](https://pandas.pydata.org/docs/reference/api/pandas.Series.dt.strftime.html)` formatieren.
+
+:::: {#tip-abschaltung-akw .callout-tip title="Musterlösung" collapse="true"}
+
+In der graphischen Darstellung des Jahresgangs wurde nur jeder 100. Wert geplottet, sodass es möglich ist, dass die Stromerzeugung bereits vor der endgültigen Abschaltung den Wert Null erreichte. Es ist deshalb zuverlässiger, den Datensatz rückwärts zu durchsuchen. 
+
+In der Vorwärtssuche wird mit der Methode `.eq()`die Position des ersten Auftretens des Werts 0 bestimmt und 1 subtrahiert. In der Rückwärtssuche wird mit der Methode `.gt()` die Position des ersten Werts bestimmt, der größer als 0 ist. 
+
+```{python}
+
+print(f"Vorwärtssuche: erzeugung['Kernenergie [MWh]'].eq(0).idxmax() - 1\n{erzeugung['Kernenergie [MWh]'].eq(0).idxmax() - 1}\n")
+
+# rückwärts
+print(f"Rückwärtssuche: position := erzeugung['Kernenergie [MWh]'].iloc[::-1].gt(0).idxmax()\n{ ( position := erzeugung['Kernenergie [MWh]'].iloc[::-1].gt(0).idxmax() ) }\n")
+
+print(f"erzeugung['Datum bis'].iloc[position].strftime('%d. %B %Y um %H:%M Uhr')\n{erzeugung['Datum bis'].iloc[position].strftime('%d. %B %Y um %H:%M Uhr')}")
+```
+
+::::
+:::
+
+Berechnung der Jahresvolllaststunden und Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt. 
+hierhier
 **Man könnte noch in jeden Graph die Restlast einzeichnen.**
 
 ```
@@ -1142,7 +1193,7 @@ Grenzstrom: 2 (3) Regime (EE-Überschuss, fossile Lastfolgebetrieb, Wenn Restlas
 
         - Wenn Restlast 0 oder negativ = Befüllung mit EE, wenn Restlast > 0 = Befüllung mit Lastfolgeerzeugern
 
-    - Vorbereitung 2: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? (Standardabweichung brauchbar?! Optisch? Abweichung von einer Geraden?)
+    - Vorbereitung 2: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? **Grundlast ist tot.**
 
       - Quantifizierung mit Jahresvolllaststunden
 
@@ -1166,9 +1217,6 @@ Viele Zahlen in diesem Artikel: https://www.msn.com/de-de/finanzen/top-stories/e
 
      - Link zur Grafik mit verschiedenen Szenarien: <https://energy-charts.info/charts/remod_installed_power/chart.htm?l=de&c=DE&source=storage#scenarios>
 
-## Übungen beschreibende Statistik
-2023 wurden die letzten deutschen Atomkraftwerke Emsland, Isar 2 und Neckarwestheim 2 vom Netz genommen. Wann begann die Abschaltung der deutschen Atomkraftwerke? Wie lange hat der Prozess gedauert?  
-**Ermittlung mit Slicing und datetime-Operationen**
 
 * Das Wichtigste (vielleicht als Video)
 
@@ -1181,8 +1229,10 @@ Viele Zahlen in diesem Artikel: https://www.msn.com/de-de/finanzen/top-stories/e
 * Prüfungsaufgaben (ohne Lösungen)
 
 # Das Wichtigste
-Datensätze kontrollieren, plausibiliseren und visualisieren
+Datensätze kontrollieren, plausibiliseren und visualisieren --> das meiste erkennt man visuell, die Quantifizierung mit Kennzahlen ist eine wichtige Ergänzung (kann alleine aber irreführen [Beispiel: Abschaltung KKW]) 
 --> Am Beispiel der Pumpspeicher hat man gesehen, das Datensätze unerwartet zusammengestellt sein können. (Berücksichtigung von Einspeisung aus Pumpspeicherkraftwerken im Datensatz Stromerzeugung.)
 --> deskritive und explorative Statistik sowie Visualisierungstechniken sind wichtige Instrumente, um Datensätze "zu verstehen" und ggf. Fehler oder Eigenheiten zu bereinigen.
 
 --> Erzeugung und Verbrauch durch Pumpspeicher müssten für eine weitergehende Erzeugungsanalyse bereinigt werden: Realisierte Einspeisung ist anderen Energieträgern zuzuschreiben; Verbrauch = Realisierter Verbrauch - Realisierte Einspeisung. 
+
+Berechnung der Jahresvolllaststunden und Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt. 
