@@ -118,11 +118,11 @@ Das Datumsformat der Dateien ist abhängig von der auf der Internetseite eingest
 
 Die semikolonseparierten Dateien werden als DataFrame mit dem Python Modul Pandas eingelesen, das mit dem Kürzel `pd` importiert wird. Dazu wird die Funktion `pd.read_csv()` verwendet. Dabei werden:
 
-  * das Zeichen-, Tausender- und Dezimaltrennzeichen spezifiziert.  
+  * das Wert-, Tausender- und Dezimaltrennzeichen spezifiziert.  
   `sep = ";", thousands = ".", decimal = ","`
 
   * die Spalten mit Datums- und Zeitangaben sowie das Datumsformat bestimmt.  
-  `parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M"` 
+  `parse_dates = [0, 1], date_format = "%d.%m.%Y %H:%M"` 
 
 ```{python}
 #| output: false
@@ -136,17 +136,17 @@ import matplotlib.pyplot as plt
 installierte_leistung0 = pd.read_csv(filepath_or_buffer = \
 "skript/01-daten/Installierte_Erzeugungsleistung_202301010000_202401010000_Jahr.csv", \
 sep = ";", thousands = ".", decimal = ",", \
-parse_dates =  [0, 1], date_format = "%d.%m.%Y")
+parse_dates = [0, 1], date_format = "%d.%m.%Y")
 
 erzeugung0 = pd.read_csv(filepath_or_buffer = \
 "skript/01-daten/Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv", \
 sep = ";", thousands = ".", decimal = ",", \
-parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+parse_dates = [0, 1], date_format = "%d.%m.%Y %H:%M")
 
 verbrauch0 = pd.read_csv(filepath_or_buffer = \
 "skript/01-daten/Realisierter_Stromverbrauch_202301010000_202401010000_Viertelstunde.csv", \
 sep = ";", thousands = ".", decimal = ",", \
-parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+parse_dates = [0, 1], date_format = "%d.%m.%Y %H:%M")
 ```
 
 Sehen Sie sich die Zeichenkette zur Spezifikation des Datumsformats an: `"%d.%m.%Y %H:%M"`. Können Sie anhand der [Dokumentation](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior) bestimmen, welches Format die Datumsangaben in der Datei haben? Welches Format hat der 14. April 2023 um Viertel nach zwei nachmittags?  
@@ -302,7 +302,7 @@ installierte_leistung = installierte_leistung0.copy()
 # Beschreibende Datenanalyse
 Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und analytischen Datenanalyse vertieft werden.
 
-Einen ersten Überblick über die Daten liefert die Methode `pd.DataFrame.describe()`. Durch das Argument `include = [np.number]` kann die Ausgabe auf Spalten mit numerischen Daten beschränkt, also die Spalten mit Datumsinformationen ausgeschlossen, werden.
+Einen ersten Überblick über die Daten liefert die Methode `pd.DataFrame.describe()`. Durch das Argument `include = [np.number]` kann die Ausgabe auf Spalten mit numerischen Daten beschränkt werden, das heißt, die Spalten mit Datumsinformationen werden ausgeschlossen.
 
 ```{python}
 #| output: true
@@ -325,7 +325,7 @@ Die Auswertung der beschreibenden Statistik für 12 verschiedene Erzeugungsforme
 
 Einen schnellen Überblick beispielsweise über die Verteilung der Gesamterzeugungsleistung nach Erzeugungsart verschafft ein Kreis- bzw. Ringdiagramm. Allerdings hat dieser Diagrammtyp, wie im **Methodenbaustein Grundlagen der Statistik (Kapitel 2 einzelne Merkmale)** erläutert, den Nachteil, dass dieser mit steigender Anzahl von Merkmalsausprägungen (bzw. hier darzustellenden Merkmalen) schnell unübersichtlich wird und Winkel kaum exakt abgelesen werden können.
 
-Im folgenden, mit der Methode `pd.DataFrame.plot.pie()` erstellten Ringdiagramm wurde deshalb zum einen die automatische Annotation der Anteilswerte mit dem entsprechenden Formatierungsstring `autopct='%1.1f%%'` aktiviert. Zum anderen wurde die Reihenfolge der Spalten im DataFrame getauscht, da sich die Prozentangaben und Beschriftungen kleiner Kreissegmente andernfalls überlappen. Außerdem wurde für die Beschriftung der Segmente die Zeichkette " [MWh]" aus den Spaltennamen gekürzt. Dies verbessert zwar die Lesbarkeit des Diagramms. Das ist aber nicht der Grund, aus dem die Zeichenkette entfernt wurde. **Was denken Sie, was der Grund dafür ist?**
+Im folgenden, mit der Methode `pd.DataFrame.plot.pie()` erstellten Ringdiagramm wurde deshalb zum einen die automatische Annotation der Anteilswerte mit dem entsprechenden Formatierungsstring `autopct='%1.1f%%'` aktiviert. Zum anderen wurde die Reihenfolge der Spalten im DataFrame getauscht, da sich die Prozentangaben und Beschriftungen kleiner Kreissegmente andernfalls überlappen. Außerdem wurde für die Beschriftung der Segmente die Zeichkette " [MWh]" aus den Spaltennamen gekürzt. Dies verbessert zwar die Lesbarkeit des Diagramms. Das ist aber nicht der Grund, weshalb die Zeichenkette entfernt wurde. **Was denken Sie, was der Grund dafür ist?**
 
 :::{#tip-Ringdiagramm .callout-tip collapse="true" title="Lösung Kreisdiagramm"}
 Das Kreis- bzw. Ringdiagramm stellt Anteilswerte dar und ist deshalb einheitenlos.
@@ -343,7 +343,7 @@ Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen.
 #| fig-cap: Anteil an der Stromerzeugung
 #| fig-alt: "In einem Ringdiagramm sind die Anteile verschiedener Erzeugungsarten an der Stromerzeugung dargestellt. Die Kreissegmente sind nicht nach Größe sortiert, sondern so angeordnet, dass sich die Beschriftung der Segmente nicht überlappt."
 
-# plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]
+# plot the pie first try - Sonstige Erneuerbare [MWh] overlaps with Kernenergie [MWh] and Pumpspeicher [MWh]
 # erzeugung.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = True, explode = explosion)
 
 # rearrange columns, remove " [MWh]"
@@ -863,14 +863,14 @@ plt.xticks(monate_index, monatsnamen);
 
 :::
 
-Es ist zu erkennen, dass die Netzlast dauerhaft oberhalb von 9000 MWh liegt. Darüber hinausgehend schwankt die Netzlast im Monatsgang stark. In jedem Monat werden Leistungen nahe des absolumten Minimums und Maximums erreicht. Im Sommer ist die Netzlast im Allgemeinen etwas niedriger als im Winter.  
-Die Stromerzeugung durch erneuerbare Energien ist stark volatil. Phasen hoher Produktion wechseln sich mit Phasen geringer Produktion ab und dauern jeweils nur einige Tage und höchstens für zwei Wochen an. Dies geht maßgeblich auf die Stromerzeugung durch Photovoltaik und Off- und Onshore Wind zurück, deren deutschlandweit kombinierte Erzeugungsleistung häufig nahe Null liegt, um anschließend ein (lokales) Produktionsmaximum zu erreichen. Die zusätzliche Einspeisung weniger volatiler erneuerbarer Energien wie Biomasse und Wasserkraft vergleichsweise gering, sodass auch die über alle Erzeugungsformen summierte erneuerbare Stromerzeugung zwar nie Null, häufig aber eine geringe Gesamtleistung erreicht. Gleichwohl gibt es auch kurze Phasen erneuerbarer Vollversorgung bzw. Überschussproduktion, wie am Jahresgang der nicht erneuerbaren Restlast abzulesen ist. 
+Es ist zu erkennen, dass die Netzlast dauerhaft oberhalb von 9000 MWh liegt. Darüber hinausgehend schwankt die Netzlast im Monatsgang stark. In jedem Monat werden Leistungen nahe des absoluten Minimums und Maximums erreicht. Im Sommer ist die Netzlast im Allgemeinen etwas niedriger als im Winter.  
+Die Stromerzeugung durch erneuerbare Energien ist stark volatil. Phasen hoher Produktion wechseln sich mit Phasen geringer Produktion ab und dauern jeweils nur einige Tage und höchstens für zwei Wochen an. Dies geht maßgeblich auf die Stromerzeugung durch Photovoltaik und Off- und Onshore Wind zurück, deren deutschlandweit kombinierte Erzeugungsleistung häufig nahe Null liegt, um anschließend ein (lokales) Produktionsmaximum zu erreichen. Die zusätzliche Einspeisung weniger volatiler erneuerbarer Energien wie Biomasse und Wasserkraft ist vergleichsweise gering, sodass auch die über alle Erzeugungsformen summierte erneuerbare Stromerzeugung zwar nie Null, häufig aber eine geringe Gesamtleistung erreicht. Gleichwohl gibt es auch kurze Phasen erneuerbarer Vollversorgung bzw. Überschussproduktion, wie am Jahresgang der nicht erneuerbaren Restlast abzulesen ist. 
 
 Für die Frage nach der Herkunft des in den Pumpspeicherkraftwerken gespeicherten Stroms kann bereits durch die graphische Darstellung gefolgert werden, dass dieser überwiegend durch nicht erneuerbare Stromerzeuger erzeugt wurde, da die Restlast nur selten Null oder negativ ist.
 
 Der Jahresgang der Restlast gleicht dem Erzeugungsverlauf der volatilen erneuerbaren Energien. Dies stellt für die konventionellen Kraftwerke eine Herausforderung dar. Dieser Aspekt wird im nächsten Abschnitt vertieft. 
 
-Zunächst aber eine kleine Aufgabe: **Wie würde sich eine Verdopplung der erneuerbaren Erzeugung auf die Restlast auswirken? Stellen Sie den Effekt auf vergleichbare Weise grafisch dar (z. B. durch eine zusätzliche Spalte 'Netzlast - 2 EE').**
+Zunächst aber eine kleine Aufgabe: **Wie würde sich eine Verdopplung der erneuerbaren Erzeugung auf die Restlast auswirken? Stellen Sie den Effekt auf vergleichbare Weise grafisch dar (z. B. durch eine zusätzliche Spalte 'Netzlast - 2x EE').**
 
 ::: {#tip-verdopplung-EE .callout-tip title="Musterlösung Verdopplung EE" collapse="true"}
 
@@ -884,10 +884,10 @@ Zunächst aber eine kleine Aufgabe: **Wie würde sich eine Verdopplung der erneu
 plotting_data_2EE = plotting_data.copy()
 plotting_data_2EE["2x EE"] = plotting_data_2EE["Erneuerbare [MWh]"] * 2
 plotting_data_2EE["Netzlast - 2x EE"] = plotting_data_2EE["Netzlast [MWh]"] - plotting_data_2EE["2x EE"]
-plotting_data_2EE = plotting_data_2EE[["Netzlast [MWh]", "Netzlast - 2x EE"]]
+plotting_data_2EE = plotting_data_2EE[["Netzlast [MWh]", "Restlast [MWh]", "Netzlast - 2x EE"]]
 
 # plotten jedes 100. Werts
-plotting_data_2EE[::100].plot(figsize = (9, 4), subplots = True, sharey = True, xlim = (plotting_data_2EE.index.min() - (len(plotting_data_2EE.index)) / 100, plotting_data_2EE.index.max() * 1.01), rot = 45, grid = True)
+plotting_data_2EE[::100].plot(figsize = (9, 6), subplots = True, sharey = True, xlim = (plotting_data_2EE.index.min() - (len(plotting_data_2EE.index)) / 100, plotting_data_2EE.index.max() * 1.01), rot = 45, grid = True)
 plt.minorticks_off()
 plt.xticks(monate_index, monatsnamen);
 ```
@@ -1122,11 +1122,13 @@ rausfinden, warum das nicht geht:
   # tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
   # tagesnamen = plotting_data_monthly["Datum von"].iloc[tage_index].dt.strftime("%d")
     # Ersatz: tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+
+**eventuell klappt es mit dayofyear?! Dürfte innerhalb eines Monats aber keine duplizierten days geben, weil die ja von 1-31 gehen?! Außerdem würden mit dayofyear völlig falsche Beschriftungen rauskommen**
 ```
 
 :::
 
-Im Reiter Kernenergie ist zu erkennen, dass 2023 die letzten deutschen Atomkraftwerke Emsland, Isar 2 und Neckarwestheim 2 vom Netz genommen wurden. Für diese wurde im Herbst 2022 ein zusätzlicher Streckbetrieb beschlossen. [BMWK](https://www.bmwk.de/Redaktion/DE/Pressemitteilungen/2023/04/20230413-deutschland-beendet-das-zeitalter-der-atomkraft.html)
+Im Reiter Kernenergie ist zu erkennen, dass 2023 die letzten deutschen Atomkraftwerke Emsland, Isar 2 und Neckarwestheim 2 vom Netz genommen wurden. Für diese wurde im Herbst 2022 aufgrund der Energiekrise ein über den ursprünglichen Abschalttermin zum 31. Dezember 2022 hinausgehender Streckbetrieb beschlossen. [BMWK](https://www.bmwk.de/Redaktion/DE/Pressemitteilungen/2023/04/20230413-deutschland-beendet-das-zeitalter-der-atomkraft.html)
 
 **Bis zu welchem Tag wurde der Streckbetrieb genehmigt? Bestimmen Sie den Zeitpunkt der Abschaltung anhand des Datensatzes erzeugung. Geben Sie den Zeitpunkt über die Spalte 'Datum bis' in deutscher Datumsformtierung `TT. Monat YYYY um HH:MM Uhr' aus.**
 
@@ -1134,7 +1136,7 @@ Im Reiter Kernenergie ist zu erkennen, dass 2023 die letzten deutschen Atomkraft
 ## Lösungshinweis
 Mit der Abschaltung erreichte die Stromproduktion durch Kernenergie den Wert 0. Die Abschaltung wurde in der Periode vollendet, die der ersten Periode mit der Stromproduktion durch Kernenergie mit dem Wert 0 vorausging.
 
-Die Ausgabe einer als datetime formatierten Spalten können Sie mit der Methode `[pandas.Series.dt.strftime](https://pandas.pydata.org/docs/reference/api/pandas.Series.dt.strftime.html)` formatieren.
+Die Ausgabe einer als datetime formatierten Spalten können Sie mit der Methode [pandas.Series.dt.strftime](https://pandas.pydata.org/docs/reference/api/pandas.Series.dt.strftime.html) formatieren.
 
 :::: {#tip-abschaltung-akw .callout-tip title="Musterlösung" collapse="true"}
 
@@ -1155,8 +1157,68 @@ print(f"erzeugung['Datum bis'].iloc[position].strftime('%d. %B %Y um %H:%M Uhr')
 ::::
 :::
 
-Berechnung der Jahresvolllaststunden und Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt. 
+Die Berechnung der Jahresvolllaststunden und die Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt, die von konventionellen Erzeugern bedient werden kann. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten. Auch der Bereich der Mittelllast wird mit zunehmendem Ausbau erneuerbarer Energien immer kleiner werden (siehe @tip-verdopplung-EE). (**ggf. ergänzen: für die verbleibende Spitzenlast werden Speicher mit Spitzenlasterzeugern konkurrieren. Anderswo habe ich das schön formuliert.**)
+
+Dies kann am Beispiel der Steinkohle verdeutlicht werden, deren erzielte Jahresvolllaststunden näher an der klassischen Spitzenlasterzeugung aus Erdgas als an der Mittellasterzeugung durch Braunkohle liegt. Die Auslastung eines Stromerzeugers kann mit einer sortierten Jahresdauerlinie dargestellt werden.
+
+::: {.callout-important}
+## Definition sortierte Jahresdauerlinie
+
+https://www.youtube.com/watch?v=rMxYJuGqR4s CC BY
+Rohdaten nach Größe absteigend sortieren und als Balkendiagramm darstellen.
+:::
+
+**Eventuell ein HinweisDie Erstellung eines barplots mit 35.040 Balken dauert schlanke 49 Sekunden. Das "Problem" sind möglicherweise die xticks. Man muss vorher die Daten also ein bisschen aggregieren.
+
+
+```{python}
+
+# Daten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren.
+braunkohle_daily = erzeugung['Braunkohle [MWh]'].groupby(erzeugung["Datum von"].dt.dayofyear).mean()
+steinkohle_daily = erzeugung['Steinkohle [MWh]'].groupby(erzeugung["Datum von"].dt.dayofyear).mean()
+erdgas_daily = erzeugung['Erdgas [MWh]'].groupby(erzeugung["Datum von"].dt.dayofyear).mean()
+
+## Zur Kontrolle
+## print(erzeugung["Datum von"].dt.dayofyear)
+## print(f"\n\nbraunkohle_daily.head()\n{braunkohle_daily.head()}\n\n"
+##       f"Zum Vergleich:\nerzeugung['Braunkohle [MWh]'].iloc[[0, 1, 95, 96]]\n{erzeugung['Braunkohle [MWh]'].iloc[[0, 1, 95, 96]]}\n\n"
+##       f"erzeugung['Braunkohle [MWh]'].iloc[0:96].mean()\n{erzeugung['Braunkohle [MWh]'].iloc[0:96].mean()}") 
+
+# Liniendiagramm plotten
+linienstärke = 5
+plt.figure(figsize = (8, 4))
+
+braunkohle_daily.sort_values(ascending = False).reset_index(drop = True).plot.line(lw = linienstärke, color = 'brown', alpha = 0.5, label = 'Braunkohle')
+
+steinkohle_daily.sort_values(ascending = False).reset_index(drop = True).plot.line(lw = linienstärke, color = 'black', alpha = 0.5, label = 'Steinkohle')
+
+erdgas_daily.sort_values(ascending = False).reset_index(drop = True).plot.line(lw = linienstärke, color = 'lightskyblue', alpha = 0.5, label = 'Erdgas')
+
+plt.title(label = "sortierte Jahresdauerlinie für ausgewählte konventionelle Erzeuger")
+plt.grid()
+plt.legend()
+plt.ylabel('durchschnittliche Stromerzeugung\n(auf Viertelstundenbasis in MWh)')
+plt.xlabel('Anzahl Tage pro Jahr')
+
+plt.show()
+
+```
+
+Beim Vergleich der erzielten Jahresvolllaststunden konnte festgestellt werden, dass Steinkohle anders als Braunkohle kein Mittelllasterzeuger mehr ist, sondern das Erzeugungsprofil eher der Spitzenlasterzeugung von Erdgas entspricht.
+
+In der grafischen Darstellung der sortierten Jahresdauerlinie wird nun sogar deutlich, dass das Erzeugungsprofil der Steinkohle dem Erzeugungsprofil der Braunkohle sogar weniger ähnlich ist als das von Erdgas.
+ 
+**Steinkohle ist das neue Erdgas**  
+**Aber es war doch Gaskrise?!**
+
+Das hätte man jetzt nicht unbedingt so erwartet, dass Erdgas viel mehr Leistung bringt, obwohl es weniger Jahresvolllaststunden hat. Die Grafiken hätte man so erwarten können, wenn man mit fotografischem Gedächnis die Ausgabe von .describe() verinnerlicht hätte. Aber weil Ablesen komplexer Informationen so schwierig ist, wird ja visualisiert. Die Jahresvolllaststunden von Erdgas sind so gering, weil die installierte Leistung ungefähr dem Doppelten der Steinkohle entspricht.
+
+Das Restlastprofil kann mit einer Jahresdauerlinie visualisiert werden.
 hierhier
+
+To Do:  Wie ähnlich Erdgas und Steinkohle sind, visualisieren wir mit Jahresdauerlinien.
+
+
 **Man könnte noch in jeden Graph die Restlast einzeichnen.**
 
 ```
@@ -1235,4 +1297,7 @@ Datensätze kontrollieren, plausibiliseren und visualisieren --> das meiste erke
 
 --> Erzeugung und Verbrauch durch Pumpspeicher müssten für eine weitergehende Erzeugungsanalyse bereinigt werden: Realisierte Einspeisung ist anderen Energieträgern zuzuschreiben; Verbrauch = Realisierter Verbrauch - Realisierte Einspeisung. 
 
-Berechnung der Jahresvolllaststunden und Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt. 
+**Die Grundlast ist tot.**
+Berechnung der Jahresvolllaststunden und Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten. 
+
+**Steinkohle ist das neue Erdgas.**
