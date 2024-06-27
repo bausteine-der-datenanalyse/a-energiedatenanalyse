@@ -309,10 +309,9 @@ Einen ersten Überblick über die Daten liefert die Methode `pd.DataFrame.descri
 #| results: hold # process code first, then print output
 
 print(f"Der DataFrame erzeugung hat {erzeugung.shape[0]} Zeilen und {erzeugung.shape[1]} Spalten.\n")
-print(erzeugung.describe(include = [np.number]))
+erzeugung.describe(include = [np.number])
 ```
 
-**shape, describe (erledigt)**  
 **To Do: value.counts**
 
 &nbsp;
@@ -667,19 +666,16 @@ Alle positiven Werte = Einspeisung (entspricht Erzeugungsdaten der Bundesnetzage
 Explorative Datenanalyse bedeutet, Fragen an die vorliegenden Daten zu stellen und diese mittels datenanalytischer Methoden zu beantworten. Die so gewonnenen Erkenntnisse können helfen, die Fragen zu verfeinern oder neue Fragen zu generieren. Es handelt sich also um einen iterativen Prozess. Dadurch soll vor allem ein tieferes Verständnis der Daten gewonnen werden. [@R-for-Data-Science, Kapitel 10  Exploratory data analysis]
 
 ## Grenzstromanalyse
-Im vorliegenden Fall interessiert, welche Erzeuger Strom lieferten, um *zusätzlich* zur Netzlast die Pumpspeicher zu befüllen. Dazu soll bestimmt werden, welche Stromerzeuger an den Zeitpunkten, an denen die Pumpspeicher befüllt wurden, in der Lage waren, zusätzliche Leistung bereitzustellen. In Anlehung an in der Wirtschaftslehre gebräuchliche Grenzbetrachtungen kann dieser zusätzliche Strom kurz als Grenzstrom bezeichnet werden. 
+Im vorliegenden Fall wird die explorative Auseinandersetzung mit dem Datensatz von der Frage strukturiert, welche Erzeuger Strom lieferten, um *zusätzlich* zur Netzlast die Pumpspeicher zu befüllen. Es soll also bestimmt werden, welche Stromerzeuger an den Zeitpunkten, an denen die Pumpspeicher befüllt wurden, in der Lage waren, zusätzliche Leistung bereitzustellen. Dieser zusätzliche Strom kann kurz als Grenzstrom bezeichnet werden. 
 
-:::{.callout-note collapse="true"}
-# Platzhalter Grenzbetrachtung - ggf. löschen
-Grenzbetrachtungen untersuchen die Bedingungen, die bei der Produktion oder dem Verbrauch einer zusätzlichen Einheit herrschen. Die Grenzbetrachtung verdeutlicht folgendes Beispiel.
+::: {.callout-important}
+# Definition Grenzstrom
+Grenzbetrachtungen untersuchen die Bedingungen, die bei der Produktion oder dem Verbrauch einer zusätzlichen Einheit herrschen. Eine Grenzbetrachtung unterscheidet sich dadurch von einer Durchschnittsbetrachtung, die den Effekt einer Mengenänderung auf alle Einheiten untersucht. Der Grenzstrom bezeichnet eine zusätzliche Einheit Strom.
 
-Ein Industriebetrieb hat einen variablen Stromverbrauch zwischen 400 und 600 MW. Zur Eigenstromversorgung wurden ein Kohlekraftwerk mit einer Leistung von 350 MW zur Deckung der Grundlast sowie ein Gaskraftwerk mit einer Leistung von 250 MW für den Lastfolgebetrieb errichtet. 
+Beispielsweise bestehe die momentane Stromerzeugung in Höhe von 100 Einheiten aus 60 Einheiten Solarstrom und, weil die solare Produktion nicht ausreicht, zusätzlich aus 40 Einheiten Kohlestrom. In diesem Fall enthält jede Einheit Strom durchschnittlich 0,4 Anteile Kohlestrom. Werden nun weitere 20 Einheiten Strom nachgefragt, so müssen diese durch eine zusätzliche Kohleverstromung bedient werden. In der Durchschnittsbetrachtung beträgt der Strommix nun aus 60 Einheiten Solarstrom und 40 + 20 = 60 Einheiten Kohlestrom. Dadurch verändert sich der durchschnittliche Anteil der Kohle an der Stromproduktion von 0,4 auf 0,5. 
 
-... Beispiele für fixe Erzeugung und variable Erzeugung bei bestimmten Lasten und Veränderung des mittleren und Grenz-CO2-Ausstoßes.
+In der Grenzbetrachtung beträgt der Kohleanteil des zusätzlich verbrauchten Stroms 20 von 20 Einheiten, also 1.
 
-Steinkohle 338,2 kg CO2 je MWh (Primärenergiegehalt) / Wirkungsgrad 39 % / 867 kg CO2-Emmission je MWHel
-Erdgas 200,8 kg CO2 je MWh (Primärenergiegehalt) / Wirkungsgrad 56,1 % / 358 kg CO2-Emission je MWhel
-<https://volker-quaschning.de/datserv/CO2-spez/index.php>
 :::
  
 ### Hintergrund: Einspeisevorrang erneuerbarer Energien
@@ -723,7 +719,7 @@ Die nicht erneuerbaren Erzeuger arbeiten im Lastfolgebetrieb zur Deckung der Res
 
 1. Überschuss an erneuerbaren Energien: Der Stromverbrauch wird vollständig durch die Erzeugung erneuerbarer Energien gedeckt und es besteht ein Erzeugungsüberschuss (bzw. Erzeuger wurden abgeregelt), aus dem zusätzlicher Stromverbrauch bedient werden kann. 
 
-2. Strommix aus erneuerbarer Einspeisung und Lastfolgebetrieb nicht erneuerbarer Erzeuger: Erneuerbare Energien speisen mit voller Leistung ein, die Restlast wird von nicht erneuerbaren Erzeugern gedeckt.
+2. Strommix aus erneuerbarer Einspeisung und Lastfolgebetrieb nicht erneuerbarer Erzeuger: Erneuerbare Energien speisen mit voller Leistung ein, die Restlast und zusätzlicher Stromverbrauch wird von nicht erneuerbaren Erzeugern gedeckt.
 
 Die welches Szenario im Stromnetz zu einem bestimmten Zeitpunkt besteht, lässt sich also an der Restlast ablesen.
 
@@ -917,8 +913,9 @@ Nicht alle Erzeuer sind aus technischen oder aus wirtschaftlichen Gründen gleic
 ::: {.callout-important}
 ## Definition Grund-, Mittel- und Spitzenlast
 
+:::: {.border}
   * Grundlast: Die im Jahresgang dauerhaft nachgefragte Leistung.  
-    Kraftwerkstypen: Braunkohle, Kernkraft, Laufwasser 
+    Kraftwerkstypen: Braunkohle, Kernkraft, Laufwasser
 
   * Mittellast: Über die Grundlast hinausgehende, im Tages- und Jahresgang planbar nachgefragte Leistung.  
     Kraftwerkstypen: Gas-und-Dampfturbinen-Kraftwerk, Steinkohle
@@ -926,7 +923,16 @@ Nicht alle Erzeuer sind aus technischen oder aus wirtschaftlichen Gründen gleic
   * Spitzenlast: Über die Mittellast hinausgehende, im Tages- und Jahresgang nur kurzzeitig oder ungeplant nachgefragte Leistung.  
     Kraftwerkstypen: Gaskraftwerke, Pumpspeicherkraftwerke
 
+ISPEX AG: [Grundlast](https://www.ispex.de/lexikon/grundlast/), [Mittellast](https://www.ispex.de/lexikon/mittellast/), [Spitzenlast](https://www.ispex.de/lexikon/spitzenlast/)
+
+Grünwald, Reinhard / Caviezel, Claudio 2017: Lastfolgefähigkeit deutscher Kernkraftwerke. Monitoring. Büro für Technikfolgen-Abschätzung beim Deutschen Bundestag (TAB). doi: [10.5445/IR/1000102277](https://publikationen.bibliothek.kit.edu/1000102277). Seite 16.
+
+::::
 ::: 
+
+Für die Frage, welche Kraftwerke den Grenzstrom zur Befüllung der Pumpspeicherkraftwerke liefern, ist insbesondere die Unterscheidung von im Grundlastbetrieb operierenden Kraftwerken einerseits sowie von im Mittellast- und Spitzenlastbetrieb arbeitenden Kraftwerken andererseits relevant. In Grundlast operierende Kraftwerke fahren 24 Stunden am Tag in Volllast. Beispielsweise erreichte Kernenergie im Jahr 2021 mit 8.070 Jahresvolllaststunden beinahe einen durchgehenden Volllastbetrieb [statista](https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/). In Volllast betriebene Kraftwerke können nicht mehr auf zusätzliche Stromnachfrage reagieren. Dies bleibt im Mittel- und Spitzenlastbetrieb arbeitenden Kraftwerken überlassen. 
+
+Somit können durch die Unterscheidung von in Grundlast und von in Mittel- bzw. Spitzenlast betriebenen Kraftwerkstypen die Kraftwerkstypen, die den zur Befüllung der Pumpspeicherkraftwerken erforderlichen Strom lieferten, eingegrenzt werden.
 
 Die Auslastung eines Kraftwerks (bzw. einer Gruppe von Kraftwerken) kann mittels seiner Jahresvolllaststunden quantifiziert werden.
 
@@ -957,11 +963,10 @@ print(f"\n\nJahresvolllaststunden\n\n{jahresvolllaststunden.sort_values(ascendin
 
 ```
 
-Die Berechnung der Jahresstunden zeigt, dass kein Kraftwerkstyp auch nur annähernd in Volllast lief. Die höchste Auslastung weisen Biomasse und Braunkohle auf. Biomasse ist umgerechnet in 51 Prozent der 8760 Jahresstunden in Volllast gelaufen, Braunkohle in 50 Prozent. Demgegenüber erreichte der klassische Grundlasterzeuger Kernenergie nur 25 Prozent. Die in Deutschland hauptsächlich für den Mittellastbetrieb eingesetzte Steinkohle erreichte 19 Prozent. Das Jahr 2023 war insbesondere für die Kernenergie ein ungewöhnliches Jahr, wie der Vergleich zu den erreichten Jahresvolllaststunden im Jahr 2021 zeigt [statista](https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/). 2021 erreichte Kernenergie mit 8.070 Jahresvolllaststunden beinahe einen durchgehenden Volllastbetrieb.
+Die Berechnung der Jahresstunden zeigt, dass kein Kraftwerkstyp auch nur annähernd in Volllast lief. Die höchste Auslastung weisen Biomasse und Braunkohle auf. Biomasse ist umgerechnet in 51 Prozent der 8760 Jahresstunden in Volllast gelaufen, Braunkohle in 50 Prozent. Demgegenüber erreichte der klassische Grundlasterzeuger Kernenergie nur 25 Prozent. Die in Deutschland hauptsächlich für den Mittellastbetrieb eingesetzte Steinkohle erreichte 19 Prozent. Das Jahr 2023 war insbesondere für die Kernenergie ein ungewöhnliches Jahr.
 
 Deshalb wird der Jahresgang ausgewählter konventioneller Erzeuger dargestellt. Um eine hohe Auflösung zu erreichen, wird eine Darstellung auf Monatsbasis gewählt.
-**Steinkohle wird wie Erdgas gefahren --> Jahresdauerlinie Braun-, Steinkohle und Gas (übereinanderlegen?!).**  
-**es wäre nett, Phasen des EE-Überschusses farblich zu hinterlegen (mit einem flotten Grau)**
+**Man könnte zusätzlich Phasen des EE-Überschusses farblich hinterlegen (mit einem flotten Grau).**
 
 ::: {.panel-tabset}
 
@@ -1133,7 +1138,6 @@ Im Reiter Kernenergie ist zu erkennen, dass 2023 die letzten deutschen Atomkraft
 **Bis zu welchem Tag wurde der Streckbetrieb genehmigt? Bestimmen Sie den Zeitpunkt der Abschaltung anhand des Datensatzes erzeugung. Geben Sie den Zeitpunkt über die Spalte 'Datum bis' in deutscher Datumsformtierung `TT. Monat YYYY um HH:MM Uhr' aus.**
 
 ::: {#tip-abschaltung-akw .callout-tip title="Lösungshinweis und Musterlösung" collapse="true"}
-## Lösungshinweis
 Mit der Abschaltung erreichte die Stromproduktion durch Kernenergie den Wert 0. Die Abschaltung wurde in der Periode vollendet, die der ersten Periode mit der Stromproduktion durch Kernenergie mit dem Wert 0 vorausging.
 
 Die Ausgabe einer als datetime formatierten Spalten können Sie mit der Methode [pandas.Series.dt.strftime](https://pandas.pydata.org/docs/reference/api/pandas.Series.dt.strftime.html) formatieren.
@@ -1157,21 +1161,22 @@ print(f"erzeugung['Datum bis'].iloc[position].strftime('%d. %B %Y um %H:%M Uhr')
 ::::
 :::
 
-Die Berechnung der Jahresvolllaststunden und die Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt, die von konventionellen Erzeugern bedient werden kann. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten. Auch der Bereich der Mittelllast wird mit zunehmendem Ausbau erneuerbarer Energien immer kleiner werden (siehe @tip-verdopplung-EE). (**ggf. ergänzen: für die verbleibende Spitzenlast werden Speicher mit Spitzenlasterzeugern konkurrieren. Anderswo habe ich das schön formuliert.**)
-
-Dies kann am Beispiel der Steinkohle verdeutlicht werden, deren erzielte Jahresvolllaststunden näher an der klassischen Spitzenlasterzeugung aus Erdgas als an der Mittellasterzeugung durch Braunkohle liegt. Die Auslastung eines Stromerzeugers kann mit einer sortierten Jahresdauerlinie dargestellt werden.
+Die Berechnung der Jahresvolllaststunden und die Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt, die von konventionellen Erzeugern bedient werden kann. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten. Dies kann am Beispiel der Steinkohle verdeutlicht werden, deren erzielte Jahresvolllaststunden näher an der klassischen Spitzenlasterzeugung aus Erdgas als an der Mittellasterzeugung durch Braunkohle liegt. Die Auslastung eines Stromerzeugers kann mit einer sortierten Jahresdauerlinie dargestellt werden.
 
 ::: {.callout-important}
 ## Definition sortierte Jahresdauerlinie
 
+**TO DO**  
 https://www.youtube.com/watch?v=rMxYJuGqR4s CC BY
-Rohdaten nach Größe absteigend sortieren und als Balkendiagramm darstellen.
+Rohdaten nach Größe absteigend sortieren und als Diagramm darstellen.
 :::
 
-**Eventuell ein HinweisDie Erstellung eines barplots mit 35.040 Balken dauert schlanke 49 Sekunden. Das "Problem" sind möglicherweise die xticks. Man muss vorher die Daten also ein bisschen aggregieren.
-
-
+::: {.panel-tabset}
+## Plot
 ```{python}
+#| echo: false
+#| fig-cap: sortierte Jahresdauerlinie ausgewählter konventioneller Erzeuger
+#| fig-alt: "Dargestellt werden die sortierten Jahresdauerlinien für Braunkohle, Steinkohle und Erdgas. Während sich für Braunkohle ein fast liniearer Verlauf ergibt, zeigen Erdgas und insbesondere Steinkohle stark abfallende Verläufe, was bedeutet, dass hohe Produktionsniveaus deutlich seltener erreicht werden, als niedrige. Beispielsweise erreicht Braunkohle das Produktionsmaximum von ca. 4000 MWh an einem Tag. Die Hälfte dieses Werts (oder mehr) wird an 200 Tagen im Jahr erreicht. Demgegenüber erreicht Steinkohle das Produktionsmaximum von ca. 3750 MWh an einem Tag. Die Hälfte dieses Werts (oder mehr) wird aber nur an ca. 60 Tagen im Jahr erreicht."
 
 # Daten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren.
 braunkohle_daily = erzeugung['Braunkohle [MWh]'].groupby(erzeugung["Datum von"].dt.dayofyear).mean()
@@ -1185,90 +1190,251 @@ erdgas_daily = erzeugung['Erdgas [MWh]'].groupby(erzeugung["Datum von"].dt.dayof
 ##       f"erzeugung['Braunkohle [MWh]'].iloc[0:96].mean()\n{erzeugung['Braunkohle [MWh]'].iloc[0:96].mean()}") 
 
 # Liniendiagramm plotten
+# Index um 1 verschieben, weil Index mit 0 beginnt, aber die Anzahl der Tage dargestellt wird.
 linienstärke = 5
 plt.figure(figsize = (8, 4))
 
-braunkohle_daily.sort_values(ascending = False).reset_index(drop = True).plot.line(lw = linienstärke, color = 'brown', alpha = 0.5, label = 'Braunkohle')
+braunkohle_daily = braunkohle_daily.sort_values(ascending = False, ignore_index = True)
+braunkohle_daily.index += 1
+braunkohle_daily.plot.line(lw = linienstärke, color = 'brown', alpha = 0.5, label = 'Braunkohle')
 
-steinkohle_daily.sort_values(ascending = False).reset_index(drop = True).plot.line(lw = linienstärke, color = 'black', alpha = 0.5, label = 'Steinkohle')
+steinkohle_daily = steinkohle_daily.sort_values(ascending = False, ignore_index = True)
+steinkohle_daily.index += 1
+steinkohle_daily.plot.line(lw = linienstärke, color = 'black', alpha = 0.5, label = 'Steinkohle')
 
-erdgas_daily.sort_values(ascending = False).reset_index(drop = True).plot.line(lw = linienstärke, color = 'lightskyblue', alpha = 0.5, label = 'Erdgas')
+erdgas_daily = erdgas_daily.sort_values(ascending = False, ignore_index = True)
+erdgas_daily.index += 1
+erdgas_daily.plot.line(lw = linienstärke, color = 'lightskyblue', alpha = 0.5, label = 'Erdgas')
 
 plt.title(label = "sortierte Jahresdauerlinie für ausgewählte konventionelle Erzeuger")
 plt.grid()
 plt.legend()
-plt.ylabel('durchschnittliche Stromerzeugung\n(auf Viertelstundenbasis in MWh)')
+plt.ylabel('durchschnittliche Stromerzeugung in MWh\n(auf Viertelstundenbasis)')
 plt.xlabel('Anzahl Tage pro Jahr')
 
+plt.margins(x = 0.02)
 plt.show()
 
 ```
 
-Beim Vergleich der erzielten Jahresvolllaststunden konnte festgestellt werden, dass Steinkohle anders als Braunkohle kein Mittelllasterzeuger mehr ist, sondern das Erzeugungsprofil eher der Spitzenlasterzeugung von Erdgas entspricht.
+## Code für den Plot
+```{python}
+#| output: false
 
-In der grafischen Darstellung der sortierten Jahresdauerlinie wird nun sogar deutlich, dass das Erzeugungsprofil der Steinkohle dem Erzeugungsprofil der Braunkohle sogar weniger ähnlich ist als das von Erdgas.
- 
-**Steinkohle ist das neue Erdgas**  
-**Aber es war doch Gaskrise?!**
+# Daten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren.
+braunkohle_daily = erzeugung['Braunkohle [MWh]'].groupby(erzeugung["Datum von"].dt.dayofyear).mean()
+steinkohle_daily = erzeugung['Steinkohle [MWh]'].groupby(erzeugung["Datum von"].dt.dayofyear).mean()
+erdgas_daily = erzeugung['Erdgas [MWh]'].groupby(erzeugung["Datum von"].dt.dayofyear).mean()
 
-Das hätte man jetzt nicht unbedingt so erwartet, dass Erdgas viel mehr Leistung bringt, obwohl es weniger Jahresvolllaststunden hat. Die Grafiken hätte man so erwarten können, wenn man mit fotografischem Gedächnis die Ausgabe von .describe() verinnerlicht hätte. Aber weil Ablesen komplexer Informationen so schwierig ist, wird ja visualisiert. Die Jahresvolllaststunden von Erdgas sind so gering, weil die installierte Leistung ungefähr dem Doppelten der Steinkohle entspricht.
+## Zur Kontrolle
+## print(erzeugung["Datum von"].dt.dayofyear)
+## print(f"\n\nbraunkohle_daily.head()\n{braunkohle_daily.head()}\n\n"
+##       f"Zum Vergleich:\nerzeugung['Braunkohle [MWh]'].iloc[[0, 1, 95, 96]]\n{erzeugung['Braunkohle [MWh]'].iloc[[0, 1, 95, 96]]}\n\n"
+##       f"erzeugung['Braunkohle [MWh]'].iloc[0:96].mean()\n{erzeugung['Braunkohle [MWh]'].iloc[0:96].mean()}") 
 
-Das Restlastprofil kann mit einer Jahresdauerlinie visualisiert werden.
-hierhier
+# Liniendiagramm plotten
+# Index um 1 verschieben, weil Index mit 0 beginnt, aber die Anzahl der Tage dargestellt wird.
+linienstärke = 5
+plt.figure(figsize = (8, 4))
 
-To Do:  Wie ähnlich Erdgas und Steinkohle sind, visualisieren wir mit Jahresdauerlinien.
+braunkohle_daily = braunkohle_daily.sort_values(ascending = False, ignore_index = True)
+braunkohle_daily.index += 1
+braunkohle_daily.plot.line(lw = linienstärke, color = 'brown', alpha = 0.5, label = 'Braunkohle')
 
+steinkohle_daily = steinkohle_daily.sort_values(ascending = False, ignore_index = True)
+steinkohle_daily.index += 1
+steinkohle_daily.plot.line(lw = linienstärke, color = 'black', alpha = 0.5, label = 'Steinkohle')
 
-**Man könnte noch in jeden Graph die Restlast einzeichnen.**
+erdgas_daily = erdgas_daily.sort_values(ascending = False, ignore_index = True)
+erdgas_daily.index += 1
+erdgas_daily.plot.line(lw = linienstärke, color = 'lightskyblue', alpha = 0.5, label = 'Erdgas')
+
+plt.title(label = "sortierte Jahresdauerlinie für ausgewählte konventionelle Erzeuger")
+plt.grid()
+plt.legend()
+plt.ylabel('durchschnittliche Stromerzeugung in MWh\n(auf Viertelstundenbasis)')
+plt.xlabel('Anzahl Tage pro Jahr')
+
+plt.margins(x = 0.02)
+plt.show()
 
 ```
+
+:::
+
+Beim Vergleich der erzielten Jahresvolllaststunden konnte festgestellt werden, dass die Auslastung der Steinkohle eher der des Spitzenlasterzeugers Erdgas als des Mittellasterzeugers Braunkohle entspricht. In der grafischen Darstellung der sortierten Jahresdauerlinien wird darüber hinaus deutlich, dass das Erzeugungsprofil der Steinkohle dem der Braunkohle sogar weniger ähnelt als das von Erdgas.
+
+**Steinkohle ist das neue Erdgas**  
+
+Bisher wurde ausschließlich die Erzeugung durch konventionelle Kraftwerke betrachtet. Biomasse und Braunkohle erreichen vergleichbare Jahresvolllaststunden, sodass ein Vergleich beider Erzeuger interessant sein könnte. **Stellen Sie den Jahresgang und die Jahresdauerlinien für Biomasse und Braunkohle dar.**
+
+**Die Musterlösung könnte Marc machen.**
+
+::: {#tip-erzeugungsprofile-biomasse-braunkohle .callout-tip title="Musterlösung Erzeugungsprofile von Biomasse und Braunkohle" collapse="true"}
+
+:::
+
+### Bestimmung des in den Pumpspeichern gespeicherten Stroms
+In den bisherigen Betrachtungen wurde gezeigt, dass zwei grundsätzliche Szenarien im Stromnetz zu unterscheiden sind:
+
+1. Restlast Null oder negativ: Grenzstrom wird von erneuerbaren Energien produziert.
+
+2. Restlast positiv: Grenzstrom wird von konventionellen Energien im Lastfolgebetrieb produziert.
+
+Den Jahresgang des Stromverbrauchs durch Pumpspeicher und das jeweils bestehende Szenario zeigt folgender Graph.
+
+::: {.panel-tabset}
+
+## Plot
+```{python}
+#| echo: false
+#| fig-alt: "Dargestellt ist der Jahresgang der Einspeicherung in Pumpspeicherkraftwerke. Farblich unterschieden sind dabei die stark überwiegenden Phasen konventioneller Einspeicherung durch Kraftwerke im Lastfolgebetrieb und seltene Phasen erneuerbarer Einspeicherung. Eine erneuerbare Einspeicherung fand fast ausschließlich während der Weihnachtsfeiertage statt."
+#| fig-cap: Einspeicherung in Pumpspeicherkraftwerke 2023
+
+# Restlast berechnen
 erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
 
-plotting_data = pd.DataFrame()
-plotting_data["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
-plotting_data["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
+restlast = pd.DataFrame()
+restlast["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
+restlast["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
+restlast["Restlast [MWh]"] = restlast["Netzlast [MWh]"] - restlast["Erneuerbare [MWh]"]
+restlast = restlast["Restlast [MWh]"]
 
-plotting_data["Restlast [MWh]"] = plotting_data["Netzlast [MWh]"] - plotting_data["Erneuerbare [MWh]"]
+# xticks berechnen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
 
+# plotten jedes n. Werts
+schritt = 100
+verbrauch['Pumpspeicher [MWh]'][::schritt].plot(figsize = (9, 6), xlim = (verbrauch.index.min() - (len(verbrauch.index) / 100), verbrauch.index.max() * 1.01), rot = 45, grid = True, label = "")
+plt.ylabel('Einspeicherung [MWh]', fontsize = 12)
+plt.suptitle('Einspeicherung in Pumpspeicherkraftwerke 2023')
+
+# xticks eintragen
+plt.minorticks_off()
+plt.xticks(monate_index, monatsnamen);
+
+# Kurve unterlegen: plt.fill_between bietet einen praktischen Parameter where
+plt.fill_between(x = verbrauch['Pumpspeicher [MWh]'].index[::schritt], y1 = verbrauch['Pumpspeicher [MWh]'][::schritt], label = 'konventionelle Einspeicherung') # , where = restlast[::schritt] > 0 führt zu weißen Stellen
+plt.fill_between(x = verbrauch['Pumpspeicher [MWh]'].index[::schritt], y1 = verbrauch['Pumpspeicher [MWh]'][::schritt], where = restlast[::schritt] <= 0, color = 'greenyellow', label = 'erneuerbare Einspeicherung')
+
+plt.legend()
 ```
 
-Erst mal für alle Erzeuger zeigen, dann für die nicht erneuerbaren (plotting_data_non_EE).
+## Code für den Plot
+```{python}
+#| output: false
 
-  - Quantifizierung mit Jahresvolllaststunden
+# Restlast berechnen
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
 
-  - Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
-      
-  - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)
+restlast = pd.DataFrame()
+restlast["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
+restlast["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
+restlast["Restlast [MWh]"] = restlast["Netzlast [MWh]"] - restlast["Erneuerbare [MWh]"]
+restlast = restlast["Restlast [MWh]"]
 
+# xticks berechnen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
 
-In Volllast betriebene Erzeuger können den Grenzstrom nicht decken.
-Welche Erzeugungsleistung nehmen wir... erst mal gucken, ob Pumpspeicher gleichzeitig ein- und ausspeisen (sollte nicht so sein, ist aber möglich, wegen Regelzonen.)
+# plotten jedes n. Werts
+schritt = 100
+verbrauch['Pumpspeicher [MWh]'][::schritt].plot(figsize = (9, 6), xlim = (verbrauch.index.min() - (len(verbrauch.index) / 100), verbrauch.index.max() * 1.01), rot = 45, grid = True, label = "")
+plt.ylabel('Einspeicherung [MWh]', fontsize = 12)
+plt.suptitle('Einspeicherung in Pumpspeicherkraftwerke 2023')
 
+# xticks eintragen
+plt.minorticks_off()
+plt.xticks(monate_index, monatsnamen);
 
-Grenzstrom: 2 (3) Regime (EE-Überschuss, fossile Lastfolgebetrieb, Wenn Restlast kleiner gleich die Einspeisung in Pumpspeicher ist, kann der Anteil EE genau bestimmt werden.)
+# Kurve unterlegen: plt.fill_between bietet einen praktischen Parameter where
+plt.fill_between(x = verbrauch['Pumpspeicher [MWh]'].index[::schritt], y1 = verbrauch['Pumpspeicher [MWh]'][::schritt], label = 'konventionelle Einspeicherung') # , where = restlast[::schritt] > 0 führt zu weißen Stellen
+plt.fill_between(x = verbrauch['Pumpspeicher [MWh]'].index[::schritt], y1 = verbrauch['Pumpspeicher [MWh]'][::schritt], where = restlast[::schritt] <= 0, color = 'greenyellow', label = 'erneuerbare Einspeicherung')
 
-    - Vorbereitung 1: Restlast bestimmen
+plt.legend()
+```
 
-      - Herkunft Pumpspeicherenergie grob abschätzen: in wie vielen Intervallen war die Restlast negativ
+::: 
 
-      - Herkunft Pumpspeicherenergie genauer bestimmen: Abgleich Null oder negative Restlast mit Verbrauch der Pumpspeicher (Befüllen)
+Die Grafik spiegelt die bei der Bestimmung der Residual- und Restlast gewonnene Erkenntnis wider, dass mit dem im Jahr 2023 realisierten Strommix zusätzliche Stromnachfrage vorwiegend konventionell bedient wird.
+**Wie sähe die Grafik aus, wenn die Einspeisung aus erneuerbaren Energien doppelt so hoch ausgefallen wäre?**
 
-        - Wenn Restlast 0 oder negativ = Befüllung mit EE, wenn Restlast > 0 = Befüllung mit Lastfolgeerzeugern
+**Marc fragen, ob die Aufgabe an der Stelle zu simpel ist.**
 
-    - Vorbereitung 2: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? **Grundlast ist tot.**
+::: {#tip-pumpspeicher .callout-tip title="Musterlösung Einspeicherung bei doppelter erneuerbarer Erzeugung" collapse="true"}
 
-      - Quantifizierung mit Jahresvolllaststunden
+```{python}
+#| echo: false
+#| fig-alt: "Dargestellt ist der Jahresgang der Einspeicherung in Pumpspeicherkraftwerke bei Verdopplung der erneuerbaren Stromproduktion. Farblich unterschieden sind dabei die Phasen konventioneller Einspeicherung durch Kraftwerke im Lastfolgebetrieb und deutlich häufigere Phasen erneuerbarer Einspeicherung."
+#| fig-cap: Einspeicherung in Pumpspeicherkraftwerke 2023
 
-      - Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
-      
-      - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)
-    
-Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überprüfen.
-*Befüllung der Pumpspeicher und die Restlast im Jahresgang anzeigen und anschließend nur die Werte zeigen, zu denen der Verbrauch der Pumpspeicher > 0 ist* 
+# Restlast berechnen
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
 
-Was rein kommt, ist, was raus kommt. Dabei sind 3 Regime zu unterscheiden: a) EE-Überschuss, b) fossiler Lastfolgebetrieb, c) Restlast kleiner Verbrauch Pumpspeicher (= Mischung aus a) und b)). Der Grenzstrom ist vermutlich fast immer fossil (wenn gerade keine Überproduktion an EE vorliegt).  
-**--> das gucken wir bei der explorativen Datenanalyse, in wie vielen Intervallen die Restlast negativ war**  
-**Hinweis: ökologischer Fehlschluss möglich, da mit Salden für das Gesamtnetz gerechnet wird, die Regelzonen aber kleinteiliger organisiert sind und die physischen Stromflüsse unbekannt sind.**
+restlast = pd.DataFrame()
+restlast["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
+restlast["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
+restlast["Restlast [MWh]"] = restlast["Netzlast [MWh]"] - 2 * restlast["Erneuerbare [MWh]"]
+restlast = restlast["Restlast [MWh]"]
+
+# xticks berechnen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# plotten jedes n. Werts
+schritt = 100
+verbrauch['Pumpspeicher [MWh]'][::schritt].plot(figsize = (9, 6), xlim = (verbrauch.index.min() - (len(verbrauch.index) / 100), verbrauch.index.max() * 1.01), rot = 45, grid = True, label = "")
+plt.ylabel('Einspeicherung [MWh]', fontsize = 12)
+plt.suptitle('Einspeicherung in Pumpspeicherkraftwerke 2023\nbei Verdopplung der erneuerbaren Stromerzeugung')
+
+# xticks eintragen
+plt.minorticks_off()
+plt.xticks(monate_index, monatsnamen);
+
+# Kurve unterlegen: plt.fill_between bietet einen praktischen Parameter where
+plt.fill_between(x = verbrauch['Pumpspeicher [MWh]'].index[::schritt], y1 = verbrauch['Pumpspeicher [MWh]'][::schritt], label = 'konventionelle Einspeicherung') # , where = restlast[::schritt] > 0 führt zu weißen Stellen
+plt.fill_between(x = verbrauch['Pumpspeicher [MWh]'].index[::schritt], y1 = verbrauch['Pumpspeicher [MWh]'][::schritt], where = restlast[::schritt] <= 0, color = 'greenyellow', label = 'erneuerbare Einspeicherung')
+
+plt.legend()
+```
+
+:::
+
+### Mögliche Erweiterung
+Über den in den Phasen der Einspeicherung bestehenden Strommix kann die Verteilung der für die Einspeicherung weiter approximiert werden. **Das wäre aber nur zur Veranschauung. Da mit Salden für das Gesamtnetz gerechnet wird, die Regelzonen aber kleinteiliger organisiert sind und die physischen Stromflüsse unbekannt sind, erzeugt man einen ökologischen Fehlschluss. Man rechnet dann mit hoher Präzision etwas sehr ungenau aus.**
+
+```
+Vorgehen:
+
+  - Datensatz Erzeugung filtern mit [Verbrach Pumpspeicherkraftwerke > 0]  
+   
+  
+  - für jede Periode a mit Restlast <= 0 den Verbrauch der Pumpspeicherkraftwerke.sum() = Anteil EE 
+
+  - für jede Periode b mit Restlast > 0 den Verbrauch der Pumpspeicherkraftwerke.sum() = Anteil Konventionell
+
+  - in allen Perioden a die Erzeugungsanteile der Erneuerbaren bestimmen und mit der Gesamterzeugung gewichten (gesamte Erzeugung in der Periode / gesamte summierte Erzeugung). Dann dann über alle Perioden summieren = Aufschlüsselung des Anteil EE
+
+  - in allen Perioden b bie Erzeugungsanteile der Konventionellen bestimmen und mit der Gesamterzeugung gewichten (gesamte Erzeugung in der Periode / gesamte summierte Erzeugung). Dann dann über alle Perioden summieren = Aufschlüsselung des Anteil Konventionell
+```
+
+## Zusammenfassung und Ausblick
+
+Hier könnte man noch einen inhaltlichen Kommentar ergänzen.
+Ausblick: Auch der Bereich der Mittelllast wird mit zunehmendem Ausbau erneuerbarer Energien immer kleiner werden (siehe @tip-verdopplung-EE). (**ggf. ergänzen: für die verbleibende Spitzenlast werden Speicher mit Spitzenlasterzeugern konkurrieren. Im Forum habe ich das bereits schön formuliert. Hieraus könnte man einen längeren interpretativen Abschnitt machen.**)
+
+# Analytische Statistik
+Analytische Statistik bedeutet, auf Grundlage der Daten Rückschlüsse zu ziehen. Analytische Statistik unterscheidet sich von der beschreibenden und explorativen Statistik dadurch, dass Daten nicht nur betrachtet und zueinander in Verhältnis gesetzt werden, sondern durch Modellierung neue Daten erzeugt werden.
+
+Einleitung: In ABschnitt sowieso haben wir gesehen, dass bei einer Verdoppelung der im Jahr 2023 installierten EE-Erzeugung regelmäßig größere Produktionsüberschüsse entstehen. Diese könnten, wenn Sie gespeichert werden, helfen, die Phasen mit positiver Restlast ebenfalls aus erneuerbaren Energien zu decken.
+
+Vielleicht noch als Hintergrund die Zubaugrafik vom Quaschning einbinden, dass der Weg dahin so 20-25 Jahre dauern wird, also praktisch morgen. **wie im Forum**
+
+Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt?
+= Minimumabschätzung im „Kupferplattenmodell“ also ohne technische Verluste
+
+Hintergrund: bissl technischer Hintergrund zu Speichern
 
 # Informationen zu Speichern
 Viele Zahlen in diesem Artikel: https://www.msn.com/de-de/finanzen/top-stories/energiewende-das-riesige-potenzial-der-e-autos-f%C3%BCr-die-energiewende/ar-BB1mErcB?ocid=entnewsntp&pc=U531&cvid=3d61906f85914af89a3255239a2138f0&ei=23
@@ -1301,3 +1467,28 @@ Datensätze kontrollieren, plausibiliseren und visualisieren --> das meiste erke
 Berechnung der Jahresvolllaststunden und Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten. 
 
 **Steinkohle ist das neue Erdgas.**
+
+Resterrampe von der Planung:
+Grenzstrom: 2 (3) Regime (EE-Überschuss, fossile Lastfolgebetrieb.)
+
+    - Vorbereitung 1: Restlast bestimmen
+
+      - Herkunft Pumpspeicherenergie grob abschätzen: in wie vielen Intervallen war die Restlast negativ
+
+      - Herkunft Pumpspeicherenergie genauer bestimmen: Abgleich Null oder negative Restlast mit Verbrauch der Pumpspeicher (Befüllen)
+
+        - Wenn Restlast 0 oder negativ = Befüllung mit EE, wenn Restlast > 0 = Befüllung mit Lastfolgeerzeugern
+
+    - Vorbereitung 2: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? **Grundlast ist tot.**
+
+      - Quantifizierung mit Jahresvolllaststunden
+
+      - Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
+      
+      - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)
+    
+Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überprüfen.
+*Befüllung der Pumpspeicher und die Restlast im Jahresgang anzeigen und anschließend nur die Werte zeigen, zu denen der Verbrauch der Pumpspeicher > 0 ist* 
+
+# Übungen
+Errechnen Sie die Volllaststunden für Wind Offshore, Wasserkraft, Sonstige Erneuerbare und Wind Onshore und stellen den Jahresgang und die Jahresdauerlinien für diese Erzeuger dar.

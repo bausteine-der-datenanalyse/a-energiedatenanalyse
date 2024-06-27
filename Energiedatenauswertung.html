@@ -163,10 +163,14 @@ window.Quarto = {
   <li><a href="#residual--und-restlast-bestimmen" id="toc-residual--und-restlast-bestimmen" class="nav-link" data-scroll-target="#residual--und-restlast-bestimmen">Residual- und Restlast bestimmen</a></li>
   <li><a href="#jahresgang-grafisch-darstellen" id="toc-jahresgang-grafisch-darstellen" class="nav-link" data-scroll-target="#jahresgang-grafisch-darstellen">Jahresgang grafisch darstellen</a></li>
   <li><a href="#hintergrund-grund--mittel-und-spitzenlast" id="toc-hintergrund-grund--mittel-und-spitzenlast" class="nav-link" data-scroll-target="#hintergrund-grund--mittel-und-spitzenlast">Hintergrund: Grund-, Mittel und Spitzenlast</a></li>
+  <li><a href="#bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms" id="toc-bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms" class="nav-link" data-scroll-target="#bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms">Bestimmung des in den Pumpspeichern gespeicherten Stroms</a></li>
   </ul></li>
+  <li><a href="#zusammenfassung-und-ausblick" id="toc-zusammenfassung-und-ausblick" class="nav-link" data-scroll-target="#zusammenfassung-und-ausblick"><span class="header-section-number">7.2</span> Zusammenfassung und Ausblick</a></li>
   </ul></li>
-  <li><a href="#informationen-zu-speichern" id="toc-informationen-zu-speichern" class="nav-link" data-scroll-target="#informationen-zu-speichern"><span class="header-section-number">8</span> Informationen zu Speichern</a></li>
-  <li><a href="#das-wichtigste" id="toc-das-wichtigste" class="nav-link" data-scroll-target="#das-wichtigste"><span class="header-section-number">9</span> Das Wichtigste</a></li>
+  <li><a href="#analytische-statistik" id="toc-analytische-statistik" class="nav-link" data-scroll-target="#analytische-statistik"><span class="header-section-number">8</span> Analytische Statistik</a></li>
+  <li><a href="#informationen-zu-speichern" id="toc-informationen-zu-speichern" class="nav-link" data-scroll-target="#informationen-zu-speichern"><span class="header-section-number">9</span> Informationen zu Speichern</a></li>
+  <li><a href="#das-wichtigste" id="toc-das-wichtigste" class="nav-link" data-scroll-target="#das-wichtigste"><span class="header-section-number">10</span> Das Wichtigste</a></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"><span class="header-section-number">11</span> Übungen</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Andere Formate</h2><ul><li><a href="Energiedatenauswertung.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
@@ -197,7 +201,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">25. Juni 2024</p>
+      <p class="date">27. Juni 2024</p>
     </div>
   </div>
   
@@ -358,7 +362,7 @@ Warning&nbsp;1: SMARD Daten herunterladen
 <li><p>die Spalten mit Datums- und Zeitangaben sowie das Datumsformat bestimmt.<br>
 <code>parse_dates = [0, 1], date_format = "%d.%m.%Y %H:%M"</code></p></li>
 </ul>
-<div id="d55aa62c" class="cell" data-results="hold" data-execution_count="1">
+<div id="c279ded6" class="cell" data-results="hold" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.precision"</span>, <span class="dv">2</span>) <span class="co"># places after decimal for floats</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -395,7 +399,7 @@ english version
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>english version</p>
-<div id="31c8f361" class="cell" data-results="hold" data-execution_count="2">
+<div id="75721980" class="cell" data-results="hold" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>erzeugung0_en <span class="op">=</span> pd.read_csv(filepath_or_buffer <span class="op">=</span> <span class="op">\</span></span>
@@ -404,7 +408,7 @@ english version
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>parse_dates <span class="op">=</span>  [<span class="dv">0</span>, <span class="dv">1</span>], date_format <span class="op">=</span> <span class="st">"%b </span><span class="sc">%d</span><span class="st">, %Y %I:%M %p"</span>) <span class="co"># leading zero is optional for formats %d, %m, %H, %I, %M, %S, %j, %U, %W, and %V</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0_en.head(<span class="dv">2</span>), erzeugung0_en.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="36">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 <div>
 
@@ -613,7 +617,7 @@ Tip&nbsp;2: Lösung Datumsformat
 <section id="daten-organisieren" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Daten organisieren</h1>
 <p>Vor der Datenanalyse sollte überprüft werden, ob die Daten korrekt eingelesen wurden. Dies bedeutet zum einen, zu kontrollieren, ob der Datentyp aller Spalten richtig erkannt wurde. Ob die Spaltentypen einer Datei korrekt eingelesen wurden, können Sie in Python mit dem Befehl <code>df.dtypes</code> überprüfen. Hier der Output des Befehls für den DataFrame <code>erzeugung0</code>.</p>
-<div id="e86f7ffd" class="cell" data-results="hold" data-execution_count="3">
+<div id="de32806d" class="cell" data-results="hold" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Spalten:</span><span class="ch">\n</span><span class="sc">{</span>erzeugung0<span class="sc">.</span>dtypes<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Spalten:
@@ -636,7 +640,7 @@ dtype: object</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Viele der Spaltennamen enthalten die Zeichenkette ” Originalauflösungen”, die der Übersichtlichkeit wegen entfernt werden kann (führendes Leerzeichen beachten). Auf diese Weise könnte auch die Einheitenangabe [MWh] entfernt werden, falls diese als störend empfunden wird.</p>
-<div id="072edc51" class="cell" data-results="hold" data-execution_count="4">
+<div id="1025ee1a" class="cell" data-results="hold" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Zeichenkette " Originalauflösungen" entfernen</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0.columns <span class="op">=</span> installierte_leistung0.columns.<span class="bu">str</span>.replace(pat <span class="op">=</span> <span class="st">" Originalauflösungen"</span>, repl <span class="op">=</span> <span class="st">""</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -669,10 +673,10 @@ dtype: object</code></pre>
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">installierte Leistung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">realisierte Erzeugung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">realisierter Verbrauch</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="254610cd" class="cell" data-results="hold" data-execution_count="5">
+<div id="1bd2a977" class="cell" data-results="hold" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># der DataFrame installierte_leistung0 hat nur 1 Zeile</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="39">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 <div>
 
@@ -724,11 +728,11 @@ dtype: object</code></pre>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="d1c2a8d2" class="cell" data-results="hold" data-execution_count="6">
+<div id="29d0c1b5" class="cell" data-results="hold" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0.head(<span class="dv">2</span>), <span class="op">\</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>erzeugung0.iloc[<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>erzeugung0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="40">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <div>
 <div>
 
@@ -865,11 +869,11 @@ dtype: object</code></pre>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div id="dde991d4" class="cell" data-results="hold" data-execution_count="7">
+<div id="95f41fe2" class="cell" data-results="hold" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pd.concat([verbrauch0.head(<span class="dv">2</span>), <span class="op">\</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>verbrauch0.iloc[<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="41">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 <div>
 
@@ -946,7 +950,7 @@ dtype: object</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Schließlich ist eine Plausibilitätskontrolle der Daten sinnvoll. Einleitend wurde der deutsche Gesamtstromverbrauch im Jahr 2023 genannt, der 458,3 TWh beträgt. Der Stromverbrauch und die Summe der Stromerzeugung sollten diesem Wert ungefähr entsprechen.</p>
-<div id="2edc8549" class="cell" data-execution_count="8">
+<div id="46601e6f" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude columns with datetime</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Stromverbrauch in Millionen MWh:</span><span class="ch">\n</span><span class="st">"</span>, <span class="op">\</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>) <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>), sep <span class="op">=</span> <span class="st">""</span>)</span>
@@ -965,7 +969,7 @@ Stromerzeugung in Millionen MWh 448.0</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Wenn alle Dateien korrekt eingelesen wurden, können Arbeitsdateien mit dem Befehl <code>df.copy()</code> angelegt werden. Dadurch bleiben die Rohdaten immer verfügbar und können bei Bedarf, beispielsweise nach einem versehentlichen Überschreiben der Arbeitsdateien, erneut geladen werden.</p>
-<div id="bb661aea" class="cell" data-results="hold" data-execution_count="9">
+<div id="a823fdc2" class="cell" data-results="hold" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>erzeugung <span class="op">=</span> erzeugung0.copy()</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>verbrauch <span class="op">=</span> verbrauch0.copy()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>installierte_leistung <span class="op">=</span> installierte_leistung0.copy()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -975,55 +979,165 @@ Stromerzeugung in Millionen MWh 448.0</code></pre>
 <h1 data-number="6"><span class="header-section-number">6</span> Beschreibende Datenanalyse</h1>
 <p>Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und analytischen Datenanalyse vertieft werden.</p>
 <p>Einen ersten Überblick über die Daten liefert die Methode <code>pd.DataFrame.describe()</code>. Durch das Argument <code>include = [np.number]</code> kann die Ausgabe auf Spalten mit numerischen Daten beschränkt werden, das heißt, die Spalten mit Datumsinformationen werden ausgeschlossen.</p>
-<div id="b1db56c0" class="cell" data-results="hold" data-execution_count="10">
+<div id="58722262" class="cell" data-results="hold" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Der DataFrame erzeugung hat </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> Zeilen und </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> Spalten.</span><span class="ch">\n</span><span class="ss">"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(erzeugung.describe(include <span class="op">=</span> [np.number]))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>erzeugung.describe(include <span class="op">=</span> [np.number])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Der DataFrame erzeugung hat 35040 Zeilen und 14 Spalten.
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+<div>
 
-       Biomasse [MWh]  Wasserkraft [MWh]  Wind Offshore [MWh]  \
-count        35040.00           35040.00             35040.00   
-mean          1079.50             411.50               671.23   
-std             80.16              83.08               457.65   
-min            892.50             249.75                 0.00   
-25%           1017.50             334.00               259.00   
-50%           1066.75             420.50               612.25   
-75%           1133.25             481.00              1040.56   
-max           1293.25             618.25              1910.00   
 
-       Wind Onshore [MWh]  Photovoltaik [MWh]  Sonstige Erneuerbare [MWh]  \
-count            35040.00            35040.00                    35040.00   
-mean              3389.91             1590.11                       33.32   
-std               2627.46             2470.00                        7.69   
-min                 30.25                0.25                       21.75   
-25%               1237.25                0.50                       25.50   
-50%               2657.00               24.88                       32.50   
-75%               5017.19             2466.50                       39.25   
-max              12039.50            10361.25                       51.25   
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Biomasse [MWh]</th>
+<th data-quarto-table-cell-role="th">Wasserkraft [MWh]</th>
+<th data-quarto-table-cell-role="th">Wind Offshore [MWh]</th>
+<th data-quarto-table-cell-role="th">Wind Onshore [MWh]</th>
+<th data-quarto-table-cell-role="th">Photovoltaik [MWh]</th>
+<th data-quarto-table-cell-role="th">Sonstige Erneuerbare [MWh]</th>
+<th data-quarto-table-cell-role="th">Kernenergie [MWh]</th>
+<th data-quarto-table-cell-role="th">Braunkohle [MWh]</th>
+<th data-quarto-table-cell-role="th">Steinkohle [MWh]</th>
+<th data-quarto-table-cell-role="th">Erdgas [MWh]</th>
+<th data-quarto-table-cell-role="th">Pumpspeicher [MWh]</th>
+<th data-quarto-table-cell-role="th">Sonstige Konventionelle [MWh]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">count</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+<td>35040.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">mean</td>
+<td>1079.50</td>
+<td>411.50</td>
+<td>671.23</td>
+<td>3389.91</td>
+<td>1590.11</td>
+<td>33.32</td>
+<td>192.37</td>
+<td>2221.58</td>
+<td>1134.42</td>
+<td>1431.02</td>
+<td>318.19</td>
+<td>330.81</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">std</td>
+<td>80.16</td>
+<td>83.08</td>
+<td>457.65</td>
+<td>2627.46</td>
+<td>2470.00</td>
+<td>7.69</td>
+<td>305.80</td>
+<td>939.80</td>
+<td>838.85</td>
+<td>682.72</td>
+<td>425.94</td>
+<td>39.99</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">min</td>
+<td>892.50</td>
+<td>249.75</td>
+<td>0.00</td>
+<td>30.25</td>
+<td>0.25</td>
+<td>21.75</td>
+<td>0.00</td>
+<td>634.25</td>
+<td>170.25</td>
+<td>373.00</td>
+<td>0.00</td>
+<td>208.50</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">25%</td>
+<td>1017.50</td>
+<td>334.00</td>
+<td>259.00</td>
+<td>1237.25</td>
+<td>0.50</td>
+<td>25.50</td>
+<td>0.00</td>
+<td>1396.25</td>
+<td>506.75</td>
+<td>893.25</td>
+<td>38.00</td>
+<td>304.50</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">50%</td>
+<td>1066.75</td>
+<td>420.50</td>
+<td>612.25</td>
+<td>2657.00</td>
+<td>24.88</td>
+<td>32.50</td>
+<td>0.00</td>
+<td>2111.25</td>
+<td>814.75</td>
+<td>1300.00</td>
+<td>110.75</td>
+<td>337.00</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">75%</td>
+<td>1133.25</td>
+<td>481.00</td>
+<td>1040.56</td>
+<td>5017.19</td>
+<td>2466.50</td>
+<td>39.25</td>
+<td>535.00</td>
+<td>3000.31</td>
+<td>1501.00</td>
+<td>1810.75</td>
+<td>443.00</td>
+<td>356.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">max</td>
+<td>1293.25</td>
+<td>618.25</td>
+<td>1910.00</td>
+<td>12039.50</td>
+<td>10361.25</td>
+<td>51.25</td>
+<td>771.00</td>
+<td>4121.75</td>
+<td>3814.00</td>
+<td>4169.25</td>
+<td>2399.00</td>
+<td>512.50</td>
+</tr>
+</tbody>
+</table>
 
-       Kernenergie [MWh]  Braunkohle [MWh]  Steinkohle [MWh]  Erdgas [MWh]  \
-count           35040.00          35040.00          35040.00      35040.00   
-mean              192.37           2221.58           1134.42       1431.02   
-std               305.80            939.80            838.85        682.72   
-min                 0.00            634.25            170.25        373.00   
-25%                 0.00           1396.25            506.75        893.25   
-50%                 0.00           2111.25            814.75       1300.00   
-75%               535.00           3000.31           1501.00       1810.75   
-max               771.00           4121.75           3814.00       4169.25   
-
-       Pumpspeicher [MWh]  Sonstige Konventionelle [MWh]  
-count            35040.00                       35040.00  
-mean               318.19                         330.81  
-std                425.94                          39.99  
-min                  0.00                         208.50  
-25%                 38.00                         304.50  
-50%                110.75                         337.00  
-75%                443.00                         356.00  
-max               2399.00                         512.50  </code></pre>
 </div>
 </div>
-<p><strong>shape, describe (erledigt)</strong><br>
-<strong>To Do: value.counts</strong></p>
+</div>
+</div>
+<p><strong>To Do: value.counts</strong></p>
 <p>&nbsp;</p>
 <p>Aus der beschreibenden Statistik der Daten kann beispielsweise entnommen werden, dass Onshore Wind den größten Beitrag zur Stromerzeugung lieferte. Ebenfalls ist auffällig, dass weder Onshore Wind noch Photovoltaik eine minimale Erzeugung von 0 aufweisen, was jedoch für Wind Offshore und Kernenergie der Fall ist.<br>
 <strong>Warum ist das bei Photovoltaik so? – Simone fragt nach. In Österreich ist das nicht der Fall!</strong></p>
@@ -1053,7 +1167,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Plotten mit Pandas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">To Do</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Code für Pandas</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div id="abc27f08" class="cell" data-results="hold" data-execution_count="11">
+<div id="f2229905" class="cell" data-results="hold" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1069,7 +1183,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <pre><code>* lange Codezeilen umbrechen</code></pre>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<div id="783a1d84" class="cell" data-results="hold" data-execution_count="12">
+<div id="aa428f0a" class="cell" data-results="hold" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># erzeugung.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = True, explode = explosion)</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1101,7 +1215,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Plotten mit matplotlib</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">To Do</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Code für matplotlib</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div id="b5422fd3" class="cell" data-results="hold" data-execution_count="13">
+<div id="854ed542" class="cell" data-results="hold" data-execution_count="13">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1119,7 +1233,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 </ul>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<div id="1f276518" class="cell" data-results="hold" data-execution_count="14">
+<div id="ffeae88d" class="cell" data-results="hold" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erneuerbare und Konventionelle bestimmen, jeweils summieren</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Erneuerbare</span></span>
@@ -1217,7 +1331,7 @@ Tip&nbsp;4: Lösung Wirkungsgrad Pumpspeicher
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="b3de9b8c" class="cell" data-results="hold" data-execution_count="15">
+<div id="17e5fca1" class="cell" data-results="hold" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Summe Erzeugung Pumpspeicher: </span><span class="sc">{</span>erzeugung[<span class="st">"Pumpspeicher [MWh]"</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Summe Verbrauch Pumpspeicher: </span><span class="sc">{</span>verbrauch[<span class="st">"Pumpspeicher [MWh]"</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span><span class="dv">41</span> <span class="op">*</span> <span class="st">"="</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
@@ -1233,7 +1347,7 @@ Wirkungsgrad in Prozent:            79.10</code></pre>
 </div>
 </div>
 <p>Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzagentur veröffentlichte kumulierte Stromerzeugung der Pumpspeicherkraftwerke zuzüglich der Speicherverluste. Die Bundesnetzagentur führt diesen Wert im Datensatz Stromverbrauch. Im folgenden Programmcode wird der “Walross”-Operator <code>:=</code> benutzt, der Objektzuweisungen innerhalb von Anweisungen erlaubt. Mit dem Walross-Operator durchgeführte Zuweisungen müssen in runde Klammern eingefasst werden:</p>
-<div id="80e228ab" class="cell" data-results="hold" data-execution_count="16">
+<div id="b5ec5abe" class="cell" data-results="hold" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Speicherverluste:</span><span class="ch">\t\t\t</span><span class="sc">{</span> (speicherverluste <span class="op">:=</span> ( verbrauch[<span class="st">"Pumpspeicher [MWh]"</span>].<span class="bu">sum</span>() <span class="op">-</span> erzeugung[<span class="st">"Pumpspeicher [MWh]"</span>].<span class="bu">sum</span>() ) <span class="op">/</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>) )<span class="sc">:&gt;6.2f}</span><span class="ss"> TWh</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"kumulierte Stromerzeugung:</span><span class="ch">\t</span><span class="sc">{</span> ( kumulierte_erzeugung <span class="op">:=</span> erzeugung.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>).<span class="bu">sum</span>() <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ss"> TWh</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Summe:</span><span class="ch">\t\t\t\t\t\t</span><span class="sc">{</span>speicherverluste <span class="op">+</span> kumulierte_erzeugung<span class="sc">:.2f}</span><span class="ss"> TWh</span><span class="ch">\n\n</span><span class="ss">"</span></span>
@@ -1371,24 +1485,20 @@ Tipp
 <p>Explorative Datenanalyse bedeutet, Fragen an die vorliegenden Daten zu stellen und diese mittels datenanalytischer Methoden zu beantworten. Die so gewonnenen Erkenntnisse können helfen, die Fragen zu verfeinern oder neue Fragen zu generieren. Es handelt sich also um einen iterativen Prozess. Dadurch soll vor allem ein tieferes Verständnis der Daten gewonnen werden. <span class="citation" data-cites="R-for-Data-Science">(<a href="#ref-R-for-Data-Science" role="doc-biblioref">Wickham, Çetinkaya-Rundel, und Grolemund 2023, Kap. 10</a> Exploratory data analysis)</span></p>
 <section id="grenzstromanalyse" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="grenzstromanalyse"><span class="header-section-number">7.1</span> Grenzstromanalyse</h2>
-<p>Im vorliegenden Fall interessiert, welche Erzeuger Strom lieferten, um <em>zusätzlich</em> zur Netzlast die Pumpspeicher zu befüllen. Dazu soll bestimmt werden, welche Stromerzeuger an den Zeitpunkten, an denen die Pumpspeicher befüllt wurden, in der Lage waren, zusätzliche Leistung bereitzustellen. In Anlehung an in der Wirtschaftslehre gebräuchliche Grenzbetrachtungen kann dieser zusätzliche Strom kurz als Grenzstrom bezeichnet werden.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<p>Im vorliegenden Fall wird die explorative Auseinandersetzung mit dem Datensatz von der Frage strukturiert, welche Erzeuger Strom lieferten, um <em>zusätzlich</em> zur Netzlast die Pumpspeicher zu befüllen. Es soll also bestimmt werden, welche Stromerzeuger an den Zeitpunkten, an denen die Pumpspeicher befüllt wurden, in der Lage waren, zusätzliche Leistung bereitzustellen. Dieser zusätzliche Strom kann kurz als Grenzstrom bezeichnet werden.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Platzhalter Grenzbetrachtung - ggf. löschen
+Definition Grenzstrom
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Grenzbetrachtungen untersuchen die Bedingungen, die bei der Produktion oder dem Verbrauch einer zusätzlichen Einheit herrschen. Die Grenzbetrachtung verdeutlicht folgendes Beispiel.</p>
-<p>Ein Industriebetrieb hat einen variablen Stromverbrauch zwischen 400 und 600 MW. Zur Eigenstromversorgung wurden ein Kohlekraftwerk mit einer Leistung von 350 MW zur Deckung der Grundlast sowie ein Gaskraftwerk mit einer Leistung von 250 MW für den Lastfolgebetrieb errichtet.</p>
-<p>… Beispiele für fixe Erzeugung und variable Erzeugung bei bestimmten Lasten und Veränderung des mittleren und Grenz-CO2-Ausstoßes.</p>
-<p>Steinkohle 338,2 kg CO2 je MWh (Primärenergiegehalt) / Wirkungsgrad 39 % / 867 kg CO2-Emmission je MWHel Erdgas 200,8 kg CO2 je MWh (Primärenergiegehalt) / Wirkungsgrad 56,1 % / 358 kg CO2-Emission je MWhel <a href="https://volker-quaschning.de/datserv/CO2-spez/index.php" class="uri">https://volker-quaschning.de/datserv/CO2-spez/index.php</a></p>
-</div>
+<p>Grenzbetrachtungen untersuchen die Bedingungen, die bei der Produktion oder dem Verbrauch einer zusätzlichen Einheit herrschen. Eine Grenzbetrachtung unterscheidet sich dadurch von einer Durchschnittsbetrachtung, die den Effekt einer Mengenänderung auf alle Einheiten untersucht.</p>
+<p>Beispielsweise bestehe die momentane Stromerzeugung in Höhe von 100 Einheiten aus 60 Einheiten Solarstrom und, weil die solare Produktion nicht ausreicht, zusätzlich aus 40 Einheiten Kohlestrom. In diesem Fall enthält jede Einheit Strom durchschnittlich 0,4 Anteile Kohlestrom. Werden nun weitere 20 Einheiten Strom nachgefragt, so müssen diese durch eine zusätzliche Kohleverstromung bedient werden. In der Durchschnittsbetrachtung beträgt der Strommix nun aus 60 Einheiten Solarstrom und 40 + 20 = 60 Einheiten Kohlestrom. Dadurch verändert sich der durchschnittliche Anteil der Kohle an der Stromproduktion von 0,4 auf 0,5.</p>
+<p>In der Grenzbetrachtung beträgt der Kohleanteil des zusätzlich verbrauchten Stroms 20 von 20 Einheiten, also 1.</p>
 </div>
 </div>
 <section id="hintergrund-einspeisevorrang-erneuerbarer-energien" class="level3">
@@ -1433,14 +1543,14 @@ Gesetz für den Vorrang Erneuerbarer Energien (Erneuerbare-Energien-Gesetz – E
 <p>Die nicht erneuerbaren Erzeuger arbeiten im Lastfolgebetrieb zur Deckung der Restlast, das heißt der Netzlast abzüglich der erneuerbaren Erzeugungsleistung. Dies bedeutet, dass zwei Szenarien zu unterscheiden sind:</p>
 <ol type="1">
 <li><p>Überschuss an erneuerbaren Energien: Der Stromverbrauch wird vollständig durch die Erzeugung erneuerbarer Energien gedeckt und es besteht ein Erzeugungsüberschuss (bzw. Erzeuger wurden abgeregelt), aus dem zusätzlicher Stromverbrauch bedient werden kann.</p></li>
-<li><p>Strommix aus erneuerbarer Einspeisung und Lastfolgebetrieb nicht erneuerbarer Erzeuger: Erneuerbare Energien speisen mit voller Leistung ein, die Restlast wird von nicht erneuerbaren Erzeugern gedeckt.</p></li>
+<li><p>Strommix aus erneuerbarer Einspeisung und Lastfolgebetrieb nicht erneuerbarer Erzeuger: Erneuerbare Energien speisen mit voller Leistung ein, die Restlast und zusätzlicher Stromverbrauch wird von nicht erneuerbaren Erzeugern gedeckt.</p></li>
 </ol>
 <p>Die welches Szenario im Stromnetz zu einem bestimmten Zeitpunkt besteht, lässt sich also an der Restlast ablesen.</p>
 </section>
 <section id="residual--und-restlast-bestimmen" class="level3">
 <h3 class="anchored" data-anchor-id="residual--und-restlast-bestimmen">Residual- und Restlast bestimmen</h3>
 <p>Die Bundesnetzagentur veröffentlicht im Datensatz zum realisierten Stromverbrauch Netzlast, Residuallast und den Stromverbrauch durch Pumpspeicherkraftwerke.</p>
-<div id="6a7eac6b" class="cell" data-execution_count="17">
+<div id="4cccc3bf" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(verbrauch.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Gesamt (Netzlast) [MWh]    4.58e+08
@@ -1464,7 +1574,7 @@ Definition Residuallast
 </div>
 <p>&nbsp;</p>
 <p>Die nicht durch erneuerbare Energien bediente Restlast ist die Differenz aus Stromverbrauch und der Erzeugung durch erneuerbare Energien. Die Restlast ist folglich kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast. Residual- und Restlast können aus der Differenz von Netzlast und der entsprechenden erneuerbaren Stromerzeugung berechnet werden.</p>
-<div id="513b577c" class="cell" data-execution_count="18">
+<div id="c987af81" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>erneuerbare <span class="op">=</span> [<span class="st">'Biomasse [MWh]'</span>, <span class="st">'Wasserkraft [MWh]'</span>, <span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>, <span class="st">'Sonstige Erneuerbare [MWh]'</span>]</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>PV_WindOnshore_WindOffshore <span class="op">=</span> [<span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>] </span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1478,7 +1588,7 @@ Definition Residuallast
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Restlast [MWh]"</span>] <span class="op">=</span> plotting_data[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data[<span class="st">"Erneuerbare [MWh]"</span>]</span>
 <span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>plotting_data.head()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="52">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 <div>
 
@@ -1550,14 +1660,14 @@ Definition Residuallast
 </div>
 <p>&nbsp;</p>
 <p>Die von der Bundesnetzagentur veröffentlichte Residuallast <code>Residuallast BNetzA [MWh]</code> entspricht nach der Betrachtung der ersten Zeilen der selbst berechneten Residuallast <code>Residuallast [MWh]</code>. Ob dies für die gesamte Zeitreihe gilt, kann leicht mit der Methode <code>pd.Series.equals()</code> überprüft werden.</p>
-<div id="7d517637" class="cell" data-results="hold" data-execution_count="19">
+<div id="1a136127" class="cell" data-results="hold" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">'Residuallast BNetzA [MWh]'</span>].equals(plotting_data[<span class="st">'Residuallast [MWh]'</span>])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="53">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>True</code></pre>
 </div>
 </div>
 <p>Somit kann die redundante Spalte entfernt werden.</p>
-<div id="9e5431c6" class="cell" data-results="hold" data-execution_count="20">
+<div id="a086def5" class="cell" data-results="hold" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>plotting_data.drop([<span class="st">'Residuallast BNetzA [MWh]'</span>], axis <span class="op">=</span> <span class="st">'columns'</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -1568,7 +1678,7 @@ Definition Residuallast
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Netzlast im Jahresgang</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div id="2845783f" class="cell" data-results="hold" data-execution_count="22">
+<div id="19d476f2" class="cell" data-results="hold" data-execution_count="22">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1580,7 +1690,7 @@ Definition Residuallast
 </div>
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<div id="de223c48" class="cell" data-results="hold" data-execution_count="23">
+<div id="9ed6881b" class="cell" data-results="hold" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Position und Inhalt der x-Achsenbeschriftung finden</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>monate <span class="op">=</span> erzeugung[<span class="st">"Datum von"</span>].dt.month.unique().tolist() <span class="co"># gibt die Zahlen 1-12 aus</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1596,7 +1706,7 @@ Definition Residuallast
 <span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   monate_index.append(erzeugung.index[erzeugung["Datum von"].dt.month == i].min())</span></span>
 <span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   monatsnamen.append(erzeugung["Datum von"].iloc[monate_index[i - 1]].strftime("%B"))</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="57988c06" class="cell" data-results="hold" data-execution_count="24">
+<div id="512b1051" class="cell" data-results="hold" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plotten jedes 100. Werts</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>plotting_data[::<span class="dv">100</span>].plot(figsize <span class="op">=</span> (<span class="dv">9</span>, <span class="dv">8</span>), subplots <span class="op">=</span> <span class="va">True</span>, sharey <span class="op">=</span> <span class="va">True</span>, xlim <span class="op">=</span> (plotting_data.index.<span class="bu">min</span>() <span class="op">-</span> (<span class="bu">len</span>(plotting_data.index) <span class="op">/</span> <span class="dv">100</span>), plotting_data.index.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.01</span>), rot <span class="op">=</span> <span class="dv">45</span>, grid <span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>plt.ylim(top <span class="op">=</span> <span class="dv">20000</span>)</span>
@@ -1627,7 +1737,7 @@ Tip&nbsp;6: Musterlösung Verdopplung EE
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">Mögliche Interpretation</a></li></ul>
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
-<div id="639c2404" class="cell" data-execution_count="25">
+<div id="9c23f7ee" class="cell" data-execution_count="25">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1639,7 +1749,7 @@ Tip&nbsp;6: Musterlösung Verdopplung EE
 </div>
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
-<div id="7797c6f1" class="cell" data-execution_count="26">
+<div id="d89ca38b" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE <span class="op">=</span> plotting_data.copy()</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Erneuerbare [MWh]"</span>] <span class="op">*</span> <span class="dv">2</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"Netzlast - 2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data_2EE[<span class="st">"2x EE"</span>]</span>
@@ -1661,7 +1771,7 @@ Tip&nbsp;6: Musterlösung Verdopplung EE
 </div>
 </section>
 <section id="hintergrund-grund--mittel-und-spitzenlast" class="level3">
-<h3 class="anchored">Hintergrund: Grund-, Mittel und Spitzenlast</h3>
+<h3 class="anchored" data-anchor-id="hintergrund-grund--mittel-und-spitzenlast">Hintergrund: Grund-, Mittel und Spitzenlast</h3>
 <p>Nicht alle Erzeuer sind aus technischen oder aus wirtschaftlichen Gründen gleichermaßen für den Lastfolgebetrieb geeignet. Beispielsweise sind Kohlekraftwerke weniger flexibel regelbar als Gaskraftwerke. Kernkraftwerke werden aufgrund ihrer hohen Fix- und geringen variablen Kosten bevorzugt im Grundlastbetrieb betrieben. Im Stromnetz werden drei Einsatzprofile für Kraftwerke unterschieden: Grundlast, Mittellast und Spitzenlast.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1673,6 +1783,7 @@ Definition Grund-, Mittel- und Spitzenlast
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<div class="border">
 <ul>
 <li><p>Grundlast: Die im Jahresgang dauerhaft nachgefragte Leistung.<br>
 Kraftwerkstypen: Braunkohle, Kernkraft, Laufwasser</p></li>
@@ -1681,8 +1792,13 @@ Kraftwerkstypen: Gas-und-Dampfturbinen-Kraftwerk, Steinkohle</p></li>
 <li><p>Spitzenlast: Über die Mittellast hinausgehende, im Tages- und Jahresgang nur kurzzeitig oder ungeplant nachgefragte Leistung.<br>
 Kraftwerkstypen: Gaskraftwerke, Pumpspeicherkraftwerke</p></li>
 </ul>
+<p>ISPEX AG: <a href="https://www.ispex.de/lexikon/grundlast/">Grundlast</a>, <a href="https://www.ispex.de/lexikon/mittellast/">Mittellast</a>, <a href="https://www.ispex.de/lexikon/spitzenlast/">Spitzenlast</a></p>
+<p>Grünwald, Reinhard / Caviezel, Claudio 2017 Lastfolgefähigkeit deutscher Kernkraftwerke. Monitoring. Büro für Technikfolgen-Abschätzung beim Deutschen Bundestag (TAB). doi: <a href="https://publikationen.bibliothek.kit.edu/1000102277">10.5445/IR/1000102277</a>. Seite 16.</p>
 </div>
 </div>
+</div>
+<p>Für die Frage, welche Kraftwerke den Grenzstrom zur Befüllung der Pumpspeicherkraftwerke liefern, ist insbesondere die Unterscheidung von im Grundlastbetrieb operierenden Kraftwerken einerseits sowie von im Mittellast- und Spitzenlastbetrieb arbeitenden Kraftwerken andererseits relevant. In Grundlast operierende Kraftwerke fahren 24 Stunden am Tag in Volllast. Beispielsweise erreichte Kernenergie im Jahr 2021 mit 8.070 Jahresvolllaststunden beinahe einen durchgehenden Volllastbetrieb <a href="https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/">statista</a>. In Volllast betriebene Kraftwerke können nicht mehr auf zusätzliche Stromnachfrage reagieren. Dies bleibt im Mittel- und Spitzenlastbetrieb arbeitenden Kraftwerken überlassen.</p>
+<p>Somit können durch die Unterscheidung von in Grundlast und von in Mittel- bzw. Spitzenlast betriebenen Kraftwerkstypen die Kraftwerkstypen, die den zur Befüllung der Pumpspeicherkraftwerken erforderlichen Strom lieferten, eingegrenzt werden.</p>
 <p>Die Auslastung eines Kraftwerks (bzw. einer Gruppe von Kraftwerken) kann mittels seiner Jahresvolllaststunden quantifiziert werden.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1702,7 +1818,7 @@ Jahresvolllaststunden ~ in ~ h = \frac{Summe ~ erzeugten ~ Stroms ~ in ~ MWh}{in
 </div>
 <p>Die Jahresvolllaststunden können wie folgt berechnet werden. Die Anwendung der Methode <code>.sum</code> auf den Datensatz installierte_leistung ist nicht erforderlich, da dieser nur eine Zeile hat. Die Methode <code>.sum</code> erlaubt es aber, über den Parameter <code>numeric_only = True</code> die Datumsspalten auszuschließen.<br>
 <strong>Einfache Division SeriesA / SeriesB funktioniert nicht, möglicherweise weil die Spaltennamen nicht übereinstimmen. Deshalb muss der Index für beide Series mit der Methode .reset_index(drop = True) zurückgesetzt und manuell nachgetragen werden.</strong></p>
-<div id="c5bfbc1f" class="cell" data-execution_count="27">
+<div id="2eb5efb3" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"{erzeugung.sum(numeric_only = True)}\n")</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># print(installierte_leistung.sum(numeric_only = True), "\n")</span></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1733,14 +1849,13 @@ Photovoltaik [h]                883.48
 dtype: float64</code></pre>
 </div>
 </div>
-<p>Die Berechnung der Jahresstunden zeigt, dass kein Kraftwerkstyp auch nur annähernd in Volllast lief. Die höchste Auslastung weisen Biomasse und Braunkohle auf. Biomasse ist umgerechnet in 51 Prozent der 8760 Jahresstunden in Volllast gelaufen, Braunkohle in 50 Prozent. Demgegenüber erreichte der klassische Grundlasterzeuger Kernenergie nur 25 Prozent. Die in Deutschland hauptsächlich für den Mittellastbetrieb eingesetzte Steinkohle erreichte 19 Prozent. Das Jahr 2023 war insbesondere für die Kernenergie ein ungewöhnliches Jahr, wie der Vergleich zu den erreichten Jahresvolllaststunden im Jahr 2021 zeigt <a href="https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/">statista</a>. 2021 erreichte Kernenergie mit 8.070 Jahresvolllaststunden beinahe einen durchgehenden Volllastbetrieb.</p>
-<p>Deshalb wird der Jahresgang ausgewählter konventioneller Erzeuger dargestellt. Um eine hohe Auflösung zu erreichen, wird eine Darstellung auf Monatsbasis gewählt. <strong>Steinkohle wird wie Erdgas gefahren –&gt; Jahresdauerlinie Braun-, Steinkohle und Gas (übereinanderlegen?!).</strong><br>
-<strong>es wäre nett, Phasen des EE-Überschusses farblich zu hinterlegen (mit einem flotten Grau)</strong></p>
+<p>Die Berechnung der Jahresstunden zeigt, dass kein Kraftwerkstyp auch nur annähernd in Volllast lief. Die höchste Auslastung weisen Biomasse und Braunkohle auf. Biomasse ist umgerechnet in 51 Prozent der 8760 Jahresstunden in Volllast gelaufen, Braunkohle in 50 Prozent. Demgegenüber erreichte der klassische Grundlasterzeuger Kernenergie nur 25 Prozent. Die in Deutschland hauptsächlich für den Mittellastbetrieb eingesetzte Steinkohle erreichte 19 Prozent. Das Jahr 2023 war insbesondere für die Kernenergie ein ungewöhnliches Jahr.</p>
+<p>Deshalb wird der Jahresgang ausgewählter konventioneller Erzeuger dargestellt. Um eine hohe Auflösung zu erreichen, wird eine Darstellung auf Monatsbasis gewählt. <strong>Man könnte zusätzlich Phasen des EE-Überschusses farblich hinterlegen (mit einem flotten Grau).</strong></p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Beispielcode Kernenergie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">Kernenergie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">Braunkohle</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-4" role="tab" aria-controls="tabset-6-4" aria-selected="false" href="">Steinkohle</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-5" role="tab" aria-controls="tabset-6-5" aria-selected="false" href="">Erdgas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-6" role="tab" aria-controls="tabset-6-6" aria-selected="false" href="">To Do</a></li></ul>
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
-<div id="d4205122" class="cell" data-execution_count="28">
+<div id="4b4a1f13" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>plotting_data <span class="op">=</span> erzeugung.copy()</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>erzeuger <span class="op">=</span> <span class="st">"Kernenergie"</span></span>
@@ -1766,7 +1881,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
-<div id="716830ad" class="cell" data-execution_count="29">
+<div id="29786745" class="cell" data-execution_count="29">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1778,7 +1893,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
-<div id="45aa55b7" class="cell" data-execution_count="30">
+<div id="d2a2d7e0" class="cell" data-execution_count="30">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1790,7 +1905,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">
-<div id="9a3062c2" class="cell" data-execution_count="31">
+<div id="34ebd444" class="cell" data-execution_count="31">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1802,7 +1917,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-5-tab">
-<div id="78a63c72" class="cell" data-execution_count="32">
+<div id="25e7a032" class="cell" data-execution_count="32">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1841,8 +1956,7 @@ Tip&nbsp;8: Lösungshinweis und Musterlösung
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-17" class="callout-17-contents callout-collapse collapse">
-<section id="lösungshinweis" class="level2 callout-body-container callout-body" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="lösungshinweis"><span class="header-section-number">7.2</span> Lösungshinweis</h2>
+<div class="callout-body-container callout-body">
 <p>Mit der Abschaltung erreichte die Stromproduktion durch Kernenergie den Wert 0. Die Abschaltung wurde in der Periode vollendet, die der ersten Periode mit der Stromproduktion durch Kernenergie mit dem Wert 0 vorausging.</p>
 <p>Die Ausgabe einer als datetime formatierten Spalten können Sie mit der Methode <a href="https://pandas.pydata.org/docs/reference/api/pandas.Series.dt.strftime.html">pandas.Series.dt.strftime</a> formatieren.</p>
 <div id="tip-abschaltung-akw" class="callout callout-style-default callout-tip callout-titled" title="Musterlösung">
@@ -1859,7 +1973,7 @@ Tip&nbsp;7: Musterlösung
 <div class="callout-body-container callout-body">
 <p>In der graphischen Darstellung des Jahresgangs wurde nur jeder 100. Wert geplottet, sodass es möglich ist, dass die Stromerzeugung bereits vor der endgültigen Abschaltung den Wert Null erreichte. Es ist deshalb zuverlässiger, den Datensatz rückwärts zu durchsuchen.</p>
 <p>In der Vorwärtssuche wird mit der Methode <code>.eq()</code>die Position des ersten Auftretens des Werts 0 bestimmt und 1 subtrahiert. In der Rückwärtssuche wird mit der Methode <code>.gt()</code> die Position des ersten Werts bestimmt, der größer als 0 ist.</p>
-<div id="d58b7647" class="cell" data-execution_count="33">
+<div id="80806f42" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Vorwärtssuche: erzeugung['Kernenergie [MWh]'].eq(0).idxmax() - 1</span><span class="ch">\n</span><span class="sc">{</span>erzeugung[<span class="st">'Kernenergie [MWh]'</span>]<span class="sc">.</span>eq(<span class="dv">0</span>)<span class="sc">.</span>idxmax() <span class="op">-</span> <span class="dv">1</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># rückwärts</span></span>
@@ -1880,11 +1994,10 @@ erzeugung['Datum bis'].iloc[position].strftime('%d. %B %Y um %H:%M Uhr')
 </div>
 </div>
 </div>
-</section>
 </div>
 </div>
-<p>Die Berechnung der Jahresvolllaststunden und die Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt, die von konventionellen Erzeugern bedient werden kann. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten. Auch der Bereich der Mittelllast wird mit zunehmendem Ausbau erneuerbarer Energien immer kleiner werden (siehe <a href="#tip-verdopplung-EE" class="quarto-xref">Tip&nbsp;6</a>). (<strong>ggf. ergänzen: für die verbleibende Spitzenlast werden Speicher mit Spitzenlasterzeugern konkurrieren. Anderswo habe ich das schön formuliert.</strong>)</p>
-<p>Dies kann am Beispiel der Steinkohle verdeutlicht werden, deren erzielte Jahresvolllaststunden näher an der klassischen Spitzenlasterzeugung aus Erdgas als an der Mittellasterzeugung durch Braunkohle liegt. Die Auslastung eines Stromerzeugers kann mit einer sortierten Jahresdauerlinie dargestellt werden.</p>
+</div>
+<p>Die Berechnung der Jahresvolllaststunden und die Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt, die von konventionellen Erzeugern bedient werden kann. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten. Dies kann am Beispiel der Steinkohle verdeutlicht werden, deren erzielte Jahresvolllaststunden näher an der klassischen Spitzenlasterzeugung aus Erdgas als an der Mittellasterzeugung durch Braunkohle liegt. Die Auslastung eines Stromerzeugers kann mit einer sortierten Jahresdauerlinie dargestellt werden.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1895,11 +2008,27 @@ Definition sortierte Jahresdauerlinie
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>https://www.youtube.com/watch?v=rMxYJuGqR4s CC BY Rohdaten nach Größe absteigend sortieren und als Balkendiagramm darstellen.</p>
+<p><strong>TO DO</strong><br>
+https://www.youtube.com/watch?v=rMxYJuGqR4s CC BY Rohdaten nach Größe absteigend sortieren und als Diagramm darstellen.</p>
 </div>
 </div>
-<p>**Eventuell ein HinweisDie Erstellung eines barplots mit 35.040 Balken dauert schlanke 49 Sekunden. Das “Problem” sind möglicherweise die xticks. Man muss vorher die Daten also ein bisschen aggregieren.</p>
-<div id="c49ed2ac" class="cell" data-execution_count="34">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div id="37484b85" class="cell" data-execution_count="34">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Energiedatenauswertung_files/figure-html/cell-35-output-1.png" width="691" height="376" class="figure-img"></p>
+<figcaption>sortierte Jahresdauerlinie ausgewählter konventioneller Erzeuger</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div id="f0d93ed2" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Daten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren.</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>braunkohle_daily <span class="op">=</span> erzeugung[<span class="st">'Braunkohle [MWh]'</span>].groupby(erzeugung[<span class="st">"Datum von"</span>].dt.dayofyear).mean()</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>steinkohle_daily <span class="op">=</span> erzeugung[<span class="st">'Steinkohle [MWh]'</span>].groupby(erzeugung[<span class="st">"Datum von"</span>].dt.dayofyear).mean()</span>
@@ -1912,38 +2041,154 @@ Definition sortierte Jahresdauerlinie
 <span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="co">##       f"erzeugung['Braunkohle [MWh]'].iloc[0:96].mean()\n{erzeugung['Braunkohle [MWh]'].iloc[0:96].mean()}") </span></span>
 <span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Liniendiagramm plotten</span></span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>linienstärke <span class="op">=</span> <span class="dv">5</span></span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">4</span>))</span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>braunkohle_daily.sort_values(ascending <span class="op">=</span> <span class="va">False</span>).reset_index(drop <span class="op">=</span> <span class="va">True</span>).plot.line(lw <span class="op">=</span> linienstärke, color <span class="op">=</span> <span class="st">'brown'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, label <span class="op">=</span> <span class="st">'Braunkohle'</span>)</span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>steinkohle_daily.sort_values(ascending <span class="op">=</span> <span class="va">False</span>).reset_index(drop <span class="op">=</span> <span class="va">True</span>).plot.line(lw <span class="op">=</span> linienstärke, color <span class="op">=</span> <span class="st">'black'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, label <span class="op">=</span> <span class="st">'Steinkohle'</span>)</span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>erdgas_daily.sort_values(ascending <span class="op">=</span> <span class="va">False</span>).reset_index(drop <span class="op">=</span> <span class="va">True</span>).plot.line(lw <span class="op">=</span> linienstärke, color <span class="op">=</span> <span class="st">'lightskyblue'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, label <span class="op">=</span> <span class="st">'Erdgas'</span>)</span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>plt.title(label <span class="op">=</span> <span class="st">"sortierte Jahresdauerlinie für ausgewählte konventionelle Erzeuger"</span>)</span>
-<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
-<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'durchschnittliche Stromerzeugung</span><span class="ch">\n</span><span class="st">(auf Viertelstundenbasis in MWh)'</span>)</span>
-<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Anzahl Tage pro Jahr'</span>)</span>
-<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Index um 1 verschieben, weil Index mit 0 beginnt, aber die Anzahl der Tage dargestellt wird.</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>linienstärke <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">4</span>))</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>braunkohle_daily <span class="op">=</span> braunkohle_daily.sort_values(ascending <span class="op">=</span> <span class="va">False</span>, ignore_index <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>braunkohle_daily.index <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>braunkohle_daily.plot.line(lw <span class="op">=</span> linienstärke, color <span class="op">=</span> <span class="st">'brown'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, label <span class="op">=</span> <span class="st">'Braunkohle'</span>)</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>steinkohle_daily <span class="op">=</span> steinkohle_daily.sort_values(ascending <span class="op">=</span> <span class="va">False</span>, ignore_index <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>steinkohle_daily.index <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>steinkohle_daily.plot.line(lw <span class="op">=</span> linienstärke, color <span class="op">=</span> <span class="st">'black'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, label <span class="op">=</span> <span class="st">'Steinkohle'</span>)</span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>erdgas_daily <span class="op">=</span> erdgas_daily.sort_values(ascending <span class="op">=</span> <span class="va">False</span>, ignore_index <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>erdgas_daily.index <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>erdgas_daily.plot.line(lw <span class="op">=</span> linienstärke, color <span class="op">=</span> <span class="st">'lightskyblue'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, label <span class="op">=</span> <span class="st">'Erdgas'</span>)</span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>plt.title(label <span class="op">=</span> <span class="st">"sortierte Jahresdauerlinie für ausgewählte konventionelle Erzeuger"</span>)</span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'durchschnittliche Stromerzeugung in MWh</span><span class="ch">\n</span><span class="st">(auf Viertelstundenbasis)'</span>)</span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Anzahl Tage pro Jahr'</span>)</span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>plt.margins(x <span class="op">=</span> <span class="fl">0.02</span>)</span>
+<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>Beim Vergleich der erzielten Jahresvolllaststunden konnte festgestellt werden, dass die Auslastung der Steinkohle eher der des Spitzenlasterzeugers Erdgas als des Mittellasterzeugers Braunkohle entspricht. In der grafischen Darstellung der sortierten Jahresdauerlinien wird darüber hinaus deutlich, dass das Erzeugungsprofil der Steinkohle dem der Braunkohle sogar weniger ähnelt als das von Erdgas.</p>
+<p><strong>Steinkohle ist das neue Erdgas</strong></p>
+<p>Bisher wurde ausschließlich die Erzeugung durch konventionelle Kraftwerke betrachtet. Biomasse und Braunkohle erreichen vergleichbare Jahresvolllaststunden, sodass ein Vergleich beider Erzeuger interessant sein könnte. <strong>Stellen Sie den Jahresgang und die Jahresdauerlinien für Biomasse und Braunkohle dar.</strong></p>
+<p><strong>Die Musterlösung könnte Marc machen.</strong></p>
+<div id="tip-erzeugungsprofile-biomasse-braunkohle" class="callout callout-style-default callout-tip callout-titled" title="Musterlösung Erzeugungsprofile von Biomasse und Braunkohle">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip&nbsp;9: Musterlösung Erzeugungsprofile von Biomasse und Braunkohle
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
+</section>
+<section id="bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms" class="level3">
+<h3 class="anchored" data-anchor-id="bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms">Bestimmung des in den Pumpspeichern gespeicherten Stroms</h3>
+<p>In den bisherigen Betrachtungen wurde gezeigt, dass zwei grundsätzliche Szenarien im Stromnetz zu unterscheiden sind:</p>
+<ol type="1">
+<li><p>Restlast Null oder negativ: Grenzstrom wird von erneuerbaren Energien produziert.</p></li>
+<li><p>Restlast positiv: Grenzstrom wird von konventionellen Energien im Lastfolgebetrieb produziert.</p></li>
+</ol>
+<p>Den Jahresgang des Stromverbrauchs durch Pumpspeicher und das jeweils bestehende Szenario zeigt folgender Graph.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div id="bf729bb2" class="cell" data-execution_count="36">
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Energiedatenauswertung_files/figure-html/cell-35-output-1.png" width="691" height="376" class="figure-img"></p>
+<p><img src="Energiedatenauswertung_files/figure-html/cell-37-output-1.png" width="750" height="591" class="figure-img"></p>
+<figcaption>Einspeicherung in Pumpspeicherkraftwerke 2023</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>Beim Vergleich der erzielten Jahresvolllaststunden konnte festgestellt werden, dass Steinkohle anders als Braunkohle kein Mittelllasterzeuger mehr ist, sondern das Erzeugungsprofil eher der Spitzenlasterzeugung von Erdgas entspricht.</p>
-<p>In der grafischen Darstellung der sortierten Jahresdauerlinie wird nun sogar deutlich, dass das Erzeugungsprofil der Steinkohle dem Erzeugungsprofil der Braunkohle sogar weniger ähnlich ist als das von Erdgas.</p>
-<p><strong>Steinkohle ist das neue Erdgas</strong><br>
-<strong>Aber es war doch Gaskrise?!</strong></p>
-<p>Das hätte man jetzt nicht unbedingt so erwartet, dass Erdgas viel mehr Leistung bringt, obwohl es weniger Jahresvolllaststunden hat. Die Grafiken hätte man so erwarten können, wenn man mit fotografischem Gedächnis die Ausgabe von .describe() verinnerlicht hätte. Aber weil Ablesen komplexer Informationen so schwierig ist, wird ja visualisiert. Die Jahresvolllaststunden von Erdgas sind so gering, weil die installierte Leistung ungefähr dem Doppelten der Steinkohle entspricht.</p>
-<p>Das Restlastprofil kann mit einer Jahresdauerlinie visualisiert werden. hierhier</p>
-<p>To Do: Wie ähnlich Erdgas und Steinkohle sind, visualisieren wir mit Jahresdauerlinien.</p>
-<p><strong>Man könnte noch in jeden Graph die Restlast einzeichnen.</strong></p>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div id="93e1edce" class="cell" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restlast berechnen</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>erneuerbare <span class="op">=</span> [<span class="st">'Biomasse [MWh]'</span>, <span class="st">'Wasserkraft [MWh]'</span>, <span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>, <span class="st">'Sonstige Erneuerbare [MWh]'</span>]</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>restlast <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>restlast[<span class="st">"Netzlast [MWh]"</span>] <span class="op">=</span> verbrauch[<span class="st">"Gesamt (Netzlast) [MWh]"</span>].copy() </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>restlast[<span class="st">"Erneuerbare [MWh]"</span>] <span class="op">=</span> erzeugung[erneuerbare].<span class="bu">sum</span>(axis <span class="op">=</span> <span class="st">"columns"</span>).copy()</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>restlast[<span class="st">"Restlast [MWh]"</span>] <span class="op">=</span> restlast[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> restlast[<span class="st">"Erneuerbare [MWh]"</span>]</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>restlast <span class="op">=</span> restlast[<span class="st">"Restlast [MWh]"</span>]</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="co"># xticks berechnen</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>monate_index <span class="op">=</span> erzeugung[<span class="op">~</span>erzeugung[<span class="st">"Datum von"</span>].dt.month.duplicated()].index</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>monatsnamen <span class="op">=</span> erzeugung[<span class="st">"Datum von"</span>].iloc[monate_index].dt.strftime(<span class="st">"%B"</span>) </span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="co"># plotten jedes n. Werts</span></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>schritt <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>verbrauch[<span class="st">'Pumpspeicher [MWh]'</span>][::schritt].plot(figsize <span class="op">=</span> (<span class="dv">9</span>, <span class="dv">6</span>), xlim <span class="op">=</span> (verbrauch.index.<span class="bu">min</span>() <span class="op">-</span> (<span class="bu">len</span>(verbrauch.index) <span class="op">/</span> <span class="dv">100</span>), verbrauch.index.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.01</span>), rot <span class="op">=</span> <span class="dv">45</span>, grid <span class="op">=</span> <span class="va">True</span>, label <span class="op">=</span> <span class="st">""</span>)</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Einspeicherung [MWh]'</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">'Einspeicherung in Pumpspeicherkraftwerke 2023'</span>)</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a><span class="co"># xticks eintragen</span></span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>plt.minorticks_off()</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>plt.xticks(monate_index, monatsnamen)<span class="op">;</span></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Kurve unterlegen: plt.fill_between bietet einen praktischen Parameter where</span></span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x <span class="op">=</span> verbrauch[<span class="st">'Pumpspeicher [MWh]'</span>].index[::schritt], y1 <span class="op">=</span> verbrauch[<span class="st">'Pumpspeicher [MWh]'</span>][::schritt], label <span class="op">=</span> <span class="st">'konventionelle Einspeicherung'</span>) <span class="co"># , where = restlast[::schritt] &gt; 0 führt zu weißen Stellen</span></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x <span class="op">=</span> verbrauch[<span class="st">'Pumpspeicher [MWh]'</span>].index[::schritt], y1 <span class="op">=</span> verbrauch[<span class="st">'Pumpspeicher [MWh]'</span>][::schritt], where <span class="op">=</span> restlast[::schritt] <span class="op">&lt;=</span> <span class="dv">0</span>, color <span class="op">=</span> <span class="st">'greenyellow'</span>, label <span class="op">=</span> <span class="st">'erneuerbare Einspeicherung'</span>)</span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>Die Grafik spiegelt die bei der Bestimmung der Residual- und Restlast gewonnene Erkenntnis wider, dass mit dem im Jahr 2023 realisierten Strommix zusätzliche Stromnachfrage vorwiegend konventionell bedient wird. <strong>Wie sähe die Grafik aus, wenn die Einspeisung aus erneuerbaren Energien doppelt so hoch ausgefallen wäre?</strong></p>
+<p><strong>Marc fragen, ob die Aufgabe an der Stelle zu simpel ist.</strong></p>
+<div id="tip-pumpspeicher" class="callout callout-style-default callout-tip callout-titled" title="Musterlösung Einspeicherung bei doppelter erneuerbarer Erzeugung">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip&nbsp;10: Musterlösung Einspeicherung bei doppelter erneuerbarer Erzeugung
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="2912ee73" class="cell" data-execution_count="38">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Energiedatenauswertung_files/figure-html/cell-39-output-1.png" width="753" height="591" class="figure-img"></p>
+<figcaption>Einspeicherung in Pumpspeicherkraftwerke 2023</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Über den in den Phasen der Einspeicherung bestehenden Strommix kann die Verteilung der für die Einspeicherung weiter approximiert werden. <strong>Das wäre aber nur zur Veranschauung. Da mit Salden für das Gesamtnetz gerechnet wird, die Regelzonen aber kleinteiliger organisiert sind und die physischen Stromflüsse unbekannt sind, erzeugt man einen ökologischen Fehlschluss.</strong></p>
+<p>Vorgehen:</p>
+<ul>
+<li><p>Datensatz Erzeugung filtern mit [Verbrach Pumpspeicherkraftwerke &gt; 0]</p></li>
+<li><p>für jede Periode a mit Restlast &lt;= 0 den Verbrauch der Pumpspeicherkraftwerke.sum() = Anteil EE</p></li>
+<li><p>für jede Periode b mit Restlast &gt; 0 den Verbrauch der Pumpspeicherkraftwerke.sum() = Anteil Konventionell</p></li>
+<li><p>in allen Perioden a bestimmen wir die Erzeugungsanteile der Erneuerbaren und mitteln dann über alle Perioden (gewichtet nach eingespeicherter Energiemenge in der Periode) = Aufschlüsselung des Anteil EE</p></li>
+<li><p>in allen Perioden b bestimmen wir die Erzeugugnsanteile der Konventionellen und mitteln dann über alle Perioden (gewichtet nach eingespeicherter Energiemenge in der Periode)</p></li>
+</ul>
+<p><strong>Man könnte noch in jeden Graph die Restlast einzeichnen: Gute grafische Ergänzung für den letzten Schritt, um herauszufinden, welcher Strom in den Pumpspeicherwerken ist. </strong></p>
+</section>
+</section>
+<section id="zusammenfassung-und-ausblick" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="zusammenfassung-und-ausblick"><span class="header-section-number">7.2</span> Zusammenfassung und Ausblick</h2>
+<p>Ausblick: Auch der Bereich der Mittelllast wird mit zunehmendem Ausbau erneuerbarer Energien immer kleiner werden (siehe <a href="#tip-verdopplung-EE" class="quarto-xref">Tip&nbsp;6</a>). (<strong>ggf. ergänzen: für die verbleibende Spitzenlast werden Speicher mit Spitzenlasterzeugern konkurrieren. Anderswo habe ich das bereits schön formuliert. Hieraus könnte man einen längeren interpretativen Abschnitt machen.</strong>)</p>
 <pre><code>erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
 
 plotting_data = pd.DataFrame()
@@ -1959,31 +2204,16 @@ plotting_data["Restlast [MWh]"] = plotting_data["Netzlast [MWh]"] - plotting_dat
 <li><p>die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)</p></li>
 </ul>
 <p>In Volllast betriebene Erzeuger können den Grenzstrom nicht decken. Welche Erzeugungsleistung nehmen wir… erst mal gucken, ob Pumpspeicher gleichzeitig ein- und ausspeisen (sollte nicht so sein, ist aber möglich, wegen Regelzonen.)</p>
-<p>Grenzstrom: 2 (3) Regime (EE-Überschuss, fossile Lastfolgebetrieb, Wenn Restlast kleiner gleich die Einspeisung in Pumpspeicher ist, kann der Anteil EE genau bestimmt werden.)</p>
-<pre><code>- Vorbereitung 1: Restlast bestimmen
-
-  - Herkunft Pumpspeicherenergie grob abschätzen: in wie vielen Intervallen war die Restlast negativ
-
-  - Herkunft Pumpspeicherenergie genauer bestimmen: Abgleich Null oder negative Restlast mit Verbrauch der Pumpspeicher (Befüllen)
-
-    - Wenn Restlast 0 oder negativ = Befüllung mit EE, wenn Restlast &gt; 0 = Befüllung mit Lastfolgeerzeugern
-
-- Vorbereitung 2: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? **Grundlast ist tot.**
-
-  - Quantifizierung mit Jahresvolllaststunden
-
-  - Erzeugung im Jahresverlauf plotten --&gt; Abschaltung der AKW erkennen.
-  
-  - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)</code></pre>
-<p>Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überprüfen. <em>Befüllung der Pumpspeicher und die Restlast im Jahresgang anzeigen und anschließend nur die Werte zeigen, zu denen der Verbrauch der Pumpspeicher &gt; 0 ist</em></p>
-<p>Was rein kommt, ist, was raus kommt. Dabei sind 3 Regime zu unterscheiden: a) EE-Überschuss, b) fossiler Lastfolgebetrieb, c) Restlast kleiner Verbrauch Pumpspeicher (= Mischung aus a) und b)). Der Grenzstrom ist vermutlich fast immer fossil (wenn gerade keine Überproduktion an EE vorliegt).<br>
-<strong>–&gt; das gucken wir bei der explorativen Datenanalyse, in wie vielen Intervallen die Restlast negativ war</strong><br>
-<strong>Hinweis: ökologischer Fehlschluss möglich, da mit Salden für das Gesamtnetz gerechnet wird, die Regelzonen aber kleinteiliger organisiert sind und die physischen Stromflüsse unbekannt sind.</strong></p>
+<p>Was rein kommt, ist, was raus kommt. Dabei sind 2 Regime zu unterscheiden: a) EE-Überschuss, b) fossiler Lastfolgebetrieb</p>
 </section>
 </section>
+<section id="analytische-statistik" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Analytische Statistik</h1>
+<p>Analytische Statistik ist schließende Statistik und mit der Generierung eigener Daten verbunden.</p>
+<p>Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt? = Minimumabschätzung im „Kupferplattenmodell“ also ohne technische Verluste</p>
 </section>
-<section id="informationen-zu-speichern" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Informationen zu Speichern</h1>
+<section id="informationen-zu-speichern" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Informationen zu Speichern</h1>
 <p>Viele Zahlen in diesem Artikel: https://www.msn.com/de-de/finanzen/top-stories/energiewende-das-riesige-potenzial-der-e-autos-f%C3%BCr-die-energiewende/ar-BB1mErcB?ocid=entnewsntp&amp;pc=U531&amp;cvid=3d61906f85914af89a3255239a2138f0&amp;ei=23</p>
 <ul>
 <li><p>dort Referenz auf <a href="https://www.ise.fraunhofer.de/de/veroeffentlichungen/studien/wege-zu-einem-klimaneutralen-energiesystem.html">Fraunhofer ISE Studie 2021: Wege zu einem klimaneutralen Energiesystem</a></p>
@@ -2000,12 +2230,33 @@ plotting_data["Restlast [MWh]"] = plotting_data["Netzlast [MWh]"] - plotting_dat
 <li><p>Prüfungsaufgaben (ohne Lösungen)</p></li>
 </ul>
 </section>
-<section id="das-wichtigste" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> Das Wichtigste</h1>
+<section id="das-wichtigste" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Das Wichtigste</h1>
 <p>Datensätze kontrollieren, plausibiliseren und visualisieren –&gt; das meiste erkennt man visuell, die Quantifizierung mit Kennzahlen ist eine wichtige Ergänzung (kann alleine aber irreführen [Beispiel: Abschaltung KKW]) –&gt; Am Beispiel der Pumpspeicher hat man gesehen, das Datensätze unerwartet zusammengestellt sein können. (Berücksichtigung von Einspeisung aus Pumpspeicherkraftwerken im Datensatz Stromerzeugung.) –&gt; deskritive und explorative Statistik sowie Visualisierungstechniken sind wichtige Instrumente, um Datensätze “zu verstehen” und ggf. Fehler oder Eigenheiten zu bereinigen.</p>
 <p>–&gt; Erzeugung und Verbrauch durch Pumpspeicher müssten für eine weitergehende Erzeugungsanalyse bereinigt werden: Realisierte Einspeisung ist anderen Energieträgern zuzuschreiben; Verbrauch = Realisierter Verbrauch - Realisierte Einspeisung.</p>
 <p><strong>Die Grundlast ist tot.</strong> Berechnung der Jahresvolllaststunden und Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten.</p>
 <p><strong>Steinkohle ist das neue Erdgas.</strong></p>
+<p>Resterrampe von der Planung: Grenzstrom: 2 (3) Regime (EE-Überschuss, fossile Lastfolgebetrieb.)</p>
+<pre><code>- Vorbereitung 1: Restlast bestimmen
+
+  - Herkunft Pumpspeicherenergie grob abschätzen: in wie vielen Intervallen war die Restlast negativ
+
+  - Herkunft Pumpspeicherenergie genauer bestimmen: Abgleich Null oder negative Restlast mit Verbrauch der Pumpspeicher (Befüllen)
+
+    - Wenn Restlast 0 oder negativ = Befüllung mit EE, wenn Restlast &gt; 0 = Befüllung mit Lastfolgeerzeugern
+
+- Vorbereitung 2: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? **Grundlast ist tot.**
+
+  - Quantifizierung mit Jahresvolllaststunden
+
+  - Erzeugung im Jahresverlauf plotten --&gt; Abschaltung der AKW erkennen.
+  
+  - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)</code></pre>
+<p>Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überprüfen. <em>Befüllung der Pumpspeicher und die Restlast im Jahresgang anzeigen und anschließend nur die Werte zeigen, zu denen der Verbrauch der Pumpspeicher &gt; 0 ist</em></p>
+</section>
+<section id="übungen" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Übungen</h1>
+<p>Errechnen Sie die Volllaststunden für Wind Offshore, Wasserkraft, Sonstige Erneuerbare und Wind Onshore und stellen den Jahresgang und die Jahresdauerlinien für diese Erzeuger dar.</p>
 
 </section>
 
