@@ -64,7 +64,7 @@ Arnold, Lukas, Simone Arnold, Matthias Baitsch, Marc Fehr, Maik Poetzsch, und Se
 BibTeX-Vorlage
 
 ```
-@misc{BCD-Styleguide-2024,
+@misc{BCD-a-ernergiedatenanalyse-2024,
  title={Bausteine Computergestützter Datenanalyse. Anwendungsbaustein Energiedatenanalyse},
  author={Arnold, Lukas and Arnold, Simone and Baitsch, Matthias and Fehr, Marc and Poetzsch, Maik and Seipel, Sebastian},
  year={2024},
@@ -364,11 +364,6 @@ circle = plt.Circle((0, 0), radius = 0.7, color = "white")
 ax.add_patch(circle)
 ```
 
-## To Do
-To Do:
-  
-    * lange Codezeilen umbrechen
-
 ## Code für Pandas
 ```{python}
 #| output: false
@@ -474,11 +469,6 @@ plt.title("Konventionelle", fontsize = font_size + 2)
 plt.tight_layout()
 plt.show()
 ```
-
-## To Do
-To Do:
-  
-  * lange Codezeilen umbrechen
 
 ## Code für matplotlib
 
@@ -1166,9 +1156,15 @@ Die Berechnung der Jahresvolllaststunden und die Visualisierung der Jahresgänge
 ::: {.callout-important}
 ## Definition sortierte Jahresdauerlinie
 
-**TO DO**  
-https://www.youtube.com/watch?v=rMxYJuGqR4s CC BY
-Rohdaten nach Größe absteigend sortieren und als Diagramm darstellen.
+Die sortierte Jahresdauerlinie ist ein Diagramm der absteigend sortierten Daten.
+
+:::: {.border}
+
+{{< video https://www.youtube.com/watch?v=rMxYJuGqR4s >}}
+
+Energietechnik. 2 Einführung. 2.13 Sortierte Jahresdauerlinie von Henrik te Heesen ist lizensiert unter [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.de) und abrufbar auf [YouTube](https://www.youtube.com/watch?v=rMxYJuGqR4s).
+
+::::
 :::
 
 ::: {.panel-tabset}
@@ -1427,14 +1423,82 @@ Ausblick: Auch der Bereich der Mittelllast wird mit zunehmendem Ausbau erneuerba
 # Analytische Statistik
 Analytische Statistik bedeutet, auf Grundlage der Daten Rückschlüsse zu ziehen. Analytische Statistik unterscheidet sich von der beschreibenden und explorativen Statistik dadurch, dass Daten nicht nur betrachtet und zueinander in Verhältnis gesetzt werden, sondern durch Modellierung neue Daten erzeugt werden.
 
-Einleitung: In ABschnitt sowieso haben wir gesehen, dass bei einer Verdoppelung der im Jahr 2023 installierten EE-Erzeugung regelmäßig größere Produktionsüberschüsse entstehen. Diese könnten, wenn Sie gespeichert werden, helfen, die Phasen mit positiver Restlast ebenfalls aus erneuerbaren Energien zu decken.
+Einleitung: In Abschnitt sowieso haben wir gesehen, dass bei einer Verdoppelung der im Jahr 2023 installierten EE-Erzeugung regelmäßig größere Produktionsüberschüsse entstehen. Diese könnten, wenn Sie gespeichert werden, helfen, die Phasen mit positiver Restlast ebenfalls aus erneuerbaren Energien zu decken.
 
 Vielleicht noch als Hintergrund die Zubaugrafik vom Quaschning einbinden, dass der Weg dahin so 20-25 Jahre dauern wird, also praktisch morgen. **wie im Forum**
 
-Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt?
+Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt? --> benötigte Leistung und Kapazität sind interessant
 = Minimumabschätzung im „Kupferplattenmodell“ also ohne technische Verluste
 
 Hintergrund: bissl technischer Hintergrund zu Speichern
+
+## Speicherauslegung
+Sinn hat glaube ich ausgerechnet, wie groß ein Speicher sein müsste, um überschießende Spitzen erneuerbarer Produktion zu speichern.
+Das Problem ist: Wir wollen ja keinen immer voller laufenden Speicher haben, sondern die maximale Größe kann beschränkt, wenn alle nachfolgenden Phasen der Unterdeckung aus dem Speicher bedient werden können. Ab Mitte April beginnt eine Phase, in der in jeder Periode mehr eingespeichert als entnommen wird.
+
+```
+Erst mal muss man prüfen, ob man mit einem idealen Speicher eine Vollversorgung erreicht.
+- Restlast.sum()
+  --> wenn 0 oder positiv, bleibt über das Jahr eine Unterdeckung bzw. man muss sich über eine Überspeicherung keine Sorgen machen
+  --> wenn negativ, bleibt über das Jahr ein Überschuss (das ist der kompliziertere Fall)
+
+einfacher Fall:
+Periode 0: Der Speicher ist leer. speicherstart = 0
+
+Solange Datum bis != 31.12.2023 00:00 TUE
+1. Perioden aus Ein- und Ausspeicherung bestimmen
+Init Periodensuche index = 0 
+erste Periode mit Restlast < 0 suchen # hier beginnt das Einspeichern
+  index bestimmen = index_beginn_einspeicherung_periode
+  ab index_beginn_einspeicherung_periode (df = df[df['A'].gt(0).idxmax():]) Vorwärtssuche: restlast.gt(0).idxmax() - 1 = Ende Einspeicherung Periode
+nächste Periode mit Restlast > 0 suchen
+  ab index_beginn_einspeicherung_periode Vorwärtssuche: restlast.gt(0).idxmax() = index_beginn_ausspeicherung_periode
+  ab index_beginn_ausspeicherung_periode Vorwärtssuche: restlast.lt(0).idxmax() - 1 = index_ende_ausspeicherung_periode
+
+2. Periode beginnt bei ab index_beginn_ausspeicherung_periode Vorwärtssuche: restlast.lt(0).idxmax()
+
+--> Damit lässt sich eine Anzahl an pd.Series aus Index und Restlast erstellen
+--> kontrollieren muss man irgendwie, wann man den 31.12.2023 00:00 erreicht hat.
+
+Problem: Methode idxmax ist nicht zuverlässig
+data = pd.Series([0, 1, 2, 3])
+data.eq(5).idxmax()
+0 ... das ist komisch und das selbe Ergebnis wie für den Aufruf data.eq(0).idxmax() = nicht gut
+
+Lösung:
+data[min(data[data.gt(0)].index)]
+1
+
+data[min(data[data.gt(5)].index)]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: min() iterable argument is empty
+
+try:
+...   data[min(data[data.gt(5)].index)]
+... except:
+...   print("There are no Values meeting the criteria")
+...
+There are no Values meeting the criteria
+https://www.w3schools.com/python/python_try_except.asp
+
+You can use the else keyword to define a block of code to be executed if no errors were raised.
+The finally block, if specified, will be executed regardless if the try block raises an error or not.
+>>>
+
+Kann man lösen: len(data.eq(5)) ist 0, wenn es keinen Treffer gibt.
+
+
+ !# bis hier bemisst sich der notwendige Speicherhub aus Der Differenz von speicherende = cumsum(Restlast) und speicherstart
+ !# hier beginnt das Ausspeichern solange, bis der Speicher leer ist oder die nächste Periode beginnt speicherstart = speicherende
+ 
+ eventl. eine Variable periodenüberschuss anlegen. Wenn der periodenüberschuss > 0 ist, kann geprüft werden, ob die nächste Periode aus dem Überschuss plus Einspeicherung bei konstanter Speichergröße bedient werden kann. Falls ja, können die Perioden zusammengelegt werden. Wiederholen für die nächste Periode... Wenn man damit bis Jahresende kommt, reicht die Speichergröße aus der ersten Periode für das ganze Jahr. Falls nicht, muss man die Folgeperioden abschreiten und schauen, ob 
+
+Das Ende der ersten vollen Periode, ist der Beginn der zweiten Periode.
+
+Klingt kompliziert, eventuell ist es einfacher, den Speichergang zu simulieren.
+Angefangen bei Speichergröße = 1 MWh und dann immer inkrementieren...
+```
 
 # Informationen zu Speichern
 Viele Zahlen in diesem Artikel: https://www.msn.com/de-de/finanzen/top-stories/energiewende-das-riesige-potenzial-der-e-autos-f%C3%BCr-die-energiewende/ar-BB1mErcB?ocid=entnewsntp&pc=U531&cvid=3d61906f85914af89a3255239a2138f0&ei=23
@@ -1444,6 +1508,10 @@ Viele Zahlen in diesem Artikel: https://www.msn.com/de-de/finanzen/top-stories/e
      - Szenario Referenz: ohne weitere, die Zielerreichung fördernde oder erschwerende Randbedingungen. Bedarf Speicherkapazität 2045: 514,6 GWh **Das ist ja "nur" rund ein Tausendstel der aktuellen Jahresproduktion. Das heißt neben jedes Kraftwerk käme ein Speicher mit einer Kapazität von einem Drittel der Tagesproduktion.**
 
      - Link zur Grafik mit verschiedenen Szenarien: <https://energy-charts.info/charts/remod_installed_power/chart.htm?l=de&c=DE&source=storage#scenarios>
+
+Wirkungsgrade verschiedener Speichertypen:
+
+- <https://de.statista.com/statistik/daten/studie/1302470/umfrage/wirkungsgrad-von-stromspeichern/>
 
 
 * Das Wichtigste (vielleicht als Video)
