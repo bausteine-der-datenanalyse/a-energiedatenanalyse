@@ -1405,7 +1405,6 @@ Vorgehen:
 
   - Datensatz Erzeugung filtern mit [Verbrach Pumpspeicherkraftwerke > 0]  
    
-  
   - für jede Periode a mit Restlast <= 0 den Verbrauch der Pumpspeicherkraftwerke.sum() = Anteil EE 
 
   - für jede Periode b mit Restlast > 0 den Verbrauch der Pumpspeicherkraftwerke.sum() = Anteil Konventionell
@@ -1423,7 +1422,283 @@ Ausblick: Auch der Bereich der Mittelllast wird mit zunehmendem Ausbau erneuerba
 # Analytische Statistik
 Analytische Statistik bedeutet, auf Grundlage der Daten Rückschlüsse zu ziehen. Analytische Statistik unterscheidet sich von der beschreibenden und explorativen Statistik dadurch, dass Daten nicht nur betrachtet und zueinander in Verhältnis gesetzt werden, sondern durch Modellierung neue Daten erzeugt werden.
 
-Einleitung: In Abschnitt sowieso haben wir gesehen, dass bei einer Verdoppelung der im Jahr 2023 installierten EE-Erzeugung regelmäßig größere Produktionsüberschüsse entstehen. Diese könnten, wenn Sie gespeichert werden, helfen, die Phasen mit positiver Restlast ebenfalls aus erneuerbaren Energien zu decken.
+Bei der Analyse der Erzeugungsdaten konnte festgestellt werden, dass im Jahr 2023 punktuell bereits eine Vollversorgung aus erneuerbaren Energien erreicht wird. Aus der Betrachtung der verdoppelten erneuerbaren Stromerzeugung des Jahres 2023 (siehe @tip-verdopplung-EE) kann geschlussfolgert werden, dass mit zunehmenden Ausbau der erneuerbaren Stromproduktion Phasen erneuerbarer Überproduktion immer häufiger der Fall sein werden. Die Perspektive regelmäßiger erneuerbarer Produktionsüberschüsse begründet einen Bedarf für Stromspeicher, um Strom aus Phasen der Überproduktion in Phasen mit positiver Restlast nutzbar zu machen.
+
+## Hintergrund: Ausbaupfad
+Das Erneuerbare-Energien Gesetz legt in Paragraph 4 Ausbaupfade für die installierte Leistung von Solarenergie, Windenergie an Land sowie für Biomasse fest. Der Ausbaupfad für Windenergie auf See ist in Paragraph 1 des Windenergie-auf-See-Gesetzes geregelt.
+
+::: {.border layout="[[5, 90, 5], [1], [1], [5, 90, 5], [1]]"}
+
+&nbsp;
+
+**§ 4 Ausbaupfad**  
+[...]  
+1. eine Steigerung der installierten Leistung von Windenergieanlagen an Land auf  
+    a) 69 Gigawatt im Jahr 2024,      
+    b) 84 Gigawatt im Jahr 2026,      
+    c) 99 Gigawatt im Jahr 2028,      
+    d) 115 Gigawatt im Jahr 2030,      
+    e) 157 Gigawatt im Jahr 2035 und      
+    f) 160 Gigawatt im Jahr 2040  
+    [...]  
+2. eine Steigerung der installierten Leistung von Windenergieanlagen auf See nach Maßgabe des Windenergie-auf-See-Gesetzes,  
+3. eine Steigerung der installierten Leistung von Solaranlagen auf  
+    a) 88 Gigawatt im Jahr 2024,  
+    b) 128 Gigawatt im Jahr 2026,      
+    c) 172 Gigawatt im Jahr 2028,      
+    d) 215 Gigawatt im Jahr 2030,      
+    e) 309 Gigawatt im Jahr 2035 und      
+    f) 400 Gigawatt im Jahr 2040    
+    [...]  
+4. eine installierte Leistung von Biomasseanlagen von 8 400 Megawatt im Jahr 2030.
+
+&nbsp;  
+
+Gesetz für den Ausbau erneuerbarer Energien (Erneuerbare-Energien-Gesetz - EEG 2023) [Bundesministerium der Justiz](https://www.gesetze-im-internet.de/eeg_2014/__4.html)
+
+&nbsp;
+
+&nbsp;
+
+**§ 1 Zweck und Ziel des Gesetzes**  
+[...]  
+(2) Ziel dieses Gesetzes ist es, die installierte Leistung von Windenergieanlagen auf See, die an das Netz angeschlossen werden, auf insgesamt mindestens 30 Gigawatt bis zum Jahr 2030, auf insgesamt mindestens 40 Gigawatt bis zum Jahr 2035 und auf insgesamt mindestens 70 Gigawatt bis zum Jahr 2045 zu steigern.
+
+&nbsp;  
+
+Gesetz zur Entwicklung und Förderung der Windenergie auf See (Windenergie-auf-See-Gesetz - WindSeeG) [Bundesministerium der Justiz](https://www.gesetze-im-internet.de/windseeg/BJNR231000016.html)
+
+:::
+
+Die Ausbauziele der Bundesregierung legen also für das Jahr 2030 eine installierte Leistung fest in Höhe von:
+
+  - 115 GW Wind an Land,
+
+  - 30 GW Wind auf See,
+
+  - 215 GW Solar,
+
+  -  8,4 GW Biomasse.
+
+Dies bedeutet einen geplanten Zubau der installierten Leistung gemessen an der installierten Leistung im Jahr 2023 von:
+
+```{python}
+
+print(f"Wind an Land:\t{( zubaufaktor_windonshore := 115 / (installierte_leistung['Wind Onshore [MW]'].sum() / 1000) ):.2f}\n"
+      f"Wind auf See:\t{( zubaufaktor_windoffshore := 30 / (installierte_leistung['Wind Offshore [MW]'].sum() / 1000) ):.2f}\n"
+      f"Solar:\t\t\t{( zubaufaktor_solar := 215 / (installierte_leistung['Photovoltaik [MW]'].sum() / 1000) ):.2f}\n"
+      f"Biomasse:\t\t{8.4 / (installierte_leistung['Biomasse [MW]'].sum() / 1000):.2f}")
+
+```
+
+Das bedeutet, dass die Produktion durch Windkraftanlagen an Land verdoppelt sowie durch Windkraftanlagen auf See und durch Photovoltaik verdreieinhalbfacht werden soll. Biomasse soll nicht weiter ausgebaut werden.
+
+## Hintergrund: Speicherauslegung
+Stromspeicher speichern die Stromerzeugung in Überschussphasen, um die Energie in Phasen der Unterdeckung wieder abzugeben. Die Auslegung 
+
+Zyklenzahl usw.
+
+Ein paar anschauliche Grafiken zur Speicherung. Wichtig ist auch die Verteilung
+
+**kann man erst fill_between und dann plt.plot zeichnen? Dann wären die Randlinien auf jeden Fall richtig.**
+
+::: {layout="[40, 60]"}
+
+```{python}
+#| echo: false
+
+# plot Parameter setzen
+## eventuell yticks vorgeben mit (my_yticks = [1, 0.5, 0, -0.5, -1])
+my_bottom = -1.05
+my_top = 1.05
+my_linewidth = 3
+my_title = 'Jahresgang der Restlast'
+my_alpha = 0.3
+my_color = 'C0'
+my_label = 'Speichergröße'
+
+# erneuerbare Unterproduktion
+## dummy Daten erzeugen
+dummy_index = np.linspace(1, 365, 365)
+dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-0.5, -0.5, 365 // 2 - 1), np.linspace(1, 1, 365 // 2), np.linspace(0, 0, 1)])
+
+## plotten
+plt.subplot(2, 1, 1)
+plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), alpha = my_alpha, hatch = '//', label = my_label)
+
+plt.ylim(bottom = my_bottom, top = my_top)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = my_title);
+plt.legend()
+
+# erneuerbare Überproduktion
+## dummy Daten erzeugen
+dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 2 - 1), np.linspace(0.5, 0.5, 365 // 2), np.linspace(0, 0, 1)])
+
+## plotten
+plt.subplot(2, 1, 2)
+plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), color = my_color, alpha = my_alpha)
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), hatch = '//', facecolor = 'white', edgecolor = my_color, label = my_label)
+
+plt.ylim(bottom = my_bottom, top = my_top)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = my_title);
+plt.legend()
+
+plt.tight_layout()
+```
+
+Vorzeichen der summierten Restlast (bessere Bezeichnung gesucht)
+: Die erforderliche Größe des Stromspeichers ist abhängig von dem Verhältnis aus der Menge der erneuerbaren Überschussproduktion und der aus dem Speicher zu bedienenden Restlast.
+: Ist die Summe der erneuerbaren Überschussproduktion kleiner als die Summe der erneuerbaren Unterproduktion, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
+: Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der erneuerbaren Unterproduktion, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Unterproduktion.
+
+```{python}
+#| echo: false
+
+# ein Vollzyklus
+## dummy Daten erzeugen
+dummy_index = np.linspace(1, 365, 365)
+dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 2 - 1), np.linspace(1, 1, 365 // 2), np.linspace(0, 0, 1)])
+
+## plotten
+# plt.figure(figsize = (4, 5))
+plt.subplot(2, 1, 1)
+plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), alpha = my_alpha, hatch = '//', label = my_label + ': 1 Zyklus')
+
+plt.ylim(bottom = my_bottom, top = my_top)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = my_title);
+plt.legend()
+
+## n Vollzyklen
+## dummy Daten erzeugen
+dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 4 - 1), np.linspace(1, 1, 365 // 4), np.linspace(-1, -1, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(0, 0, 1)])
+
+## plotten
+plt.subplot(2, 1, 2)
+plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = my_color, alpha = my_alpha)
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = my_color, alpha = my_alpha)
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), alpha = my_alpha, hatch = '//', label = 'halbe ' + my_label + ' bei 2 Zyklen')
+
+plt.ylim(bottom = my_bottom, top = my_top)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = my_title);
+plt.legend()
+
+plt.tight_layout()
+
+```
+
+Anzahl Vollzyklen
+: Die erforderliche Größe des Stromspeichers ist abhängig von der Verteilung der Restlast und der damit realisierten Anzahl Vollzyklen. Ein Vollzyklus bedeutet, dass ein Speicher vollständig geladen und wieder entladen wird.
+: Im ungünstigsten Fall wird nur ein einziger Lade- / Entladezyklus gefahren. In diesem Fall entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
+: Je häufiger sich Lade- und Entladezyklen abwechseln, desto geringer ist die erforderliche Speichergröße. Diese entspricht der Summe der erneuerbaren Überschussproduktion geteilt durch die Anzahl der Vollzyklen.
+
+```{python}
+#| echo: false
+
+# Teilzyklen bei erneuerbarer Unterproduktion
+## dummy Daten erzeugen
+dummy_index = np.linspace(1, 365, 365)
+dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-0.5, -0.5, 365 // 4 - 1), np.linspace(0.25, 0.25, 365 // 4), np.linspace(-0.5, -0.5, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(0, 0, 1)])
+
+## plotten
+plt.subplot(2, 1, 1)
+plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), alpha = my_alpha, hatch = '//', label = my_label  + ' = 0.75')
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), color = my_color, alpha = my_alpha)
+### plot only the hatch
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y2 = np.linspace(-0.25, -0.25, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4),  facecolor = 'white', edgecolor = my_color, hatch = '//')
+### plot only the fill
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y2 = np.linspace(-0.25, -0.25, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4),  color = my_color, alpha = my_alpha)
+
+plt.ylim(bottom = my_bottom, top = my_top)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = my_title);
+plt.legend()
+
+# Teilzyklen bei erneuerbarer Überproduktion
+## dummy Daten erzeugen
+dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 4 - 1), np.linspace(0.25, 0.25, 365 // 4), np.linspace(-1, -1, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(0, 0, 1)])
+
+## plotten
+plt.subplot(2, 1, 2)
+plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+### erneuerbare Überschuss
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = my_color, alpha = my_alpha)
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = my_color, alpha = my_alpha)
+
+### positive Restlast
+plt.fill_between(x = np.linspace((365 * 3) // 4, 365, 365 // 4), y1 = np.linspace(1, 1, 365 // 4), hatch = '//', facecolor = 'white', edgecolor = my_color, label = my_label + ' = 1')
+
+plt.ylim(bottom = my_bottom, top = my_top)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = my_title);
+plt.legend()
+
+plt.tight_layout()
+# plt.fill_between(x = np.linspace(365 // 4, 365 // 2, 365 // 4), y1 = np.linspace(0.25, 0.25, 365 // 4), hatch = '//', facecolor = 'white', edgecolor = my_color) 
+```
+
+Teilzyklen
+: Erklärung Teilzyklen
+: Ist die Summe der erneuerbaren Überschussproduktion kleiner als die Summe der erneuerbaren Unterproduktion, entspricht die erforderliche Speichergröße dem Minimum der kummulierten Summe der Restlast '.cumsum', wenn diese niemals größer 0 gesetzt wird (das Überschreiten wäre der Moment, in dem der Speicher leer ist).  
+: 'Restlast.sum() > 0 = .cumsum Restlast (aber nie kleiner 0)' **Ich glaube nicht, dass man die Erklärung so versteht.**
+: Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der erneuerbaren Unterproduktion, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast'.cumsum', wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).  **Ich glaube nicht, dass man die Erklärung so versteht.**
+
+```{python}
+
+# ohne Kappung
+## dummy Daten erzeugen
+dummy_index = np.linspace(1, 365, 365)
+dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 4 - 1), np.linspace(1, 1, 365 // 4), np.linspace(-0.5, -0.5, 365 // 4), np.linspace(0.5, 0.5, 365 // 4), np.linspace(0, 0, 1)])
+
+## plotten
+plt.subplot(2, 1, 1)
+plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), alpha = my_alpha, hatch = '//', label = my_label + ' ohne Kappung = 1')
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4),  color = my_color, alpha = my_alpha)
+
+plt.ylim(bottom = my_bottom, top = my_top)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = my_title);
+plt.legend()
+
+# mit Kappung
+## plotten
+plt.subplot(2, 1, 2)
+plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+
+### plot the hatch
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), facecolor = 'white', edgecolor = my_color, hatch = '//', label = my_label + ' mit Kappung = 0.5')
+
+### plot fill only
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = my_color, alpha = my_alpha)
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4),  color = my_color, alpha = my_alpha)
+
+plt.ylim(bottom = my_bottom, top = my_top)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = my_title);
+plt.legend()
+
+plt.tight_layout()
+
+```
+
+Kappung von Erzeugungsspitzen
+: Die Kappung von Erzeugungsspitzen ist eine Möglichkeit, die benötigte Speichergröße zu reduzieren. Die Kappung der Einspeicherung führt zu einer besseren Auslastung der Speicherkapazität und einer höheren Zyklenzahl. (Dazu habe ich ein Paper: Zerrahn et al. 2018)
+: Im oberen Beispiel wird die Speichergröße entsprechend der maximalen erneuerbaren Überschussproduktion ausgelegt. Der Speicher erreicht damit 1,5 Zyklen.
+: Im unteren Beispiel wird der Speicher kleiner dimensioniert. Der Speicher erreicht 2 Zyklen.
+:::
+
+
+
+  Diese könnten, wenn Sie gespeichert werden, helfen, die Phasen mit positiver Restlast ebenfalls aus erneuerbaren Energien zu decken.
 
 Vielleicht noch als Hintergrund die Zubaugrafik vom Quaschning einbinden, dass der Weg dahin so 20-25 Jahre dauern wird, also praktisch morgen. **wie im Forum**
 
@@ -1432,15 +1707,31 @@ Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 6
 
 Hintergrund: bissl technischer Hintergrund zu Speichern
 
-## Speicherauslegung
+man könnte zeigen: Restlast, Restlast ohne Speicher (alle negativen Werte = 0), Restlast mit optimalen Speicher (alle negativen Werte summieren sich und tragen darauf folgende positive Werte ab)
+schlechtester Fall, halber Zyklus = halber Speicherbedarf.
+Wirkungsgrad ist schwierig: bei der Auslegungsgröße sind eigentlich nur Einspeicherverluste relevant (um die vermindert sich die benötigte Größe des Speichers)
+
+I) Hans-Werner Sinns Weihnachtsvorlesung 2022 nachrechnen. Sinn argumentiert auf der Datenbasis 2019.
+
+Schritt 1: Erzeugung des deutschen Wind- und Sonnenstroms auf Stundenbasis darstellen. Netzlast in das Diagramm einzeichnen.
+
+  a) ohne Abregelung EE nach Sinn
+
+  b) mit x % Abregelung EE nach https://www.sciencedirect.com/science/article/pii/S0014292118301107
+
+II) Szenario Biomasse als Lastfolge
+
 Sinn hat glaube ich ausgerechnet, wie groß ein Speicher sein müsste, um überschießende Spitzen erneuerbarer Produktion zu speichern.
 Das Problem ist: Wir wollen ja keinen immer voller laufenden Speicher haben, sondern die maximale Größe kann beschränkt, wenn alle nachfolgenden Phasen der Unterdeckung aus dem Speicher bedient werden können. Ab Mitte April beginnt eine Phase, in der in jeder Periode mehr eingespeichert als entnommen wird.
 
 ```
-Erst mal muss man prüfen, ob man mit einem idealen Speicher eine Vollversorgung erreicht.
+Erst mal muss man prüfen, ob man mit einem Speicher * Wirkungsgrad eine Vollversorgung erreicht. Wirkungsgrad der Pumpspeicher passt ganz gut, damit sind auch Übertragungsverluste näherungsweise abgedeckt.
+
 - Restlast.sum()
   --> wenn 0 oder positiv, bleibt über das Jahr eine Unterdeckung bzw. man muss sich über eine Überspeicherung keine Sorgen machen
   --> wenn negativ, bleibt über das Jahr ein Überschuss (das ist der kompliziertere Fall)
+    
+    - Dann guckt man einfach umgekehrt, indem man die Phasen der Unterdeckung rollierend summiert
 
 einfacher Fall:
 Periode 0: Der Speicher ist leer. speicherstart = 0
@@ -1454,6 +1745,9 @@ erste Periode mit Restlast < 0 suchen # hier beginnt das Einspeichern
 nächste Periode mit Restlast > 0 suchen
   ab index_beginn_einspeicherung_periode Vorwärtssuche: restlast.gt(0).idxmax() = index_beginn_ausspeicherung_periode
   ab index_beginn_ausspeicherung_periode Vorwärtssuche: restlast.lt(0).idxmax() - 1 = index_ende_ausspeicherung_periode
+
+Das Periodenende kann man auch mit cumsum finden --> immer dann, wenn die cumsum 0 ist (oder von positiv auf negativ übergeht), ist der Speicher leer.
+
 
 2. Periode beginnt bei ab index_beginn_ausspeicherung_periode Vorwärtssuche: restlast.lt(0).idxmax()
 
@@ -1560,3 +1854,63 @@ Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überp
 
 # Übungen
 Errechnen Sie die Volllaststunden für Wind Offshore, Wasserkraft, Sonstige Erneuerbare und Wind Onshore und stellen den Jahresgang und die Jahresdauerlinien für diese Erzeuger dar.
+
+<!-- # Resterampe -->
+
+
+```{python}
+#| include: false
+# Spielwiese für die Speichergrafiken
+
+plt.figure(figsize = (7.5, 7.5))
+
+plt.subplot(2, 2, 1)
+dummy_index = np.linspace(1, 365, 365)
+dummy_data = np.concatenate([np.linspace(-1, -1, 365 // 2), np.linspace(1, 1, 365 // 2), np.linspace(0, 0, 1)])
+plt.plot(dummy_index, dummy_data)
+plt.ylim(bottom = -1, top = 1)
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), label = 'erforderliche Speichergröße = 1')
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = 'schlechtester Fall: Zyklenzahl = 1');
+plt.legend()
+
+plt.subplot(2, 2, 2)
+dummy_data = np.concatenate([np.linspace(-1, -1, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(-1, -1, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(0, 0, 1)])
+plt.plot(dummy_index, dummy_data)
+plt.ylim(bottom = -1, top = 1)
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), label = 'erforderliche Speichergröße = \u00BD')
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = 'schon besser: Zyklenzahl = 2');
+plt.legend()
+
+plt.subplot(2, 2, 3)
+dummy_data = np.concatenate([np.linspace(-0.5, -0.5, 365 // 2), np.linspace(1, 1, 365 // 2), np.linspace(0, 0, 1)])
+plt.plot(dummy_index, dummy_data)
+plt.ylim(bottom = -1, top = 1)
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), label = 'erforderliche Speichergröße')
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = 'bei Zykluszahl = 1 & Restlast.sum() > 0\n = max. Überschussproduktion');
+plt.legend()
+
+plt.subplot(2, 2, 4)
+dummy_data = np.concatenate([np.linspace(-0.5, -0.5, 365 // 4), np.linspace(0.25, 0.25, 365 // 4), np.linspace(-0.5, -0.5, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(0, 0, 1)])
+plt.plot(dummy_index, dummy_data)
+plt.ylim(bottom = -1, top = 1)
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), label = 'erforderliche Speichergröße', color = 'C0')
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y2 = np.linspace(-0.25, -0.25, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), color = 'C0')
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y2 = np.linspace(-0.25, -0.25, 365 // 4), y1 = np.linspace(0, 0, 365 // 4), color = 'C0', alpha = 0.25)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = 'bei Zykluszahl > 1 & Restlast.sum() > 0\n = cumsum Restlast (aber nie kleiner 0)');
+
+# add explanation
+plt.axhline(xmin = 0 + 0.05 , xmax = (1 / 4) + 0.05, y = -0.25, color = 'white', linestyle = 'dotted', lw = 3)
+
+plt.legend()
+
+
+
+plt.tight_layout()
+
+# Kurve unterlegen: plt.fill_between bietet einen praktischen Parameter where
+# plt.fill_between(x = verbrauch['Pumpspeicher [MWh]'].index[::schritt], y1 = verbrauch['Pumpspeicher [MWh]'][::schritt], label = 'konventionelle Einspeicherung') # , where = restlast[::schritt] > 0 führt zu weißen Stellen
+```
