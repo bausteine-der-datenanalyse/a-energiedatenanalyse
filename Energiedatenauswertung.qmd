@@ -1652,6 +1652,7 @@ Teilzyklen
 : Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der erneuerbaren Unterproduktion, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast'.cumsum', wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).  **Ich glaube nicht, dass man die Erklärung so versteht.**
 
 ```{python}
+#| echo: false
 
 # ohne Kappung
 ## dummy Daten erzeugen
