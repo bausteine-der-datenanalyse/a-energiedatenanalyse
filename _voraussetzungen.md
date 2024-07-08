@@ -3,6 +3,8 @@ Die Bearbeitungszeit dieses Bausteins beträgt circa **Platzhalter**. Für die B
 
 - Werkzeugbaustein Python **3 Links, 3 verschiedene Quellen**
 
+  - Modul [random](https://docs.python.org/3/library/random.html)
+  
   - Modul [Pandas](https://pypi.org/project/pandas/)
 
   - Modul [NumPy](https://numpy.org/)

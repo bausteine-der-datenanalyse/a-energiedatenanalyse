@@ -163,15 +163,22 @@ window.Quarto = {
   <li><a href="#residual--und-restlast-bestimmen" id="toc-residual--und-restlast-bestimmen" class="nav-link" data-scroll-target="#residual--und-restlast-bestimmen">Residual- und Restlast bestimmen</a></li>
   <li><a href="#jahresgang-grafisch-darstellen" id="toc-jahresgang-grafisch-darstellen" class="nav-link" data-scroll-target="#jahresgang-grafisch-darstellen">Jahresgang grafisch darstellen</a></li>
   <li><a href="#hintergrund-grund--mittel-und-spitzenlast" id="toc-hintergrund-grund--mittel-und-spitzenlast" class="nav-link" data-scroll-target="#hintergrund-grund--mittel-und-spitzenlast">Hintergrund: Grund-, Mittel und Spitzenlast</a></li>
-  <li><a href="#bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms" id="toc-bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms" class="nav-link" data-scroll-target="#bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms">Bestimmung des in den Pumpspeichern gespeicherten Stroms</a></li>
+  <li><a href="#sec-Pumpspeicherinhalt" id="toc-sec-Pumpspeicherinhalt" class="nav-link" data-scroll-target="#sec-Pumpspeicherinhalt">Bestimmung des in den Pumpspeichern gespeicherten Stroms</a></li>
   <li><a href="#mögliche-erweiterung" id="toc-mögliche-erweiterung" class="nav-link" data-scroll-target="#mögliche-erweiterung">Mögliche Erweiterung</a></li>
   </ul></li>
   <li><a href="#zusammenfassung-und-ausblick" id="toc-zusammenfassung-und-ausblick" class="nav-link" data-scroll-target="#zusammenfassung-und-ausblick"><span class="header-section-number">7.2</span> Zusammenfassung und Ausblick</a></li>
   </ul></li>
   <li><a href="#analytische-statistik" id="toc-analytische-statistik" class="nav-link" data-scroll-target="#analytische-statistik"><span class="header-section-number">8</span> Analytische Statistik</a>
   <ul class="collapse">
-  <li><a href="#hintergrund-ausbaupfad" id="toc-hintergrund-ausbaupfad" class="nav-link" data-scroll-target="#hintergrund-ausbaupfad"><span class="header-section-number">8.1</span> Hintergrund: Ausbaupfad</a></li>
-  <li><a href="#hintergrund-speicherauslegung" id="toc-hintergrund-speicherauslegung" class="nav-link" data-scroll-target="#hintergrund-speicherauslegung"><span class="header-section-number">8.2</span> Hintergrund: Speicherauslegung</a></li>
+  <li><a href="#hintergrund-ausbaupfad-erneuerbarer-energien" id="toc-hintergrund-ausbaupfad-erneuerbarer-energien" class="nav-link" data-scroll-target="#hintergrund-ausbaupfad-erneuerbarer-energien"><span class="header-section-number">8.1</span> Hintergrund: Ausbaupfad erneuerbarer Energien</a></li>
+  <li><a href="#hintergrund-stromspeicher" id="toc-hintergrund-stromspeicher" class="nav-link" data-scroll-target="#hintergrund-stromspeicher"><span class="header-section-number">8.2</span> Hintergrund: Stromspeicher</a></li>
+  <li><a href="#sec-grundlagen-speicherauslegung" id="toc-sec-grundlagen-speicherauslegung" class="nav-link" data-scroll-target="#sec-grundlagen-speicherauslegung"><span class="header-section-number">8.3</span> Grundlagen der Speicherauslegung</a></li>
+  <li><a href="#speichergröße-berechnen" id="toc-speichergröße-berechnen" class="nav-link" data-scroll-target="#speichergröße-berechnen"><span class="header-section-number">8.4</span> Speichergröße berechnen</a></li>
+  <li><a href="#formel-noch-ohne-wirkungsgrad" id="toc-formel-noch-ohne-wirkungsgrad" class="nav-link" data-scroll-target="#formel-noch-ohne-wirkungsgrad"><span class="header-section-number">8.5</span> Formel noch ohne Wirkungsgrad</a>
+  <ul class="collapse">
+  <li><a href="#zyklenzahl-berechnen-mit-teilzyklen" id="toc-zyklenzahl-berechnen-mit-teilzyklen" class="nav-link" data-scroll-target="#zyklenzahl-berechnen-mit-teilzyklen">Zyklenzahl berechnen (mit Teilzyklen)</a></li>
+  <li><a href="#erzeugung-kappen" id="toc-erzeugung-kappen" class="nav-link" data-scroll-target="#erzeugung-kappen">Erzeugung kappen</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#informationen-zu-speichern" id="toc-informationen-zu-speichern" class="nav-link" data-scroll-target="#informationen-zu-speichern"><span class="header-section-number">9</span> Informationen zu Speichern</a></li>
   <li><a href="#das-wichtigste" id="toc-das-wichtigste" class="nav-link" data-scroll-target="#das-wichtigste"><span class="header-section-number">10</span> Das Wichtigste</a></li>
@@ -206,7 +213,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2. Juli 2024</p>
+      <p class="date">8. Juli 2024</p>
     </div>
   </div>
   
@@ -248,6 +255,7 @@ window.Quarto = {
 <ul>
 <li><p>Werkzeugbaustein Python <strong>3 Links, 3 verschiedene Quellen</strong></p>
 <ul>
+<li><p>Modul <a href="https://docs.python.org/3/library/random.html">random</a></p></li>
 <li><p>Modul <a href="https://pypi.org/project/pandas/">Pandas</a></p></li>
 <li><p>Modul <a href="https://numpy.org/">NumPy</a></p></li>
 <li><p>Modul <a href="https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html">matplotlib.pyplot</a></p></li>
@@ -274,7 +282,7 @@ window.Quarto = {
 </section>
 <section id="hintergrund" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Hintergrund</h1>
-<p>Elektrischer Strom wird in Kraftwerken erzeugt und über das Stromnetz zu den Stromverbrauchern transportiert. Stromerzeugung und -verbrauch müssen dabei immer ausgeglichen sein. Der Anteil wetterabhängiger erneuerbarer Einspeisung steigt, Strom kann bislang aber nicht (kostengünstig) großtechnisch gespeichert werden. 2023 speisten die Pumpspeicherkraftwerke in Deutschland 11,1 TWh Strom ein, was 2,4 Prozent des deutschen Stromverbrauchs von 458,3 TWh entsprach <span class="citation" data-cites="energy-charts-strom">(<a href="#ref-energy-charts-strom" role="doc-biblioref">Fraunhofer Institut für Solare Energiesysteme ISE o.&nbsp;J.</a>)</span>. Die Kraftwerkseinsatzplanung und Speicherauslegung auf Basis von Erzeugungs- und Verbrauchsdaten ist deshalb ein relevantes Anwendungsfeld für die Datenanalyse.<br>
+<p>Elektrischer Strom wird in Kraftwerken erzeugt und über das Stromnetz zu den Stromverbrauchern transportiert. Stromerzeugung und -verbrauch müssen dabei immer ausgeglichen sein. Der Anteil wetterabhängiger erneuerbarer Einspeisung steigt, Strom kann bislang aber nicht (kostengünstig) großtechnisch gespeichert werden. 2023 speisten die Pumpspeicherkraftwerke in Deutschland bei einer Kapazität von 37,4 GWh <span class="citation" data-cites="Heimerl-Kohler-2017-Pumpspeicher-in-Deutschland">(<a href="#ref-Heimerl-Kohler-2017-Pumpspeicher-in-Deutschland" role="doc-biblioref">Heimerl und Kohler 2017, 77</a>)</span> 11,1 TWh Strom ein, was 2,4 Prozent des deutschen Stromverbrauchs von 458,3 TWh entsprach <span class="citation" data-cites="energy-charts-strom">(<a href="#ref-energy-charts-strom" role="doc-biblioref">Fraunhofer Institut für Solare Energiesysteme ISE o.&nbsp;J.</a>)</span>. Die Kraftwerkseinsatzplanung und Speicherauslegung auf Basis von Erzeugungs- und Verbrauchsdaten ist deshalb ein relevantes Anwendungsfeld für die Datenanalyse.<br>
 Die Bundesnetzagentur veröffentlicht auf <a href="https://www.smard.de/home/downloadcenter/download-marktdaten/">https://www.smard.de/</a> unter anderem Daten zu Stromerzeugung, -verbrauch und Großhandelspreisen. (Hinweis: Kraftwerksdaten liegen für Erzeugungseinheiten mit einer installierten Erzeugungsleistung von mindestens 100 MW vor.)</p>
 <p><strong>idealerweise werden die Konzepte anhand der Daten der FH gezeigt, und mit den SMARD-Daten beübt</strong></p>
 </section>
@@ -367,7 +375,7 @@ Warning&nbsp;1: SMARD Daten herunterladen
 <li><p>die Spalten mit Datums- und Zeitangaben sowie das Datumsformat bestimmt.<br>
 <code>parse_dates = [0, 1], date_format = "%d.%m.%Y %H:%M"</code></p></li>
 </ul>
-<div id="fac69cf6" class="cell" data-results="hold" data-execution_count="1">
+<div id="393b7d66" class="cell" data-results="hold" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.precision"</span>, <span class="dv">2</span>) <span class="co"># places after decimal for floats</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -404,7 +412,7 @@ english version
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>english version</p>
-<div id="71b37857" class="cell" data-results="hold" data-execution_count="2">
+<div id="0f87dc31" class="cell" data-results="hold" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>erzeugung0_en <span class="op">=</span> pd.read_csv(filepath_or_buffer <span class="op">=</span> <span class="op">\</span></span>
@@ -413,7 +421,7 @@ english version
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>parse_dates <span class="op">=</span>  [<span class="dv">0</span>, <span class="dv">1</span>], date_format <span class="op">=</span> <span class="st">"%b </span><span class="sc">%d</span><span class="st">, %Y %I:%M %p"</span>) <span class="co"># leading zero is optional for formats %d, %m, %H, %I, %M, %S, %j, %U, %W, and %V</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0_en.head(<span class="dv">2</span>), erzeugung0_en.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="266">
+<div class="cell-output cell-output-display" data-execution_count="250">
 <div>
 <div>
 
@@ -622,7 +630,7 @@ Tip&nbsp;2: Lösung Datumsformat
 <section id="daten-organisieren" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Daten organisieren</h1>
 <p>Vor der Datenanalyse sollte überprüft werden, ob die Daten korrekt eingelesen wurden. Dies bedeutet zum einen, zu kontrollieren, ob der Datentyp aller Spalten richtig erkannt wurde. Ob die Spaltentypen einer Datei korrekt eingelesen wurden, können Sie in Python mit dem Befehl <code>df.dtypes</code> überprüfen. Hier der Output des Befehls für den DataFrame <code>erzeugung0</code>.</p>
-<div id="87bfd599" class="cell" data-results="hold" data-execution_count="3">
+<div id="5b42741d" class="cell" data-results="hold" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Spalten:</span><span class="ch">\n</span><span class="sc">{</span>erzeugung0<span class="sc">.</span>dtypes<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Spalten:
@@ -645,7 +653,7 @@ dtype: object</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Viele der Spaltennamen enthalten die Zeichenkette ” Originalauflösungen”, die der Übersichtlichkeit wegen entfernt werden kann (führendes Leerzeichen beachten). Auf diese Weise könnte auch die Einheitenangabe [MWh] entfernt werden, falls diese als störend empfunden wird.</p>
-<div id="06e277a5" class="cell" data-results="hold" data-execution_count="4">
+<div id="969b48bd" class="cell" data-results="hold" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Zeichenkette " Originalauflösungen" entfernen</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0.columns <span class="op">=</span> installierte_leistung0.columns.<span class="bu">str</span>.replace(pat <span class="op">=</span> <span class="st">" Originalauflösungen"</span>, repl <span class="op">=</span> <span class="st">""</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -678,10 +686,10 @@ dtype: object</code></pre>
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">installierte Leistung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">realisierte Erzeugung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">realisierter Verbrauch</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="40fe20d1" class="cell" data-results="hold" data-execution_count="5">
+<div id="3b314bc8" class="cell" data-results="hold" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># der DataFrame installierte_leistung0 hat nur 1 Zeile</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="269">
+<div class="cell-output cell-output-display" data-execution_count="253">
 <div>
 <div>
 
@@ -733,11 +741,11 @@ dtype: object</code></pre>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="00af6ec3" class="cell" data-results="hold" data-execution_count="6">
+<div id="df51441a" class="cell" data-results="hold" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0.head(<span class="dv">2</span>), <span class="op">\</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>erzeugung0.iloc[<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>erzeugung0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="270">
+<div class="cell-output cell-output-display" data-execution_count="254">
 <div>
 <div>
 
@@ -874,11 +882,11 @@ dtype: object</code></pre>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div id="9e4954d3" class="cell" data-results="hold" data-execution_count="7">
+<div id="c99f1ad0" class="cell" data-results="hold" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pd.concat([verbrauch0.head(<span class="dv">2</span>), <span class="op">\</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>verbrauch0.iloc[<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="271">
+<div class="cell-output cell-output-display" data-execution_count="255">
 <div>
 <div>
 
@@ -955,7 +963,7 @@ dtype: object</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Schließlich ist eine Plausibilitätskontrolle der Daten sinnvoll. Einleitend wurde der deutsche Gesamtstromverbrauch im Jahr 2023 genannt, der 458,3 TWh beträgt. Der Stromverbrauch und die Summe der Stromerzeugung sollten diesem Wert ungefähr entsprechen.</p>
-<div id="a51518c0" class="cell" data-execution_count="8">
+<div id="6cbdac5d" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude columns with datetime</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Stromverbrauch in Millionen MWh:</span><span class="ch">\n</span><span class="st">"</span>, <span class="op">\</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>) <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>), sep <span class="op">=</span> <span class="st">""</span>)</span>
@@ -974,7 +982,7 @@ Stromerzeugung in Millionen MWh 448.0</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Wenn alle Dateien korrekt eingelesen wurden, können Arbeitsdateien mit dem Befehl <code>df.copy()</code> angelegt werden. Dadurch bleiben die Rohdaten immer verfügbar und können bei Bedarf, beispielsweise nach einem versehentlichen Überschreiben der Arbeitsdateien, erneut geladen werden.</p>
-<div id="44127752" class="cell" data-results="hold" data-execution_count="9">
+<div id="6db8c59c" class="cell" data-results="hold" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>erzeugung <span class="op">=</span> erzeugung0.copy()</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>verbrauch <span class="op">=</span> verbrauch0.copy()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>installierte_leistung <span class="op">=</span> installierte_leistung0.copy()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -984,14 +992,14 @@ Stromerzeugung in Millionen MWh 448.0</code></pre>
 <h1 data-number="6"><span class="header-section-number">6</span> Beschreibende Datenanalyse</h1>
 <p>Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und analytischen Datenanalyse vertieft werden.</p>
 <p>Einen ersten Überblick über die Daten liefert die Methode <code>pd.DataFrame.describe()</code>. Durch das Argument <code>include = [np.number]</code> kann die Ausgabe auf Spalten mit numerischen Daten beschränkt werden, das heißt, die Spalten mit Datumsinformationen werden ausgeschlossen.</p>
-<div id="c8558e15" class="cell" data-results="hold" data-execution_count="10">
+<div id="a5977404" class="cell" data-results="hold" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Der DataFrame erzeugung hat </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> Zeilen und </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> Spalten.</span><span class="ch">\n</span><span class="ss">"</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>erzeugung.describe(include <span class="op">=</span> [np.number])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Der DataFrame erzeugung hat 35040 Zeilen und 14 Spalten.
 </code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="274">
+<div class="cell-output cell-output-display" data-execution_count="258">
 <div>
 <div>
 
@@ -1172,7 +1180,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Plotten mit Pandas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Code für Pandas</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div id="8971db5c" class="cell" data-results="hold" data-execution_count="11">
+<div id="465e0653" class="cell" data-results="hold" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1184,7 +1192,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<div id="01dbf98d" class="cell" data-results="hold" data-execution_count="12">
+<div id="75a7ae4d" class="cell" data-results="hold" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># erzeugung.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = True, explode = explosion)</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1216,7 +1224,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Plotten mit matplotlib</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Code für matplotlib</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div id="9585e79f" class="cell" data-results="hold" data-execution_count="13">
+<div id="f43059b1" class="cell" data-results="hold" data-execution_count="13">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1228,7 +1236,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div id="43eb1e48" class="cell" data-results="hold" data-execution_count="14">
+<div id="b3bb6940" class="cell" data-results="hold" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erneuerbare und Konventionelle bestimmen, jeweils summieren</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Erneuerbare</span></span>
@@ -1326,7 +1334,7 @@ Tip&nbsp;4: Lösung Wirkungsgrad Pumpspeicher
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="a49aa782" class="cell" data-results="hold" data-execution_count="15">
+<div id="a2759a44" class="cell" data-results="hold" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Summe Erzeugung Pumpspeicher: </span><span class="sc">{</span>erzeugung[<span class="st">"Pumpspeicher [MWh]"</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Summe Verbrauch Pumpspeicher: </span><span class="sc">{</span>verbrauch[<span class="st">"Pumpspeicher [MWh]"</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span><span class="dv">41</span> <span class="op">*</span> <span class="st">"="</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
@@ -1342,7 +1350,7 @@ Wirkungsgrad in Prozent:            79.10</code></pre>
 </div>
 </div>
 <p>Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzagentur veröffentlichte kumulierte Stromerzeugung der Pumpspeicherkraftwerke zuzüglich der Speicherverluste. Die Bundesnetzagentur führt diesen Wert im Datensatz Stromverbrauch. Im folgenden Programmcode wird der “Walross”-Operator <code>:=</code> benutzt, der Objektzuweisungen innerhalb von Anweisungen erlaubt. Mit dem Walross-Operator durchgeführte Zuweisungen müssen in runde Klammern eingefasst werden:</p>
-<div id="370971e0" class="cell" data-results="hold" data-execution_count="16">
+<div id="d2713ce8" class="cell" data-results="hold" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Speicherverluste:</span><span class="ch">\t\t\t</span><span class="sc">{</span> (speicherverluste <span class="op">:=</span> ( verbrauch[<span class="st">"Pumpspeicher [MWh]"</span>].<span class="bu">sum</span>() <span class="op">-</span> erzeugung[<span class="st">"Pumpspeicher [MWh]"</span>].<span class="bu">sum</span>() ) <span class="op">/</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>) )<span class="sc">:&gt;6.2f}</span><span class="ss"> TWh</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"kumulierte Stromerzeugung:</span><span class="ch">\t</span><span class="sc">{</span> ( kumulierte_erzeugung <span class="op">:=</span> erzeugung.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>).<span class="bu">sum</span>() <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ss"> TWh</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Summe:</span><span class="ch">\t\t\t\t\t\t</span><span class="sc">{</span>speicherverluste <span class="op">+</span> kumulierte_erzeugung<span class="sc">:.2f}</span><span class="ss"> TWh</span><span class="ch">\n\n</span><span class="ss">"</span></span>
@@ -1545,7 +1553,7 @@ Gesetz für den Vorrang Erneuerbarer Energien (Erneuerbare-Energien-Gesetz – E
 <section id="residual--und-restlast-bestimmen" class="level3">
 <h3 class="anchored" data-anchor-id="residual--und-restlast-bestimmen">Residual- und Restlast bestimmen</h3>
 <p>Die Bundesnetzagentur veröffentlicht im Datensatz zum realisierten Stromverbrauch Netzlast, Residuallast und den Stromverbrauch durch Pumpspeicherkraftwerke.</p>
-<div id="b80712c5" class="cell" data-execution_count="17">
+<div id="e17b98da" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(verbrauch.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Gesamt (Netzlast) [MWh]    4.58e+08
@@ -1569,7 +1577,7 @@ Definition Residuallast
 </div>
 <p>&nbsp;</p>
 <p>Die nicht durch erneuerbare Energien bediente Restlast ist die Differenz aus Stromverbrauch und der Erzeugung durch erneuerbare Energien. Die Restlast ist folglich kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast. Residual- und Restlast können aus der Differenz von Netzlast und der entsprechenden erneuerbaren Stromerzeugung berechnet werden.</p>
-<div id="a581a959" class="cell" data-execution_count="18">
+<div id="d0a7cc5f" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>erneuerbare <span class="op">=</span> [<span class="st">'Biomasse [MWh]'</span>, <span class="st">'Wasserkraft [MWh]'</span>, <span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>, <span class="st">'Sonstige Erneuerbare [MWh]'</span>]</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>PV_WindOnshore_WindOffshore <span class="op">=</span> [<span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>] </span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1583,7 +1591,7 @@ Definition Residuallast
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Restlast [MWh]"</span>] <span class="op">=</span> plotting_data[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data[<span class="st">"Erneuerbare [MWh]"</span>]</span>
 <span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>plotting_data.head()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="282">
+<div class="cell-output cell-output-display" data-execution_count="266">
 <div>
 <div>
 
@@ -1655,14 +1663,14 @@ Definition Residuallast
 </div>
 <p>&nbsp;</p>
 <p>Die von der Bundesnetzagentur veröffentlichte Residuallast <code>Residuallast BNetzA [MWh]</code> entspricht nach der Betrachtung der ersten Zeilen der selbst berechneten Residuallast <code>Residuallast [MWh]</code>. Ob dies für die gesamte Zeitreihe gilt, kann leicht mit der Methode <code>pd.Series.equals()</code> überprüft werden.</p>
-<div id="a2743a0f" class="cell" data-results="hold" data-execution_count="19">
+<div id="9b9401c3" class="cell" data-results="hold" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">'Residuallast BNetzA [MWh]'</span>].equals(plotting_data[<span class="st">'Residuallast [MWh]'</span>])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="283">
+<div class="cell-output cell-output-display" data-execution_count="267">
 <pre><code>True</code></pre>
 </div>
 </div>
 <p>Somit kann die redundante Spalte entfernt werden.</p>
-<div id="0c7688e5" class="cell" data-results="hold" data-execution_count="20">
+<div id="0fea46a8" class="cell" data-results="hold" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plotting_data.drop([<span class="st">'Residuallast BNetzA [MWh]'</span>], axis <span class="op">=</span> <span class="st">'columns'</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -1673,7 +1681,7 @@ Definition Residuallast
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Netzlast im Jahresgang</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div id="b5fbc722" class="cell" data-results="hold" data-execution_count="22">
+<div id="d408ee78" class="cell" data-results="hold" data-execution_count="22">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1685,7 +1693,7 @@ Definition Residuallast
 </div>
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<div id="2a9866c8" class="cell" data-results="hold" data-execution_count="23">
+<div id="ae669521" class="cell" data-results="hold" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Position und Inhalt der x-Achsenbeschriftung finden</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>monate <span class="op">=</span> erzeugung[<span class="st">"Datum von"</span>].dt.month.unique().tolist() <span class="co"># gibt die Zahlen 1-12 aus</span></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1701,7 +1709,7 @@ Definition Residuallast
 <span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   monate_index.append(erzeugung.index[erzeugung["Datum von"].dt.month == i].min())</span></span>
 <span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   monatsnamen.append(erzeugung["Datum von"].iloc[monate_index[i - 1]].strftime("%B"))</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="680bda14" class="cell" data-results="hold" data-execution_count="24">
+<div id="e508742b" class="cell" data-results="hold" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plotten jedes 100. Werts</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>plotting_data[::<span class="dv">100</span>].plot(figsize <span class="op">=</span> (<span class="dv">9</span>, <span class="dv">8</span>), subplots <span class="op">=</span> <span class="va">True</span>, sharey <span class="op">=</span> <span class="va">True</span>, xlim <span class="op">=</span> (plotting_data.index.<span class="bu">min</span>() <span class="op">-</span> (<span class="bu">len</span>(plotting_data.index) <span class="op">/</span> <span class="dv">100</span>), plotting_data.index.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.01</span>), rot <span class="op">=</span> <span class="dv">45</span>, grid <span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>plt.ylim(top <span class="op">=</span> <span class="dv">20000</span>)</span>
@@ -1732,7 +1740,7 @@ Tip&nbsp;6: Musterlösung Verdopplung EE
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">Mögliche Interpretation</a></li></ul>
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
-<div id="0992e12d" class="cell" data-execution_count="25">
+<div id="10547a09" class="cell" data-execution_count="25">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1744,7 +1752,7 @@ Tip&nbsp;6: Musterlösung Verdopplung EE
 </div>
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
-<div id="76912d24" class="cell" data-execution_count="26">
+<div id="8ee284f5" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE <span class="op">=</span> plotting_data.copy()</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Erneuerbare [MWh]"</span>] <span class="op">*</span> <span class="dv">2</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"Netzlast - 2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data_2EE[<span class="st">"2x EE"</span>]</span>
@@ -1813,7 +1821,7 @@ Jahresvolllaststunden ~ in ~ h = \frac{Summe ~ erzeugten ~ Stroms ~ in ~ MWh}{in
 </div>
 <p>Die Jahresvolllaststunden können wie folgt berechnet werden. Die Anwendung der Methode <code>.sum</code> auf den Datensatz installierte_leistung ist nicht erforderlich, da dieser nur eine Zeile hat. Die Methode <code>.sum</code> erlaubt es aber, über den Parameter <code>numeric_only = True</code> die Datumsspalten auszuschließen.<br>
 <strong>Einfache Division SeriesA / SeriesB funktioniert nicht, möglicherweise weil die Spaltennamen nicht übereinstimmen. Deshalb muss der Index für beide Series mit der Methode .reset_index(drop = True) zurückgesetzt und manuell nachgetragen werden.</strong></p>
-<div id="81669321" class="cell" data-execution_count="27">
+<div id="f7984748" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"{erzeugung.sum(numeric_only = True)}\n")</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># print(installierte_leistung.sum(numeric_only = True), "\n")</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1850,7 +1858,7 @@ dtype: float64</code></pre>
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Beispielcode Kernenergie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">Kernenergie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">Braunkohle</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-4" role="tab" aria-controls="tabset-6-4" aria-selected="false" href="">Steinkohle</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-5" role="tab" aria-controls="tabset-6-5" aria-selected="false" href="">Erdgas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-6" role="tab" aria-controls="tabset-6-6" aria-selected="false" href="">To Do</a></li></ul>
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
-<div id="f35d1906" class="cell" data-execution_count="28">
+<div id="4c999227" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>plotting_data <span class="op">=</span> erzeugung.copy()</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>erzeuger <span class="op">=</span> <span class="st">"Kernenergie"</span></span>
@@ -1876,7 +1884,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
-<div id="b0b8b23e" class="cell" data-execution_count="29">
+<div id="310f2bae" class="cell" data-execution_count="29">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1888,7 +1896,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
-<div id="d8ed2491" class="cell" data-execution_count="30">
+<div id="95b76781" class="cell" data-execution_count="30">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1900,7 +1908,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">
-<div id="a8dbcaec" class="cell" data-execution_count="31">
+<div id="0007322e" class="cell" data-execution_count="31">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1912,7 +1920,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-5-tab">
-<div id="fc7d9772" class="cell" data-execution_count="32">
+<div id="f87b11ec" class="cell" data-execution_count="32">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1968,7 +1976,7 @@ Tip&nbsp;7: Musterlösung
 <div class="callout-body-container callout-body">
 <p>In der graphischen Darstellung des Jahresgangs wurde nur jeder 100. Wert geplottet, sodass es möglich ist, dass die Stromerzeugung bereits vor der endgültigen Abschaltung den Wert Null erreichte. Es ist deshalb zuverlässiger, den Datensatz rückwärts zu durchsuchen.</p>
 <p>In der Vorwärtssuche wird mit der Methode <code>.eq()</code>die Position des ersten Auftretens des Werts 0 bestimmt und 1 subtrahiert. In der Rückwärtssuche wird mit der Methode <code>.gt()</code> die Position des ersten Werts bestimmt, der größer als 0 ist.</p>
-<div id="9e4dde88" class="cell" data-execution_count="33">
+<div id="3734eb01" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Vorwärtssuche: erzeugung['Kernenergie [MWh]'].eq(0).idxmax() - 1</span><span class="ch">\n</span><span class="sc">{</span>erzeugung[<span class="st">'Kernenergie [MWh]'</span>]<span class="sc">.</span>eq(<span class="dv">0</span>)<span class="sc">.</span>idxmax() <span class="op">-</span> <span class="dv">1</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># rückwärts</span></span>
@@ -2014,7 +2022,7 @@ Definition sortierte Jahresdauerlinie
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
-<div id="79d0940a" class="cell" data-execution_count="34">
+<div id="4751cd20" class="cell" data-execution_count="34">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2026,7 +2034,7 @@ Definition sortierte Jahresdauerlinie
 </div>
 </div>
 <div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
-<div id="1f62826b" class="cell" data-execution_count="35">
+<div id="81d460a1" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Daten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren.</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>braunkohle_daily <span class="op">=</span> erzeugung[<span class="st">'Braunkohle [MWh]'</span>].groupby(erzeugung[<span class="st">"Datum von"</span>].dt.dayofyear).mean()</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>steinkohle_daily <span class="op">=</span> erzeugung[<span class="st">'Steinkohle [MWh]'</span>].groupby(erzeugung[<span class="st">"Datum von"</span>].dt.dayofyear).mean()</span>
@@ -2088,8 +2096,8 @@ Tip&nbsp;9: Musterlösung Erzeugungsprofile von Biomasse und Braunkohle
 </div>
 </div>
 </section>
-<section id="bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms" class="level3">
-<h3 class="anchored" data-anchor-id="bestimmung-des-in-den-pumpspeichern-gespeicherten-stroms">Bestimmung des in den Pumpspeichern gespeicherten Stroms</h3>
+<section id="sec-Pumpspeicherinhalt" class="level3">
+<h3 class="anchored" data-anchor-id="sec-Pumpspeicherinhalt">Bestimmung des in den Pumpspeichern gespeicherten Stroms</h3>
 <p>In den bisherigen Betrachtungen wurde gezeigt, dass zwei grundsätzliche Szenarien im Stromnetz zu unterscheiden sind:</p>
 <ol type="1">
 <li><p>Restlast Null oder negativ: Grenzstrom wird von erneuerbaren Energien produziert.</p></li>
@@ -2100,7 +2108,7 @@ Tip&nbsp;9: Musterlösung Erzeugungsprofile von Biomasse und Braunkohle
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
-<div id="54279dd6" class="cell" data-execution_count="36">
+<div id="ca29dc39" class="cell" data-execution_count="36">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2112,7 +2120,7 @@ Tip&nbsp;9: Musterlösung Erzeugungsprofile von Biomasse und Braunkohle
 </div>
 </div>
 <div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
-<div id="aa1a422e" class="cell" data-execution_count="37">
+<div id="29572510" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restlast berechnen</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>erneuerbare <span class="op">=</span> [<span class="st">'Biomasse [MWh]'</span>, <span class="st">'Wasserkraft [MWh]'</span>, <span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>, <span class="st">'Sonstige Erneuerbare [MWh]'</span>]</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2159,7 +2167,7 @@ Tip&nbsp;10: Musterlösung Einspeicherung bei doppelter erneuerbarer Erzeugung
 </div>
 <div id="callout-20" class="callout-20-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="8bfc12ce" class="cell" data-execution_count="38">
+<div id="246ff019" class="cell" data-execution_count="38">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2198,8 +2206,20 @@ Tip&nbsp;10: Musterlösung Einspeicherung bei doppelter erneuerbarer Erzeugung
 <h1 data-number="8"><span class="header-section-number">8</span> Analytische Statistik</h1>
 <p>Analytische Statistik bedeutet, auf Grundlage der Daten Rückschlüsse zu ziehen. Analytische Statistik unterscheidet sich von der beschreibenden und explorativen Statistik dadurch, dass Daten nicht nur betrachtet und zueinander in Verhältnis gesetzt werden, sondern durch Modellierung neue Daten erzeugt werden.</p>
 <p>Bei der Analyse der Erzeugungsdaten konnte festgestellt werden, dass im Jahr 2023 punktuell bereits eine Vollversorgung aus erneuerbaren Energien erreicht wird. Aus der Betrachtung der verdoppelten erneuerbaren Stromerzeugung des Jahres 2023 (siehe <a href="#tip-verdopplung-EE" class="quarto-xref">Tip&nbsp;6</a>) kann geschlussfolgert werden, dass mit zunehmenden Ausbau der erneuerbaren Stromproduktion Phasen erneuerbarer Überproduktion immer häufiger der Fall sein werden. Die Perspektive regelmäßiger erneuerbarer Produktionsüberschüsse begründet einen Bedarf für Stromspeicher, um Strom aus Phasen der Überproduktion in Phasen mit positiver Restlast nutzbar zu machen.</p>
-<section id="hintergrund-ausbaupfad" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="hintergrund-ausbaupfad"><span class="header-section-number">8.1</span> Hintergrund: Ausbaupfad</h2>
+<p>In diesem Abschnitt wird der daraus resultierende Speicherbedarf betrachtet.</p>
+<section id="hintergrund-ausbaupfad-erneuerbarer-energien" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="hintergrund-ausbaupfad-erneuerbarer-energien"><span class="header-section-number">8.1</span> Hintergrund: Ausbaupfad erneuerbarer Energien</h2>
+<p>In Deutschland begann der Ausbau erneuerbarer Energien in den 1990er Jahren. Seit dem Beginn der 2000er Jahre stieg die erneuerbare Stromerzeugung weitgehend kontinuierlich an.</p>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://www.volker-quaschning.de/datserv/ren-Strom-D/ren-Strom-D.png" class="img-fluid figure-img"></p>
+<figcaption>Regenerative Strom­erzeugung in Deutschland seit 1990</figcaption>
+</figure>
+</div>
+<p>Regenerative Strom­erzeugung in Deutschland seit 1990 von Volker Quaschning nach Daten der AG Energiebilanzen (<a href="https://ag-energiebilanzen.de/wp-content/uploads/2024/04/STRERZ_Abg_02_2024_korr.xlsx">Stromerzeugung nach Energieträgern (Strommix) von 1990 bis 2022 (in TWh) Deutschland insgesamt (XLSX)</a>) ist lizensiert unter <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> und abrufbar unter <a href="https://www.volker-quaschning.de/datserv/ren-Strom-D/index.php" class="uri">https://www.volker-quaschning.de/datserv/ren-Strom-D/index.php</a>. 2023</p>
+</div>
+<p>&nbsp;</p>
 <p>Das Erneuerbare-Energien Gesetz legt in Paragraph 4 Ausbaupfade für die installierte Leistung von Solarenergie, Windenergie an Land sowie für Biomasse fest. Der Ausbaupfad für Windenergie auf See ist in Paragraph 1 des Windenergie-auf-See-Gesetzes geregelt.</p>
 <div>
 
@@ -2264,40 +2284,87 @@ f) 400 Gigawatt im Jahr 2040<br>
 </div>
 </div>
 </div>
-<p>Die Ausbauziele der Bundesregierung legen also für das Jahr 2030 eine installierte Leistung fest in Höhe von:</p>
+<p>Die Ausbauziele der Bundesregierung legen also für das Jahr 2030 bzw. 2035 eine installierte Leistung fest in Höhe von:</p>
 <ul>
-<li><p>115 GW Wind an Land,</p></li>
-<li><p>30 GW Wind auf See,</p></li>
-<li><p>215 GW Solar,</p></li>
+<li><p>115 GW Wind an Land bis 2030, 157 GW bis 2035,</p></li>
+<li><p>30 GW Wind auf See bis 2030, 40 GW bis 2035,</p></li>
+<li><p>215 GW Solar bis 2030, 309 GW bis 2035 sowie</p></li>
 <li><p>8,4 GW Biomasse.</p></li>
 </ul>
 <p>Dies bedeutet einen geplanten Zubau der installierten Leistung gemessen an der installierten Leistung im Jahr 2023 von:</p>
-<div id="ff9a3a22" class="cell" data-execution_count="39">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Wind an Land:</span><span class="ch">\t</span><span class="sc">{</span>( zubaufaktor_windonshore <span class="op">:=</span> <span class="dv">115</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Wind Onshore [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Wind auf See:</span><span class="ch">\t</span><span class="sc">{</span>( zubaufaktor_windoffshore <span class="op">:=</span> <span class="dv">30</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Wind Offshore [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Solar:</span><span class="ch">\t\t\t</span><span class="sc">{</span>( zubaufaktor_solar <span class="op">:=</span> <span class="dv">215</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Photovoltaik [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Biomasse:</span><span class="ch">\t\t</span><span class="sc">{</span><span class="fl">8.4</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Biomasse [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>)<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="1ed26591" class="cell" data-execution_count="39">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Wind an Land 2030:</span><span class="ch">\t</span><span class="sc">{</span>( zubaufaktor_windonshore_2030 <span class="op">:=</span> <span class="dv">115</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Wind Onshore [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Wind auf See 2030:</span><span class="ch">\t</span><span class="sc">{</span>( zubaufaktor_windoffshore_2030 <span class="op">:=</span> <span class="dv">30</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Wind Offshore [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Solar 2030:</span><span class="ch">\t\t\t</span><span class="sc">{</span>( zubaufaktor_solar_2035 <span class="op">:=</span> <span class="dv">215</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Photovoltaik [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Biomasse 2030:</span><span class="ch">\t\t</span><span class="sc">{</span><span class="fl">8.4</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Biomasse [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>)<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n\n</span><span class="ss">Wind an Land 2035:</span><span class="ch">\t</span><span class="sc">{</span>( zubaufaktor_windonshore_2035 <span class="op">:=</span> <span class="dv">157</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Wind Onshore [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Wind auf See 2035:</span><span class="ch">\t</span><span class="sc">{</span>( zubaufaktor_windoffshore_2035 <span class="op">:=</span> <span class="dv">40</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Wind Offshore [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Solar 2035:</span><span class="ch">\t\t\t</span><span class="sc">{</span>( zubaufaktor_solar_2035 <span class="op">:=</span> <span class="dv">309</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Photovoltaik [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Biomasse 2035:</span><span class="ch">\t\t</span><span class="sc">{</span><span class="fl">8.4</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Biomasse [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>)<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Wind an Land:   2.00
-Wind auf See:   3.69
-Solar:          3.41
-Biomasse:       0.99</code></pre>
+<pre><code>Wind an Land 2030:  2.00
+Wind auf See 2030:  3.69
+Solar 2030:         3.41
+Biomasse 2030:      0.99
+
+
+Wind an Land 2035:  2.73
+Wind auf See 2035:  4.92
+Solar 2035:         4.90
+Biomasse 2035:      0.99</code></pre>
 </div>
 </div>
-<p>Das bedeutet, dass die Produktion durch Windkraftanlagen an Land verdoppelt sowie durch Windkraftanlagen auf See und durch Photovoltaik verdreieinhalbfacht werden soll. Biomasse soll nicht weiter ausgebaut werden.</p>
+<p>Bis 2030 soll die Produktion durch Windkraftanlagen an Land verdoppelt sowie durch Windkraftanlagen auf See und durch Photovoltaik verdreieinhalbfacht werden. Bis 2035 soll Windkraft an Land fast verdreifacht, Wind auf See und Photovoltaik verfünffacht werden. Biomasse soll nicht weiter ausgebaut werden. Die Zubaufaktoren werden jeweils in einem Objekt gespeichert.</p>
 </section>
-<section id="hintergrund-speicherauslegung" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="hintergrund-speicherauslegung"><span class="header-section-number">8.2</span> Hintergrund: Speicherauslegung</h2>
-<p>Stromspeicher speichern die Stromerzeugung in Überschussphasen, um die Energie in Phasen der Unterdeckung wieder abzugeben. Die Auslegung</p>
-<p>Zyklenzahl usw.</p>
-<p>Ein paar anschauliche Grafiken zur Speicherung. Wichtig ist auch die Verteilung</p>
-<p><strong>kann man erst fill_between und dann plt.plot zeichnen? Dann wären die Randlinien auf jeden Fall richtig.</strong></p>
+<section id="hintergrund-stromspeicher" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="hintergrund-stromspeicher"><span class="header-section-number">8.2</span> Hintergrund: Stromspeicher</h2>
+<p>Stromspeicher speichern die Stromerzeugung in Überschussphasen, um die Energie in Phasen der Unterdeckung wieder abzugeben. Verschiedene Arten von Stromspeichern und ihre Einsatzgebiete werden im folgenden Video vorgestellt. Die Speichertypen unterscheiden sich grundlegend hinsichtlich ihrer Kapazität sowie der Lade- bzw. Entladeleistung.</p>
+<div class="border">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/yiJ1vAAJnVA" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>Energietechnik. 14 Energiespeicherung. 14.02 Kennzahlen von Henrik te Heesen ist lizensiert unter <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.de">CC BY-SA 3.0</a> und abrufbar auf <a href="https://www.youtube.com/watch?v=yiJ1vAAJnVA">YouTube</a>. 2020</p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Kenngrößen von Stromspeichern <strong>nicht alle brauchen wir im Baustein</strong>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Nominale Speicherkapazität: Energiemenge, die dem Stromspeicher entnommen werden kann.</p></li>
+<li><p>Nutzbare Speicherkapazität / Entladetiefe: Beschädigungsfrei nutzbarer Anteil der nominalen Speicherkapazität.</p></li>
+<li><p>Entladetiefe (Depth of Discharge, DoD): Differenz zwischen maximal und minimal erlaubten Ladezustand. <strong>redundant, weil entspricht der nominalen Speicherkapazität?!</strong><br>
+Auf <a href="https://en.wikipedia.org/wiki/State_of_charge">Wikipedia</a> ist es etwas anders erklärt.<br>
+DoD = 1- SoC “State of charge is normally used when discussing the current state of a battery in use, while depth of discharge is most often used to discuss a constant variation of state of charge during repeated cycles.” <strong>Simone fragen</strong></p></li>
+<li><p>Ladezustand (State of Charge, SoC): Verhältnis der aktuell gespeicherten Energie zur nominalen Kapazität, i. d.&nbsp;R. in Prozent angegeben.</p></li>
+<li><p>Lebenszyklus: Anzahl der Ladezyklen bis die Speicherkapazität auf 80 % der nominalen Speicherkapazität gefallen ist.</p></li>
+<li><p>Lebenserwartung: kalendarische Lebenserwartung in Jahren bis 80 % der nominalen Speicherkapazität erreicht wird.</p></li>
+<li><p>Effizienz: Wirkungsgrad bei der Speicherung (Be- und Entladen und Speicherverluste wie Selbstentladung)</p></li>
+<li><p>Stromspeicherkosten (Levelized Cost of Storage LCOS): Kosten in Euro einer entnommenen kWh.</p></li>
+</ul>
+<div class="border">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/0-PRS2naETE" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>Energietechnik. 14 Energiespeicherung. 14.03 Kenngrößen und Begriffsdefinitionen von Henrik te Heesen ist lizensiert unter <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.de">CC BY-SA 3.0</a> und abrufbar auf <a href="https://www.youtube.com/watch?v=0-PRS2naETE">YouTube</a>. 2020</p>
+</div>
+</div>
+</div>
+<p><strong>Was noch fehlt: Zyklenzahl</strong></p>
+</section>
+<section id="sec-grundlagen-speicherauslegung" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="sec-grundlagen-speicherauslegung"><span class="header-section-number">8.3</span> Grundlagen der Speicherauslegung</h2>
+<p>Für die Bestimmung der erforderlichen Speichergröße in einem zunehmend von erneuerbarer Überschussproduktion gekennzeichneten Stromsystem werden zunächst verschiedene Bedingungen betrachtet, die die Auslegung der Kapazität beeinflussen. Grundlage der Betrachtung ist die Restlast.</p>
+<p><strong>Man könnte noch eine gestrichelte Linie einzeichnen, die den Gang der Speicherfüllung zeigt. Dafür habe ich auch schon eine Funktion.</strong><br>
+<strong>TO DO: fig-alt</strong></p>
 <div>
 
 </div>
 <div class="quarto-layout-panel" data-layout="[40, 60]">
 <div class="quarto-layout-row">
-<div id="5b3ab014" class="cell quarto-layout-cell" data-execution_count="40" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="57a166a5" class="cell quarto-layout-cell" data-execution_count="40" style="flex-basis: 40.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2308,21 +2375,24 @@ Biomasse:       0.99</code></pre>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
 <dl>
-<dt>Vorzeichen der summierten Restlast (bessere Bezeichnung gesucht)</dt>
+<dt>Erneuerbare Stromproduktion: Überschuss oder Defizit?</dt>
 <dd>
 Die erforderliche Größe des Stromspeichers ist abhängig von dem Verhältnis aus der Menge der erneuerbaren Überschussproduktion und der aus dem Speicher zu bedienenden Restlast.
 </dd>
 <dd>
-Ist die Summe der erneuerbaren Überschussproduktion kleiner als die Summe der erneuerbaren Unterproduktion, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
+Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
 </dd>
 <dd>
-Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der erneuerbaren Unterproduktion, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Unterproduktion.
+Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße der Summe der zu bedienenden Restlast.
+</dd>
+<dd>
+Ob ein Überschuss oder ein Defizit erneuerbarer Stromproduktion vorliegt, kann am Vorzeichen der summierten Restlast abgelesen werden. Ein negatives Vorzeichen entspricht einem erneuerbaren Stromüberschuss, ein positives Vorzeichen einem erneuerbaren Stromdefizit.
 </dd>
 </dl>
 </div>
 </div>
 <div class="quarto-layout-row">
-<div id="db6d78e3" class="cell quarto-layout-cell" data-execution_count="41" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="438a3d81" class="cell quarto-layout-cell" data-execution_count="41" style="flex-basis: 40.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2333,9 +2403,58 @@ Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der 
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
 <dl>
+<dt>Reihenfolgeabhängigkeit</dt>
+<dd>
+Wird nur ein einziges Jahr betrachtet, entscheidet die Reihenfolge von erneuerbarer Über- und Unterproduktion, wie viel Strom eingespeichert werden kann. Die gezeigten Beispiele entsprechen den gerade gezeigten, die Phasen von erneuerbarer Überschussproduktion und positiver Restlast treten aber in umgekehrter Reihenfolge auf.
+</dd>
+<dd>
+Die Reihenfolgeabhängigkeit kann aufgelöst werden, indem zwei aufeinanderfolgende Jahresgänge betrachtet werden. Im ersten Jahr wird der Speicher leer ans Netz angeschlossen. Das zweite Jahr beginnt der Speicher gefüllt durch die Überschussproduktion aus dem Vorjahr.
+</dd>
+<dd>
+<strong>Reichen die oberen beiden Grafiken oder sind vier Grafiken besser?</strong>
+</dd>
+</dl>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="skript/00-bilder/Platzhalter%20Wirkungsgrad.png" class="img-fluid figure-img"></p>
+<figcaption>Platzhalter</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
+<dt>Wirkungsgrad</dt>
+<dd>
+Einspeicherwirkungsgrad vermindert den verfügbaren Überschussstrom.
+</dd>
+<dd>
+Ausspeicherwirkungsgrad (inklusive Speicherverluste) erhöht die durch den Speicher zu bedienende Last.
+</dd>
+<dd>
+<strong>braucht man dafür Grafiken?</strong>
+</dd>
+</dl>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div id="b8e6d1a1" class="cell quarto-layout-cell" data-execution_count="42" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Energiedatenauswertung_files/figure-html/cell-43-output-1.png" width="566" height="470" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
+<dl>
 <dt>Anzahl Vollzyklen</dt>
 <dd>
-Die erforderliche Größe des Stromspeichers ist abhängig von der Verteilung der Restlast und der damit realisierten Anzahl Vollzyklen. Ein Vollzyklus bedeutet, dass ein Speicher vollständig geladen und wieder entladen wird.
+Die erforderliche Größe des Stromspeichers ist abhängig von der Verteilung der Restlast und der realisierten Anzahl Vollzyklen. Ein Vollzyklus bedeutet, dass ein Speicher vollständig geladen und wieder entladen wird.
 </dd>
 <dd>
 Im ungünstigsten Fall wird nur ein einziger Lade- / Entladezyklus gefahren. In diesem Fall entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
@@ -2347,11 +2466,11 @@ Je häufiger sich Lade- und Entladezyklen abwechseln, desto geringer ist die erf
 </div>
 </div>
 <div class="quarto-layout-row">
-<div id="05b8c641" class="cell quarto-layout-cell" data-execution_count="42" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="713f0f0b" class="cell quarto-layout-cell" data-execution_count="43" style="flex-basis: 40.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Energiedatenauswertung_files/figure-html/cell-43-output-1.png" width="566" height="470" class="figure-img"></p>
+<p><img src="Energiedatenauswertung_files/figure-html/cell-44-output-1.png" width="566" height="470" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -2360,26 +2479,26 @@ Je häufiger sich Lade- und Entladezyklen abwechseln, desto geringer ist die erf
 <dl>
 <dt>Teilzyklen</dt>
 <dd>
-Erklärung Teilzyklen
+Auch die Verteilung auftretender Teilzyklen reduziert die erforderliche Speichergröße.
 </dd>
 <dd>
-Ist die Summe der erneuerbaren Überschussproduktion kleiner als die Summe der erneuerbaren Unterproduktion, entspricht die erforderliche Speichergröße dem Minimum der kummulierten Summe der Restlast ‘.cumsum’, wenn diese niemals größer 0 gesetzt wird (das Überschreiten wäre der Moment, in dem der Speicher leer ist).
+Ist die Summe der erneuerbaren Überschussproduktion kleiner als die durch den Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße dem Minimum der kummulierten Summe der Restlast, wenn diese niemals größer 0 gesetzt wird (das Überschreiten wäre der Moment, in dem der Speicher leer ist).
 </dd>
 <dd>
-‘Restlast.sum() &gt; 0 = .cumsum Restlast (aber nie kleiner 0)’ <strong>Ich glaube nicht, dass man die Erklärung so versteht.</strong>
+Ist die Summe der erneuerbaren Überschussproduktion größer als die durch den Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast’.cumsum’, wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).
 </dd>
 <dd>
-Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der erneuerbaren Unterproduktion, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast’.cumsum’, wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist). <strong>Ich glaube nicht, dass man die Erklärung so versteht.</strong>
+<strong>Ich glaube nicht, dass man die Erklärung so versteht. Die Berechnung der Zyklenzahl kommt später.</strong>
 </dd>
 </dl>
 </div>
 </div>
 <div class="quarto-layout-row">
-<div id="2ba4f494" class="cell quarto-layout-cell" data-execution_count="43" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="af93fb38" class="cell quarto-layout-cell" data-execution_count="44" style="flex-basis: 40.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Energiedatenauswertung_files/figure-html/cell-44-output-1.png" width="566" height="470" class="figure-img"></p>
+<p><img src="Energiedatenauswertung_files/figure-html/cell-45-output-1.png" width="566" height="470" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -2396,15 +2515,211 @@ Im oberen Beispiel wird die Speichergröße entsprechend der maximalen erneuerba
 <dd>
 Im unteren Beispiel wird der Speicher kleiner dimensioniert. Der Speicher erreicht 2 Zyklen.
 </dd>
+<dd>
+<strong>Überlegungen zur Berechnung der Speichergröße mit Kappung kommen später.</strong>
+</dd>
 </dl>
 </div>
 </div>
 </div>
-<p>Diese könnten, wenn Sie gespeichert werden, helfen, die Phasen mit positiver Restlast ebenfalls aus erneuerbaren Energien zu decken.</p>
-<p>Vielleicht noch als Hintergrund die Zubaugrafik vom Quaschning einbinden, dass der Weg dahin so 20-25 Jahre dauern wird, also praktisch morgen. <strong>wie im Forum</strong></p>
-<p>Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt? –&gt; benötigte Leistung und Kapazität sind interessant = Minimumabschätzung im „Kupferplattenmodell“ also ohne technische Verluste</p>
-<p>Hintergrund: bissl technischer Hintergrund zu Speichern</p>
-<p>man könnte zeigen: Restlast, Restlast ohne Speicher (alle negativen Werte = 0), Restlast mit optimalen Speicher (alle negativen Werte summieren sich und tragen darauf folgende positive Werte ab) schlechtester Fall, halber Zyklus = halber Speicherbedarf. Wirkungsgrad ist schwierig: bei der Auslegungsgröße sind eigentlich nur Einspeicherverluste relevant (um die vermindert sich die benötigte Größe des Speichers)</p>
+</section>
+<section id="speichergröße-berechnen" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="speichergröße-berechnen"><span class="header-section-number">8.4</span> Speichergröße berechnen</h2>
+<p><strong>Dazu muss auf eine Listenoperation zurückgegriffen werden. Was schade ist, weil es langsam ist. Ist gar nicht so langsam. Die Berechnung der Speichergröße und des Jahresgänge in Jahr Null und den Folgejahren hat 0.09 Sekunden gedauert. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären.</strong>. Auf dieser Grundlage kann eine Funktion entwickelt werden, um anhand der Restlast die erforderliche Speichergröße zu berechnen. Diese soll zur besseren Verständlichkeit mit der bestehenden Pumpspeicherkapazität von 37,4 GWh ins Verhältnis gesetzt werden. Die Restlast wird wie folgt bestimmt:</p>
+<div id="9503fc42" class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>pumpspeicherkapazität_MWh <span class="op">=</span> <span class="fl">37.4</span> <span class="op">*</span> <span class="dv">1000</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>restlast <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>restlast[<span class="st">"Netzlast [MWh]"</span>] <span class="op">=</span> verbrauch[<span class="st">"Gesamt (Netzlast) [MWh]"</span>].copy() </span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>restlast[<span class="st">"Erneuerbare [MWh]"</span>] <span class="op">=</span> erzeugung[erneuerbare].<span class="bu">sum</span>(axis <span class="op">=</span> <span class="st">"columns"</span>).copy()</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>restlast[<span class="st">"Restlast [MWh]"</span>] <span class="op">=</span> restlast[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> restlast[<span class="st">"Erneuerbare [MWh]"</span>]</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>restlast <span class="op">=</span> restlast[<span class="st">"Restlast [MWh]"</span>]</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Verschieben</strong> Da die Datenreihe sehr lang ist, bietet es sich an, für die Funktionsentwicklung eine kürzere Reihe von Testdaten zu benutzen. Auf diese Weise werden Berechnungen schneller durchgeführt und Zwischenergebnisse und Ergebnisse können bei Bedarf zur Überprüfung ausgegeben werden. Die folgende Funktion simuliert mit zehn Werten eine Restlastkurve, die im Jahresgang zufällig eine erneuerbare Überschussproduktion bzw. eine positive Restlast darstellt. Durch Anpassen der Werte für a und b kann das Ergebnis gesteuert werden.</p>
+<div id="da16f1d7" class="cell" data-execution_count="46">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random <span class="im">as</span> rd</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>random_data <span class="op">=</span> []</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  random_data.append(rd.randint(a <span class="op">=</span> <span class="op">-</span><span class="dv">20</span>, b <span class="op">=</span> <span class="dv">20</span>))</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>random_data <span class="op">=</span> pd.Series(random_data, dtype <span class="op">=</span> <span class="st">'float'</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Im ersten Schritt muss bestimmt werden, ob im Jahresgang Phasen erneuerbarer Überproduktion oder Phasen positiver Restlast vorherrschen. Dies kann mit der folgenden einfachen Funktion bestimmt werden.</p>
+<div id="636f8359" class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EE-Überschuss feststellen</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float')</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: über die pd.Series wird die Summe gebildet</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: zurückgegeben wird der Wahrheitswert von data.sum() &lt; 0</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prüfe_EE_Überschuss(data):</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> data.<span class="bu">sum</span>() <span class="op">&lt;</span> <span class="dv">0</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>prüfe_EE_Überschuss(restlast)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="295">
+<pre><code>False</code></pre>
+</div>
+</div>
+<p>Wie aus der Grenzstromanalyse im Abschnitt <a href="#sec-Pumpspeicherinhalt" class="quarto-xref">Kapitel&nbsp;7.1.5</a> bekannt, herrschte im Jahr 2023 kein Überschuss an erneuerbarer Stromproduktion.<br>
+<strong>Erweitern Sie die Funktion um einen Ein- und Ausspeicherwirkungsgrad (inklusive Speicherverluste).</strong></p>
+<div id="tip-Wirkungsgrad" class="callout callout-style-default callout-tip callout-titled" title="erneuerbarer Überschuss oder Defizit mit Wirkungsgrad">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip&nbsp;11: erneuerbarer Überschuss oder Defizit mit Wirkungsgrad
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="7697a46d" class="cell" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EE-Überschuss feststellen, gegeben einen Ein- und Ausspeicherungswirkungsgrad (default = 1)</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Werte kleiner 0 werden mit dem Einspeicherwirkungsgrad multipliziert</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Werte größer 0 werden durch den Ausspeicherwirkungsgrad geteilt</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: über die pd.Series wird die Summe gebildet</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: zurückgegeben wird der Wahrheitswert von data_wirkungsgrad_bereinigt.sum() &lt; 0</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>wirkungsgrad <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prüfe_EE_Überschuss(data, einspeicherwirkungsgrad <span class="op">=</span> <span class="dv">1</span>, ausspeicherwirkungsgrad <span class="op">=</span> <span class="dv">1</span>):</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>  data_wirkungsgrad_bereinigt <span class="op">=</span> data.copy()</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&lt;</span> <span class="dv">0</span>] <span class="op">=</span> data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&lt;</span> <span class="dv">0</span>] <span class="op">*</span> einspeicherwirkungsgrad</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">/</span> ausspeicherwirkungsgrad</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> data_wirkungsgrad_bereinigt.<span class="bu">sum</span>() <span class="op">&lt;</span> <span class="dv">0</span></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>prüfe_EE_Überschuss(restlast)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="296">
+<pre><code>False</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Im zweiten Schritt kann die Speichergröße aus dem Jahresgang der Restlast berechnet werden. Um nicht vom Zeitpunkt abhängig zu sein, an dem der Speicher an das Netz angeschlossen wird, wird der Datensatz zwei mal durchlaufen.</p>
+<ul>
+<li><p>Ist die Summe der erneuerbaren Überschussproduktion kleiner als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Minimum der kummulierten Summe der Restlast, wenn diese niemals größer 0 gesetzt wird (das Überschreiten wäre der Moment, in dem der Speicher leer ist).</p></li>
+<li><p>Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast, wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).</p></li>
+</ul>
+</section>
+<section id="formel-noch-ohne-wirkungsgrad" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="formel-noch-ohne-wirkungsgrad"><span class="header-section-number">8.5</span> Formel noch ohne Wirkungsgrad</h2>
+<div id="904557c6" class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Speichergröße berechnen</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float'), output = False</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: aufrufen der Funktion prüfe_EE_Überschuss, um zwischen oberer Grenze = 0 (Speicher ist leer) und unterer Grenze = 0 (Speicher ist überdimensioniert) zu unterscheiden</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: data wird zwei mal zu data_x2 verkettet. Für data_x2 wird die bei 0 gekappte kumulierte Summe berechnet und die Speichergröße berechnet.</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Anhand der Speichergröße wird der Jahresgang in Jahr1 und allen folgenden Jahren simuliert.</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: wenn output = False wird ein Tupel ausgegeben: die Speichergröße (float) und der Jahresgang in Jahr1 (Liste) und allen folgenden Jahren (Liste)</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> berechne_speichergröße(data, output <span class="op">=</span> <span class="va">False</span>):</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  data_x2 <span class="op">=</span> pd.concat([data, data])</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>  überschuss <span class="op">=</span> prüfe_EE_Überschuss(data)</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> überschuss:</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Listenoperation</span></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>    capped_cumsum <span class="op">=</span> []</span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>    summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>      summe <span class="op">+=</span> i </span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Untergrenze prüfen</span></span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> summe <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb48-27"><a href="#cb48-27" aria-hidden="true" tabindex="-1"></a>      capped_cumsum.append(summe)</span>
+<span id="cb48-28"><a href="#cb48-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-29"><a href="#cb48-29" aria-hidden="true" tabindex="-1"></a>    speichergröße <span class="op">=</span> <span class="bu">max</span>(capped_cumsum)</span>
+<span id="cb48-30"><a href="#cb48-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb48-31"><a href="#cb48-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>:</span>
+<span id="cb48-32"><a href="#cb48-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-33"><a href="#cb48-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Listenoperation</span></span>
+<span id="cb48-34"><a href="#cb48-34" aria-hidden="true" tabindex="-1"></a>    capped_cumsum <span class="op">=</span> []</span>
+<span id="cb48-35"><a href="#cb48-35" aria-hidden="true" tabindex="-1"></a>    summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb48-36"><a href="#cb48-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-37"><a href="#cb48-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
+<span id="cb48-38"><a href="#cb48-38" aria-hidden="true" tabindex="-1"></a>      summe <span class="op">+=</span> i</span>
+<span id="cb48-39"><a href="#cb48-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-40"><a href="#cb48-40" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Obergrenze prüfen</span></span>
+<span id="cb48-41"><a href="#cb48-41" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> summe <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb48-42"><a href="#cb48-42" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb48-43"><a href="#cb48-43" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb48-44"><a href="#cb48-44" aria-hidden="true" tabindex="-1"></a>      capped_cumsum.append(summe)</span>
+<span id="cb48-45"><a href="#cb48-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-46"><a href="#cb48-46" aria-hidden="true" tabindex="-1"></a>    speichergröße <span class="op">=</span> <span class="bu">abs</span>(<span class="bu">min</span>(capped_cumsum))</span>
+<span id="cb48-47"><a href="#cb48-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-48"><a href="#cb48-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Jahresgang des Speichers simulieren</span></span>
+<span id="cb48-49"><a href="#cb48-49" aria-hidden="true" tabindex="-1"></a>  jahresgang_speicher <span class="op">=</span> []</span>
+<span id="cb48-50"><a href="#cb48-50" aria-hidden="true" tabindex="-1"></a>  freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span> <span class="op">-</span> speichergröße <span class="co"># der speicher ist leer</span></span>
+<span id="cb48-51"><a href="#cb48-51" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
+<span id="cb48-52"><a href="#cb48-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-53"><a href="#cb48-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> freie_speicherkapazität <span class="op">-</span> i <span class="op">&lt;</span> <span class="op">-</span>speichergröße: <span class="co"># last ohne vorherige Einspeicherung kann nicht bedient werden</span></span>
+<span id="cb48-54"><a href="#cb48-54" aria-hidden="true" tabindex="-1"></a>      freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span> <span class="op">-</span> speichergröße</span>
+<span id="cb48-55"><a href="#cb48-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-56"><a href="#cb48-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> freie_speicherkapazität <span class="op">-</span> i <span class="op">&gt;</span> <span class="dv">0</span>: <span class="co"># wenn der Speicher voll ist, muss Überschuss verworfen werden.</span></span>
+<span id="cb48-57"><a href="#cb48-57" aria-hidden="true" tabindex="-1"></a>      freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb48-58"><a href="#cb48-58" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb48-59"><a href="#cb48-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb48-60"><a href="#cb48-60" aria-hidden="true" tabindex="-1"></a>      freie_speicherkapazität <span class="op">-=</span> i</span>
+<span id="cb48-61"><a href="#cb48-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-62"><a href="#cb48-62" aria-hidden="true" tabindex="-1"></a>    jahresgang_speicher.append(freie_speicherkapazität)</span>
+<span id="cb48-63"><a href="#cb48-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-64"><a href="#cb48-64" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Vorzeichen invertieren</span></span>
+<span id="cb48-65"><a href="#cb48-65" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(jahresgang_speicher)):</span>
+<span id="cb48-66"><a href="#cb48-66" aria-hidden="true" tabindex="-1"></a>    jahresgang_speicher[i] <span class="op">*=</span> <span class="op">-</span><span class="dv">1</span> </span>
+<span id="cb48-67"><a href="#cb48-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-68"><a href="#cb48-68" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> output: <span class="co"># output = True</span></span>
+<span id="cb48-69"><a href="#cb48-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-70"><a href="#cb48-70" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> pd.DataFrame({<span class="st">'Restlast'</span>: data, <span class="st">'freie Kapazität Jahr1'</span>: jahresgang_speicher[: <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> ], <span class="st">'freie Kapazität Folgejahre'</span>: jahresgang_speicher[ <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> : ]})</span>
+<span id="cb48-71"><a href="#cb48-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-72"><a href="#cb48-72" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n\n</span><span class="ss">Summe data: </span><span class="sc">{</span>data<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ch">\n</span><span class="ss">Speichergröße: </span><span class="sc">{</span>speichergr<span class="sc">öß</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb48-73"><a href="#cb48-73" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(dataset)</span>
+<span id="cb48-74"><a href="#cb48-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-75"><a href="#cb48-75" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>: <span class="co"># output = False</span></span>
+<span id="cb48-76"><a href="#cb48-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> speichergröße, jahresgang_speicher[: <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> ], jahresgang_speicher[ <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> : ]</span>
+<span id="cb48-77"><a href="#cb48-77" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb48-78"><a href="#cb48-78" aria-hidden="true" tabindex="-1"></a>speicher_2023 <span class="op">=</span> berechne_speichergröße(restlast, output <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb48-79"><a href="#cb48-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-80"><a href="#cb48-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-81"><a href="#cb48-81" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"erforderliche Speichergröße 2023: </span><span class="sc">{</span>speicher_2023[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> MWh</span><span class="ch">\n</span><span class="ss">Dies entspricht </span><span class="sc">{</span>speicher_2023[<span class="dv">0</span>] <span class="op">/</span> pumpspeicherkapazit<span class="sc">ä</span>t_MWh<span class="sc">:.1f}</span><span class="ss"> Pumpspeicheräquivalenten."</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>erforderliche Speichergröße 2023: 119667.0 MWh
+Dies entspricht 3.2 Pumpspeicheräquivalenten.</code></pre>
+</div>
+</div>
+<p>Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt? –&gt; benötigte Leistung und Kapazität sowie die Zyklenzahl sind interessant. <strong>Anschließend könnte man die Wirtschaftlichkeit ausrechnen mit den Börsenstrompreisen.</strong> = Minimumabschätzung im „Kupferplattenmodell“ also ohne technische Verluste</p>
+<section id="zyklenzahl-berechnen-mit-teilzyklen" class="level3">
+<h3 class="anchored" data-anchor-id="zyklenzahl-berechnen-mit-teilzyklen">Zyklenzahl berechnen (mit Teilzyklen)</h3>
+<p><strong>Den Jahresgang des Speichers habe ich bereits… hier braucht man nur die elementweise Differenz aufsummieren, durch 2 teilen und man hat die Zyklenzahl. Als Vergleich kann man die Zyklenzahl der deutschen Pumpspeicher nehmen: Das sollten etwa 297 sein (Ausspeicherung von 11,1 TWh / 37,4 GWh Kapazität).</strong></p>
+<p><strong>Wie berechnet man nun die Zyklenzahl?. Ein Zyklus sei eine vollständige Ladung und Entladung. Wir müssen also die Zeitpunkte bestimmen, in denen der Speicher geladen und entladen wird. Dafür müssen wir die Speichergröße kennen, die Zyklenzahl wird also nach deren Bestimmung berechnet. Dafür braucht man die cumsum-Funktion, die nie unter (über) Null fällt, nur dass zusätzlich zur Bedingung nie unter Null, zusätzlich nie über Speichergröße eingesetzt wird. Das Vorzeichen der Restlast wird invertiert (=Einspeicherung mit positiven Vorzeichen) und die cumsumfunktion mit oberer und unterer Schranke laufen gelassen. Werte über der Speichergrenze oder unter Null werden Null gesetzt (Kappung bzw. Speicher leer). Die so modifizierte Restlastlinie wird absolut gesetzt und summiert: Das ist die Summe der Stromein- und ausflüsse. Man teile durch zwei und die Speicherkapazität und man erhält die Vollzyklenzahl.</strong> <strong>Nicht ganz exakt ist es, Werte die über die Speichergrenze gehen bzw. unter Null gehen würden komplett zu verwerfen. Wenn das passiert, dann kann man die Verwerfen und den Speicherstand auf Null bzw. Voll setzen.</strong></p>
+</section>
+<section id="erzeugung-kappen" class="level3">
+<h3 class="anchored" data-anchor-id="erzeugung-kappen">Erzeugung kappen</h3>
+<dl>
+<dt><strong>Wie kappt man Erzeugungsspitzen sinnvoll?</strong></dt>
+<dd>
+<strong>Variante 1: naives kappen der größten Überschüsse.</strong> Hier müsste man in der .cumsum() (niemals über/unter 0) einfach das Minimum suchen und um den gewünschten Prozentwert reduzieren. Problem 1: Einzelne Spitzen müssen nicht notwendigerweise die Phasen sein, die die Speichergröße bestimmen - das können auch aufeinanderfolgende kleinere Überschüsse sein. Problem 2: Die Kappung führt nicht zwangsläufig zu einer höheren Zyklenzahl (bspw. [8, 16, 8, -12, -16, 10, 13, 10]) - hier wird immer ein Zyklus gefahren, egal wie groß der Speicher ist. Eine anteilige Begrenzung der Einspeicherung bewirkt lediglich eine anteilige Reduktion der Speichergröße. –&gt; man muss das vom Jahresgang des Speichers / eventl. auch der Zyklenzahl abhängig machen.
+</dd>
+<dd>
+<strong>Wie reduziert man prozentual Erzeugungsspitzen? Man sortiert die Restlast aufsteigend (große negative Werte zuerst), schneidet alle Werte größer gleich Null ab, setzt den Betrag absolut, lässt cumsum() darüber laufen und setzt mit der sum() ins Verhältnis. Dann legt man einen Anteilswert fest, z. B. 0.05 und bestimmt dessen Indexposition (man schreibe eine Funktion find_nearest(array, value = 0.05).</strong> <strong>def find_nearest(a, a0): # gibt den Wert zurück, man kann aber auch den .index zurückgeben “Element in nd array <code>a</code> closest to the scalar value <code>a0</code>” idx = np.abs(a - a0).argmin() return a.flat[idx]</strong> https://stackoverflow.com/a/10465997 <strong>Jetzt muss man noch kappen… wie kommt man auf genau 5 Prozent?</strong> Fall 1: Der Wert entspricht genau dem value 0.05, dann setzt man alle Restlastwerte links davon auf den returnierten Wert Fall 2: Der Wert ist kleiner als der value 0.05. Dann setzt dann setzt man alle Restlastwerte links davon auf den returnierten Wert und muss noch die Differenz bereinigen. Das geht in dem man die alle Wert links bis zur Indexposition von value mit 1 - (Kriterium - returnierter Wert) multipliziert. Fall 3: Der Wert ist größer als der value 0.05, dann setzt man alle Restlastwerte links vavon auf den returnierten Wert und muss noch die Differenz bereinigen. Das geht in dem man die alle Wert links bis zur Indexposition von value mit 1 - (Kriterium - returnierter Wert) multipliziert. Das Vorgehen kann für alle drei Fälle angewendet werden. Mit der so modifizierten Restlastkurve kann dann die cumsum-niemals über / unter 0 Funktion angewendet werden.
+</dd>
+<dd>
+<strong>Variante 2</strong>: kappen nach Jahresgang des Speichers. Mit der Methode not duplicated können wir die Anzahl der Phasen bestimmen, in denen der Speicher voll ist (freie Kapazität = 0) - Problem: voll - kleine Entnahme - voll - kleine Entnahme - voll. Beim Speicher sind gar nicht die Lade-Entladespitzen das Problem, sondern ein Sockel, der praktisch immer geladen (oder immer leer) ist und nur einmal im Jahr wieder entladen wird. –&gt; eigentlich muss man sich den Jahresgang des Speichers angucken und die Anzahl Vollzyklen berechnen. Die Vollzyklen steigert man, indem der Sockel reduziert wird. Der Sockel ist je nach Szenario (EE-Überschuss, EE-Unterproduktion) fast immer voll / fast immer leer. Hier könnte folgende Grafik helfen: Auf der x-Achse ist die auf 1 (also geteilt durch die Speichergröße) normierte Jahresdauerlinie des Speichers aufgetragen. Links ist Null, rechts ist 1. Auf der bei 1 beginnenden y-Achse die erreichte Zyklenzahl. <strong>Die Berechnung sei trivial ;-)</strong>
+</dd>
+<dd>
+<strong>Variante 3</strong> Ein kurzer Blick in Zerrahn et al.&nbsp;2018, Kapitel 4.1 (S. 265) diskutiert leistungsorientiertes Kappen. Überschüsse oberhalb der Einspeicherleistung werden gekappt. Die Autoren nutzen eine Schwelle von 44.1 Gigawatt. Das wird aber in Kapitel 4.2 (S. 267) wieder verworfen, weil nicht einzelne Erzeugungsspitzen sondern längere Perioden von Erzeugungsüberschüssen die Speichergröße bestimmen (siehe Variante 1 naives kappen). In Kapitel 4.2 wird energieorientiertes Kappen vorgeschlagen. Gekappt wird nur, wenn der Speicher voll ist (siehe Diskussion Variante 1). Die Veränderung der Speichergröße durch Kappung scheinen die Autoren durch Ausprobieren zu bestimmen: “we iterate through minimum renewable requirements and maximum renewable curtailment constraints to explore the solution space and endogenously determine minimum storage capacities.”<br>
+**Mit dem Vorgehen braucht man nicht an der Kappung rumrechnen, sondern kann umgekehrt den Anteil “weggeworfener” EE bestimmmen, wenn der Speicher x-Prozent kleiner ist.
+</dd>
+</dl>
 <ol type="I">
 <li>Hans-Werner Sinns Weihnachtsvorlesung 2022 nachrechnen. Sinn argumentiert auf der Datenbasis 2019.</li>
 </ol>
@@ -2486,6 +2801,7 @@ Klingt kompliziert, eventuell ist es einfacher, den Speichergang zu simulieren.
 Angefangen bei Speichergröße = 1 MWh und dann immer inkrementieren...</code></pre>
 </section>
 </section>
+</section>
 <section id="informationen-zu-speichern" class="level1" data-number="9">
 <h1 data-number="9"><span class="header-section-number">9</span> Informationen zu Speichern</h1>
 <p>Viele Zahlen in diesem Artikel: https://www.msn.com/de-de/finanzen/top-stories/energiewende-das-riesige-potenzial-der-e-autos-f%C3%BCr-die-energiewende/ar-BB1mErcB?ocid=entnewsntp&amp;pc=U531&amp;cvid=3d61906f85914af89a3255239a2138f0&amp;ei=23</p>
@@ -2545,6 +2861,9 @@ Arnold, Simone. 2023. <span>„Datenanalyse mit Python. Das Modul Pandas.“</sp
 </div>
 <div id="ref-energy-charts-strom" class="csl-entry" role="listitem">
 Fraunhofer Institut für Solare Energiesysteme ISE. o.&nbsp;J. <span>„Öffentliche Nettostromerzeugung in Deutschland“</span>. Zugegriffen 3. Juni 2024. <a href="https://energy-charts.info/charts/energy/chart.htm?l=de&amp;c=DE&amp;chartColumnSorting=default&amp;year=-1&amp;interval=year&amp;legendItems=lz1zb&amp;source=public">https://energy-charts.info/charts/energy/chart.htm?l=de&amp;c=DE&amp;chartColumnSorting=default&amp;year=-1&amp;interval=year&amp;legendItems=lz1zb&amp;source=public</a>.
+</div>
+<div id="ref-Heimerl-Kohler-2017-Pumpspeicher-in-Deutschland" class="csl-entry" role="listitem">
+Heimerl, Stephan, und Beate Kohler. 2017. <span>„Aktueller Stand der Pumpspeicherkraftwerke in Deutschland“</span>. WasserWirtschaft. 2017. <a href="https://www.fwt.fichtner.de/userfiles/fileadmin-fwt/Publikationen/WaWi_2017_10_Heimerl_Kohler_PSKW.pdf">https://www.fwt.fichtner.de/userfiles/fileadmin-fwt/Publikationen/WaWi_2017_10_Heimerl_Kohler_PSKW.pdf</a>.
 </div>
 <div id="ref-R-for-Data-Science" class="csl-entry" role="listitem">
 Wickham, Hadley, Mine Çetinkaya-Rundel, und Garrett Grolemund. 2023. <span>„R for data science: Import, tidy, transform, visualize, and model data“</span>. Beijing; Boston; Farnham; Sebastopol; Tokyo: O’Reilly. 2023. <a href="https://r4ds.hadley.nz/">https://r4ds.hadley.nz/</a>.
