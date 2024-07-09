@@ -173,9 +173,11 @@ window.Quarto = {
   <li><a href="#hintergrund-ausbaupfad-erneuerbarer-energien" id="toc-hintergrund-ausbaupfad-erneuerbarer-energien" class="nav-link" data-scroll-target="#hintergrund-ausbaupfad-erneuerbarer-energien"><span class="header-section-number">8.1</span> Hintergrund: Ausbaupfad erneuerbarer Energien</a></li>
   <li><a href="#hintergrund-stromspeicher" id="toc-hintergrund-stromspeicher" class="nav-link" data-scroll-target="#hintergrund-stromspeicher"><span class="header-section-number">8.2</span> Hintergrund: Stromspeicher</a></li>
   <li><a href="#sec-grundlagen-speicherauslegung" id="toc-sec-grundlagen-speicherauslegung" class="nav-link" data-scroll-target="#sec-grundlagen-speicherauslegung"><span class="header-section-number">8.3</span> Grundlagen der Speicherauslegung</a></li>
-  <li><a href="#speichergröße-berechnen" id="toc-speichergröße-berechnen" class="nav-link" data-scroll-target="#speichergröße-berechnen"><span class="header-section-number">8.4</span> Speichergröße berechnen</a></li>
-  <li><a href="#formel-noch-ohne-wirkungsgrad" id="toc-formel-noch-ohne-wirkungsgrad" class="nav-link" data-scroll-target="#formel-noch-ohne-wirkungsgrad"><span class="header-section-number">8.5</span> Formel noch ohne Wirkungsgrad</a>
+  <li><a href="#speichergröße-berechnen" id="toc-speichergröße-berechnen" class="nav-link" data-scroll-target="#speichergröße-berechnen"><span class="header-section-number">8.4</span> Speichergröße berechnen</a>
   <ul class="collapse">
+  <li><a href="#berechnung-der-speichergröße-ohne-wirkungsgrad" id="toc-berechnung-der-speichergröße-ohne-wirkungsgrad" class="nav-link" data-scroll-target="#berechnung-der-speichergröße-ohne-wirkungsgrad">Berechnung der Speichergröße ohne Wirkungsgrad</a></li>
+  <li><a href="#berechnung-der-speichergröße-mit-wirkungsgrad" id="toc-berechnung-der-speichergröße-mit-wirkungsgrad" class="nav-link" data-scroll-target="#berechnung-der-speichergröße-mit-wirkungsgrad">Berechnung der Speichergröße mit Wirkungsgrad</a></li>
+  <li><a href="#dies-und-das" id="toc-dies-und-das" class="nav-link" data-scroll-target="#dies-und-das">Dies und das</a></li>
   <li><a href="#zyklenzahl-berechnen-mit-teilzyklen" id="toc-zyklenzahl-berechnen-mit-teilzyklen" class="nav-link" data-scroll-target="#zyklenzahl-berechnen-mit-teilzyklen">Zyklenzahl berechnen (mit Teilzyklen)</a></li>
   <li><a href="#erzeugung-kappen" id="toc-erzeugung-kappen" class="nav-link" data-scroll-target="#erzeugung-kappen">Erzeugung kappen</a></li>
   </ul></li>
@@ -213,7 +215,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">8. Juli 2024</p>
+      <p class="date">9. Juli 2024</p>
     </div>
   </div>
   
@@ -375,7 +377,7 @@ Warning&nbsp;1: SMARD Daten herunterladen
 <li><p>die Spalten mit Datums- und Zeitangaben sowie das Datumsformat bestimmt.<br>
 <code>parse_dates = [0, 1], date_format = "%d.%m.%Y %H:%M"</code></p></li>
 </ul>
-<div id="393b7d66" class="cell" data-results="hold" data-execution_count="1">
+<div id="a3e68474" class="cell" data-results="hold" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.precision"</span>, <span class="dv">2</span>) <span class="co"># places after decimal for floats</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -412,7 +414,7 @@ english version
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>english version</p>
-<div id="0f87dc31" class="cell" data-results="hold" data-execution_count="2">
+<div id="99a81984" class="cell" data-results="hold" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>erzeugung0_en <span class="op">=</span> pd.read_csv(filepath_or_buffer <span class="op">=</span> <span class="op">\</span></span>
@@ -421,7 +423,7 @@ english version
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>parse_dates <span class="op">=</span>  [<span class="dv">0</span>, <span class="dv">1</span>], date_format <span class="op">=</span> <span class="st">"%b </span><span class="sc">%d</span><span class="st">, %Y %I:%M %p"</span>) <span class="co"># leading zero is optional for formats %d, %m, %H, %I, %M, %S, %j, %U, %W, and %V</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0_en.head(<span class="dv">2</span>), erzeugung0_en.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="250">
+<div class="cell-output cell-output-display" data-execution_count="50">
 <div>
 <div>
 
@@ -630,7 +632,7 @@ Tip&nbsp;2: Lösung Datumsformat
 <section id="daten-organisieren" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Daten organisieren</h1>
 <p>Vor der Datenanalyse sollte überprüft werden, ob die Daten korrekt eingelesen wurden. Dies bedeutet zum einen, zu kontrollieren, ob der Datentyp aller Spalten richtig erkannt wurde. Ob die Spaltentypen einer Datei korrekt eingelesen wurden, können Sie in Python mit dem Befehl <code>df.dtypes</code> überprüfen. Hier der Output des Befehls für den DataFrame <code>erzeugung0</code>.</p>
-<div id="5b42741d" class="cell" data-results="hold" data-execution_count="3">
+<div id="c5ea3f38" class="cell" data-results="hold" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Spalten:</span><span class="ch">\n</span><span class="sc">{</span>erzeugung0<span class="sc">.</span>dtypes<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Spalten:
@@ -653,7 +655,7 @@ dtype: object</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Viele der Spaltennamen enthalten die Zeichenkette ” Originalauflösungen”, die der Übersichtlichkeit wegen entfernt werden kann (führendes Leerzeichen beachten). Auf diese Weise könnte auch die Einheitenangabe [MWh] entfernt werden, falls diese als störend empfunden wird.</p>
-<div id="969b48bd" class="cell" data-results="hold" data-execution_count="4">
+<div id="eb0f0e7d" class="cell" data-results="hold" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Zeichenkette " Originalauflösungen" entfernen</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0.columns <span class="op">=</span> installierte_leistung0.columns.<span class="bu">str</span>.replace(pat <span class="op">=</span> <span class="st">" Originalauflösungen"</span>, repl <span class="op">=</span> <span class="st">""</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -686,10 +688,10 @@ dtype: object</code></pre>
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">installierte Leistung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">realisierte Erzeugung</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">realisierter Verbrauch</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="3b314bc8" class="cell" data-results="hold" data-execution_count="5">
+<div id="edf18d48" class="cell" data-results="hold" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># der DataFrame installierte_leistung0 hat nur 1 Zeile</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>installierte_leistung0</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="253">
+<div class="cell-output cell-output-display" data-execution_count="53">
 <div>
 <div>
 
@@ -741,11 +743,11 @@ dtype: object</code></pre>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="df51441a" class="cell" data-results="hold" data-execution_count="6">
+<div id="d8363928" class="cell" data-results="hold" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pd.concat([erzeugung0.head(<span class="dv">2</span>), <span class="op">\</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>erzeugung0.iloc[<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(erzeugung0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>erzeugung0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="254">
+<div class="cell-output cell-output-display" data-execution_count="54">
 <div>
 <div>
 
@@ -882,11 +884,11 @@ dtype: object</code></pre>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div id="c99f1ad0" class="cell" data-results="hold" data-execution_count="7">
+<div id="7670dd6a" class="cell" data-results="hold" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pd.concat([verbrauch0.head(<span class="dv">2</span>), <span class="op">\</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>verbrauch0.iloc[<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span>:(<span class="bu">len</span>(verbrauch0)<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">2</span>)], <span class="op">\</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.tail(<span class="dv">2</span>)])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="255">
+<div class="cell-output cell-output-display" data-execution_count="55">
 <div>
 <div>
 
@@ -963,7 +965,7 @@ dtype: object</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Schließlich ist eine Plausibilitätskontrolle der Daten sinnvoll. Einleitend wurde der deutsche Gesamtstromverbrauch im Jahr 2023 genannt, der 458,3 TWh beträgt. Der Stromverbrauch und die Summe der Stromerzeugung sollten diesem Wert ungefähr entsprechen.</p>
-<div id="6cbdac5d" class="cell" data-execution_count="8">
+<div id="cd6f722c" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude columns with datetime</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Stromverbrauch in Millionen MWh:</span><span class="ch">\n</span><span class="st">"</span>, <span class="op">\</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>verbrauch0.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>) <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>), sep <span class="op">=</span> <span class="st">""</span>)</span>
@@ -982,7 +984,7 @@ Stromerzeugung in Millionen MWh 448.0</code></pre>
 </div>
 <p>&nbsp;</p>
 <p>Wenn alle Dateien korrekt eingelesen wurden, können Arbeitsdateien mit dem Befehl <code>df.copy()</code> angelegt werden. Dadurch bleiben die Rohdaten immer verfügbar und können bei Bedarf, beispielsweise nach einem versehentlichen Überschreiben der Arbeitsdateien, erneut geladen werden.</p>
-<div id="6db8c59c" class="cell" data-results="hold" data-execution_count="9">
+<div id="5bc0c53d" class="cell" data-results="hold" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>erzeugung <span class="op">=</span> erzeugung0.copy()</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>verbrauch <span class="op">=</span> verbrauch0.copy()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>installierte_leistung <span class="op">=</span> installierte_leistung0.copy()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -992,14 +994,14 @@ Stromerzeugung in Millionen MWh 448.0</code></pre>
 <h1 data-number="6"><span class="header-section-number">6</span> Beschreibende Datenanalyse</h1>
 <p>Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und analytischen Datenanalyse vertieft werden.</p>
 <p>Einen ersten Überblick über die Daten liefert die Methode <code>pd.DataFrame.describe()</code>. Durch das Argument <code>include = [np.number]</code> kann die Ausgabe auf Spalten mit numerischen Daten beschränkt werden, das heißt, die Spalten mit Datumsinformationen werden ausgeschlossen.</p>
-<div id="a5977404" class="cell" data-results="hold" data-execution_count="10">
+<div id="0229ead1" class="cell" data-results="hold" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Der DataFrame erzeugung hat </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> Zeilen und </span><span class="sc">{</span>erzeugung<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> Spalten.</span><span class="ch">\n</span><span class="ss">"</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>erzeugung.describe(include <span class="op">=</span> [np.number])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Der DataFrame erzeugung hat 35040 Zeilen und 14 Spalten.
 </code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="258">
+<div class="cell-output cell-output-display" data-execution_count="58">
 <div>
 <div>
 
@@ -1180,7 +1182,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Plotten mit Pandas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Code für Pandas</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div id="465e0653" class="cell" data-results="hold" data-execution_count="11">
+<div id="a98221c4" class="cell" data-results="hold" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1192,7 +1194,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<div id="75a7ae4d" class="cell" data-results="hold" data-execution_count="12">
+<div id="c242f49c" class="cell" data-results="hold" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># erzeugung.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = True, explode = explosion)</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1224,7 +1226,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Plotten mit matplotlib</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Code für matplotlib</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div id="f43059b1" class="cell" data-results="hold" data-execution_count="13">
+<div id="4471e95e" class="cell" data-results="hold" data-execution_count="13">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1236,7 +1238,7 @@ Tip&nbsp;3: Lösung Kreisdiagramm
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div id="b3bb6940" class="cell" data-results="hold" data-execution_count="14">
+<div id="dd58c899" class="cell" data-results="hold" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Erneuerbare und Konventionelle bestimmen, jeweils summieren</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Erneuerbare</span></span>
@@ -1334,7 +1336,7 @@ Tip&nbsp;4: Lösung Wirkungsgrad Pumpspeicher
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="a2759a44" class="cell" data-results="hold" data-execution_count="15">
+<div id="2f04180d" class="cell" data-results="hold" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Summe Erzeugung Pumpspeicher: </span><span class="sc">{</span>erzeugung[<span class="st">"Pumpspeicher [MWh]"</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Summe Verbrauch Pumpspeicher: </span><span class="sc">{</span>verbrauch[<span class="st">"Pumpspeicher [MWh]"</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span><span class="dv">41</span> <span class="op">*</span> <span class="st">"="</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
@@ -1350,7 +1352,7 @@ Wirkungsgrad in Prozent:            79.10</code></pre>
 </div>
 </div>
 <p>Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzagentur veröffentlichte kumulierte Stromerzeugung der Pumpspeicherkraftwerke zuzüglich der Speicherverluste. Die Bundesnetzagentur führt diesen Wert im Datensatz Stromverbrauch. Im folgenden Programmcode wird der “Walross”-Operator <code>:=</code> benutzt, der Objektzuweisungen innerhalb von Anweisungen erlaubt. Mit dem Walross-Operator durchgeführte Zuweisungen müssen in runde Klammern eingefasst werden:</p>
-<div id="d2713ce8" class="cell" data-results="hold" data-execution_count="16">
+<div id="4ec2efd6" class="cell" data-results="hold" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Speicherverluste:</span><span class="ch">\t\t\t</span><span class="sc">{</span> (speicherverluste <span class="op">:=</span> ( verbrauch[<span class="st">"Pumpspeicher [MWh]"</span>].<span class="bu">sum</span>() <span class="op">-</span> erzeugung[<span class="st">"Pumpspeicher [MWh]"</span>].<span class="bu">sum</span>() ) <span class="op">/</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>) )<span class="sc">:&gt;6.2f}</span><span class="ss"> TWh</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"kumulierte Stromerzeugung:</span><span class="ch">\t</span><span class="sc">{</span> ( kumulierte_erzeugung <span class="op">:=</span> erzeugung.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>).<span class="bu">sum</span>() <span class="op">//</span> (<span class="dv">1000</span> <span class="op">*</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ss"> TWh</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Summe:</span><span class="ch">\t\t\t\t\t\t</span><span class="sc">{</span>speicherverluste <span class="op">+</span> kumulierte_erzeugung<span class="sc">:.2f}</span><span class="ss"> TWh</span><span class="ch">\n\n</span><span class="ss">"</span></span>
@@ -1553,7 +1555,7 @@ Gesetz für den Vorrang Erneuerbarer Energien (Erneuerbare-Energien-Gesetz – E
 <section id="residual--und-restlast-bestimmen" class="level3">
 <h3 class="anchored" data-anchor-id="residual--und-restlast-bestimmen">Residual- und Restlast bestimmen</h3>
 <p>Die Bundesnetzagentur veröffentlicht im Datensatz zum realisierten Stromverbrauch Netzlast, Residuallast und den Stromverbrauch durch Pumpspeicherkraftwerke.</p>
-<div id="e17b98da" class="cell" data-execution_count="17">
+<div id="5d882434" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(verbrauch.<span class="bu">sum</span>(numeric_only <span class="op">=</span> <span class="va">True</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Gesamt (Netzlast) [MWh]    4.58e+08
@@ -1577,7 +1579,7 @@ Definition Residuallast
 </div>
 <p>&nbsp;</p>
 <p>Die nicht durch erneuerbare Energien bediente Restlast ist die Differenz aus Stromverbrauch und der Erzeugung durch erneuerbare Energien. Die Restlast ist folglich kleiner als die von der Bundesnetzagentur veröffentlichte Residuallast. Residual- und Restlast können aus der Differenz von Netzlast und der entsprechenden erneuerbaren Stromerzeugung berechnet werden.</p>
-<div id="d0a7cc5f" class="cell" data-execution_count="18">
+<div id="2a45cabd" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>erneuerbare <span class="op">=</span> [<span class="st">'Biomasse [MWh]'</span>, <span class="st">'Wasserkraft [MWh]'</span>, <span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>, <span class="st">'Sonstige Erneuerbare [MWh]'</span>]</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>PV_WindOnshore_WindOffshore <span class="op">=</span> [<span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>] </span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1591,7 +1593,7 @@ Definition Residuallast
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">"Restlast [MWh]"</span>] <span class="op">=</span> plotting_data[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data[<span class="st">"Erneuerbare [MWh]"</span>]</span>
 <span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>plotting_data.head()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="266">
+<div class="cell-output cell-output-display" data-execution_count="66">
 <div>
 <div>
 
@@ -1663,14 +1665,14 @@ Definition Residuallast
 </div>
 <p>&nbsp;</p>
 <p>Die von der Bundesnetzagentur veröffentlichte Residuallast <code>Residuallast BNetzA [MWh]</code> entspricht nach der Betrachtung der ersten Zeilen der selbst berechneten Residuallast <code>Residuallast [MWh]</code>. Ob dies für die gesamte Zeitreihe gilt, kann leicht mit der Methode <code>pd.Series.equals()</code> überprüft werden.</p>
-<div id="9b9401c3" class="cell" data-results="hold" data-execution_count="19">
+<div id="73845a59" class="cell" data-results="hold" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>plotting_data[<span class="st">'Residuallast BNetzA [MWh]'</span>].equals(plotting_data[<span class="st">'Residuallast [MWh]'</span>])</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="267">
+<div class="cell-output cell-output-display" data-execution_count="67">
 <pre><code>True</code></pre>
 </div>
 </div>
 <p>Somit kann die redundante Spalte entfernt werden.</p>
-<div id="0fea46a8" class="cell" data-results="hold" data-execution_count="20">
+<div id="a99ed1c6" class="cell" data-results="hold" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plotting_data.drop([<span class="st">'Residuallast BNetzA [MWh]'</span>], axis <span class="op">=</span> <span class="st">'columns'</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -1681,7 +1683,7 @@ Definition Residuallast
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Netzlast im Jahresgang</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div id="d408ee78" class="cell" data-results="hold" data-execution_count="22">
+<div id="56375fd7" class="cell" data-results="hold" data-execution_count="22">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1693,7 +1695,7 @@ Definition Residuallast
 </div>
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<div id="ae669521" class="cell" data-results="hold" data-execution_count="23">
+<div id="13868bdd" class="cell" data-results="hold" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Position und Inhalt der x-Achsenbeschriftung finden</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>monate <span class="op">=</span> erzeugung[<span class="st">"Datum von"</span>].dt.month.unique().tolist() <span class="co"># gibt die Zahlen 1-12 aus</span></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1709,7 +1711,7 @@ Definition Residuallast
 <span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   monate_index.append(erzeugung.index[erzeugung["Datum von"].dt.month == i].min())</span></span>
 <span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   monatsnamen.append(erzeugung["Datum von"].iloc[monate_index[i - 1]].strftime("%B"))</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="e508742b" class="cell" data-results="hold" data-execution_count="24">
+<div id="b1fa144c" class="cell" data-results="hold" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plotten jedes 100. Werts</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>plotting_data[::<span class="dv">100</span>].plot(figsize <span class="op">=</span> (<span class="dv">9</span>, <span class="dv">8</span>), subplots <span class="op">=</span> <span class="va">True</span>, sharey <span class="op">=</span> <span class="va">True</span>, xlim <span class="op">=</span> (plotting_data.index.<span class="bu">min</span>() <span class="op">-</span> (<span class="bu">len</span>(plotting_data.index) <span class="op">/</span> <span class="dv">100</span>), plotting_data.index.<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.01</span>), rot <span class="op">=</span> <span class="dv">45</span>, grid <span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>plt.ylim(top <span class="op">=</span> <span class="dv">20000</span>)</span>
@@ -1740,7 +1742,7 @@ Tip&nbsp;6: Musterlösung Verdopplung EE
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">Mögliche Interpretation</a></li></ul>
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
-<div id="10547a09" class="cell" data-execution_count="25">
+<div id="640fd63e" class="cell" data-execution_count="25">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1752,7 +1754,7 @@ Tip&nbsp;6: Musterlösung Verdopplung EE
 </div>
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
-<div id="8ee284f5" class="cell" data-execution_count="26">
+<div id="b4edbdc9" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE <span class="op">=</span> plotting_data.copy()</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Erneuerbare [MWh]"</span>] <span class="op">*</span> <span class="dv">2</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>plotting_data_2EE[<span class="st">"Netzlast - 2x EE"</span>] <span class="op">=</span> plotting_data_2EE[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> plotting_data_2EE[<span class="st">"2x EE"</span>]</span>
@@ -1821,7 +1823,7 @@ Jahresvolllaststunden ~ in ~ h = \frac{Summe ~ erzeugten ~ Stroms ~ in ~ MWh}{in
 </div>
 <p>Die Jahresvolllaststunden können wie folgt berechnet werden. Die Anwendung der Methode <code>.sum</code> auf den Datensatz installierte_leistung ist nicht erforderlich, da dieser nur eine Zeile hat. Die Methode <code>.sum</code> erlaubt es aber, über den Parameter <code>numeric_only = True</code> die Datumsspalten auszuschließen.<br>
 <strong>Einfache Division SeriesA / SeriesB funktioniert nicht, möglicherweise weil die Spaltennamen nicht übereinstimmen. Deshalb muss der Index für beide Series mit der Methode .reset_index(drop = True) zurückgesetzt und manuell nachgetragen werden.</strong></p>
-<div id="f7984748" class="cell" data-execution_count="27">
+<div id="d6c94907" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"{erzeugung.sum(numeric_only = True)}\n")</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># print(installierte_leistung.sum(numeric_only = True), "\n")</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1858,7 +1860,7 @@ dtype: float64</code></pre>
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Beispielcode Kernenergie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">Kernenergie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">Braunkohle</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-4" role="tab" aria-controls="tabset-6-4" aria-selected="false" href="">Steinkohle</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-5" role="tab" aria-controls="tabset-6-5" aria-selected="false" href="">Erdgas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-6" role="tab" aria-controls="tabset-6-6" aria-selected="false" href="">To Do</a></li></ul>
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
-<div id="4c999227" class="cell" data-execution_count="28">
+<div id="cf8b5327" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>plotting_data <span class="op">=</span> erzeugung.copy()</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>erzeuger <span class="op">=</span> <span class="st">"Kernenergie"</span></span>
@@ -1884,7 +1886,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
-<div id="310f2bae" class="cell" data-execution_count="29">
+<div id="ef1b8dfb" class="cell" data-execution_count="29">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1896,7 +1898,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
-<div id="95b76781" class="cell" data-execution_count="30">
+<div id="50acf31c" class="cell" data-execution_count="30">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1908,7 +1910,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">
-<div id="0007322e" class="cell" data-execution_count="31">
+<div id="59aed341" class="cell" data-execution_count="31">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1920,7 +1922,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div id="tabset-6-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-5-tab">
-<div id="f87b11ec" class="cell" data-execution_count="32">
+<div id="2555eb78" class="cell" data-execution_count="32">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1976,7 +1978,7 @@ Tip&nbsp;7: Musterlösung
 <div class="callout-body-container callout-body">
 <p>In der graphischen Darstellung des Jahresgangs wurde nur jeder 100. Wert geplottet, sodass es möglich ist, dass die Stromerzeugung bereits vor der endgültigen Abschaltung den Wert Null erreichte. Es ist deshalb zuverlässiger, den Datensatz rückwärts zu durchsuchen.</p>
 <p>In der Vorwärtssuche wird mit der Methode <code>.eq()</code>die Position des ersten Auftretens des Werts 0 bestimmt und 1 subtrahiert. In der Rückwärtssuche wird mit der Methode <code>.gt()</code> die Position des ersten Werts bestimmt, der größer als 0 ist.</p>
-<div id="3734eb01" class="cell" data-execution_count="33">
+<div id="db3e083e" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Vorwärtssuche: erzeugung['Kernenergie [MWh]'].eq(0).idxmax() - 1</span><span class="ch">\n</span><span class="sc">{</span>erzeugung[<span class="st">'Kernenergie [MWh]'</span>]<span class="sc">.</span>eq(<span class="dv">0</span>)<span class="sc">.</span>idxmax() <span class="op">-</span> <span class="dv">1</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># rückwärts</span></span>
@@ -2022,7 +2024,7 @@ Definition sortierte Jahresdauerlinie
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
-<div id="4751cd20" class="cell" data-execution_count="34">
+<div id="3e2da611" class="cell" data-execution_count="34">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2034,7 +2036,7 @@ Definition sortierte Jahresdauerlinie
 </div>
 </div>
 <div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
-<div id="81d460a1" class="cell" data-execution_count="35">
+<div id="11d8d8b4" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Daten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren.</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>braunkohle_daily <span class="op">=</span> erzeugung[<span class="st">'Braunkohle [MWh]'</span>].groupby(erzeugung[<span class="st">"Datum von"</span>].dt.dayofyear).mean()</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>steinkohle_daily <span class="op">=</span> erzeugung[<span class="st">'Steinkohle [MWh]'</span>].groupby(erzeugung[<span class="st">"Datum von"</span>].dt.dayofyear).mean()</span>
@@ -2108,7 +2110,7 @@ Tip&nbsp;9: Musterlösung Erzeugungsprofile von Biomasse und Braunkohle
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">Code für den Plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
-<div id="ca29dc39" class="cell" data-execution_count="36">
+<div id="7f8e7ca2" class="cell" data-execution_count="36">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2120,7 +2122,7 @@ Tip&nbsp;9: Musterlösung Erzeugungsprofile von Biomasse und Braunkohle
 </div>
 </div>
 <div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
-<div id="29572510" class="cell" data-execution_count="37">
+<div id="d65d1a68" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restlast berechnen</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>erneuerbare <span class="op">=</span> [<span class="st">'Biomasse [MWh]'</span>, <span class="st">'Wasserkraft [MWh]'</span>, <span class="st">'Wind Offshore [MWh]'</span>, <span class="st">'Wind Onshore [MWh]'</span>, <span class="st">'Photovoltaik [MWh]'</span>, <span class="st">'Sonstige Erneuerbare [MWh]'</span>]</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2167,7 +2169,7 @@ Tip&nbsp;10: Musterlösung Einspeicherung bei doppelter erneuerbarer Erzeugung
 </div>
 <div id="callout-20" class="callout-20-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="246ff019" class="cell" data-execution_count="38">
+<div id="0682752c" class="cell" data-execution_count="38">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2292,7 +2294,7 @@ f) 400 Gigawatt im Jahr 2040<br>
 <li><p>8,4 GW Biomasse.</p></li>
 </ul>
 <p>Dies bedeutet einen geplanten Zubau der installierten Leistung gemessen an der installierten Leistung im Jahr 2023 von:</p>
-<div id="1ed26591" class="cell" data-execution_count="39">
+<div id="0e51b309" class="cell" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Wind an Land 2030:</span><span class="ch">\t</span><span class="sc">{</span>( zubaufaktor_windonshore_2030 <span class="op">:=</span> <span class="dv">115</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Wind Onshore [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Wind auf See 2030:</span><span class="ch">\t</span><span class="sc">{</span>( zubaufaktor_windoffshore_2030 <span class="op">:=</span> <span class="dv">30</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Wind Offshore [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"Solar 2030:</span><span class="ch">\t\t\t</span><span class="sc">{</span>( zubaufaktor_solar_2035 <span class="op">:=</span> <span class="dv">215</span> <span class="op">/</span> (installierte_leistung[<span class="st">'Photovoltaik [MW]'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span>) )<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">"</span></span>
@@ -2364,7 +2366,7 @@ DoD = 1- SoC “State of charge is normally used when discussing the current sta
 </div>
 <div class="quarto-layout-panel" data-layout="[40, 60]">
 <div class="quarto-layout-row">
-<div id="57a166a5" class="cell quarto-layout-cell" data-execution_count="40" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="16ffa6ef" class="cell quarto-layout-cell" data-execution_count="40" style="flex-basis: 40.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2380,10 +2382,10 @@ DoD = 1- SoC “State of charge is normally used when discussing the current sta
 Die erforderliche Größe des Stromspeichers ist abhängig von dem Verhältnis aus der Menge der erneuerbaren Überschussproduktion und der aus dem Speicher zu bedienenden Restlast.
 </dd>
 <dd>
-Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
+Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
 </dd>
 <dd>
-Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße der Summe der zu bedienenden Restlast.
+Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße der Summe der zu bedienenden Restlast.
 </dd>
 <dd>
 Ob ein Überschuss oder ein Defizit erneuerbarer Stromproduktion vorliegt, kann am Vorzeichen der summierten Restlast abgelesen werden. Ein negatives Vorzeichen entspricht einem erneuerbaren Stromüberschuss, ein positives Vorzeichen einem erneuerbaren Stromdefizit.
@@ -2392,7 +2394,7 @@ Ob ein Überschuss oder ein Defizit erneuerbarer Stromproduktion vorliegt, kann 
 </div>
 </div>
 <div class="quarto-layout-row">
-<div id="438a3d81" class="cell quarto-layout-cell" data-execution_count="41" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="b06f508a" class="cell quarto-layout-cell" data-execution_count="41" style="flex-basis: 40.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2429,19 +2431,16 @@ Die Reihenfolgeabhängigkeit kann aufgelöst werden, indem zwei aufeinanderfolge
 <dl>
 <dt>Wirkungsgrad</dt>
 <dd>
-Einspeicherwirkungsgrad vermindert den verfügbaren Überschussstrom.
+Einspeicherwirkungsgrad vermindert den verfügbaren Überschussstrom. Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienende Restlast, kann der Speicher um den Einspeicherwirkungsgrad kleiner dimensioniert werden.
 </dd>
 <dd>
-Ausspeicherwirkungsgrad (inklusive Speicherverluste) erhöht die durch den Speicher zu bedienende Last.
-</dd>
-<dd>
-<strong>braucht man dafür Grafiken?</strong>
+Ausspeicherwirkungsgrad (inklusive Speicherverluste) erhöht die durch den Speicher zu bedienende Last. Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienende Restlast, muss der Speicher um den Ausspeicherwirkungsgrad größer dimensioniert werden.
 </dd>
 </dl>
 </div>
 </div>
 <div class="quarto-layout-row">
-<div id="b8e6d1a1" class="cell quarto-layout-cell" data-execution_count="42" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="e5b1217c" class="cell quarto-layout-cell" data-execution_count="42" style="flex-basis: 40.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2466,7 +2465,7 @@ Je häufiger sich Lade- und Entladezyklen abwechseln, desto geringer ist die erf
 </div>
 </div>
 <div class="quarto-layout-row">
-<div id="713f0f0b" class="cell quarto-layout-cell" data-execution_count="43" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="2e2b1842" class="cell quarto-layout-cell" data-execution_count="43" style="flex-basis: 40.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2494,7 +2493,7 @@ Ist die Summe der erneuerbaren Überschussproduktion größer als die durch den 
 </div>
 </div>
 <div class="quarto-layout-row">
-<div id="af93fb38" class="cell quarto-layout-cell" data-execution_count="44" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div id="52206e4d" class="cell quarto-layout-cell" data-execution_count="44" style="flex-basis: 40.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -2525,8 +2524,8 @@ Im unteren Beispiel wird der Speicher kleiner dimensioniert. Der Speicher erreic
 </section>
 <section id="speichergröße-berechnen" class="level2" data-number="8.4">
 <h2 data-number="8.4" class="anchored" data-anchor-id="speichergröße-berechnen"><span class="header-section-number">8.4</span> Speichergröße berechnen</h2>
-<p><strong>Dazu muss auf eine Listenoperation zurückgegriffen werden. Was schade ist, weil es langsam ist. Ist gar nicht so langsam. Die Berechnung der Speichergröße und des Jahresgänge in Jahr Null und den Folgejahren hat 0.09 Sekunden gedauert. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären.</strong>. Auf dieser Grundlage kann eine Funktion entwickelt werden, um anhand der Restlast die erforderliche Speichergröße zu berechnen. Diese soll zur besseren Verständlichkeit mit der bestehenden Pumpspeicherkapazität von 37,4 GWh ins Verhältnis gesetzt werden. Die Restlast wird wie folgt bestimmt:</p>
-<div id="9503fc42" class="cell" data-execution_count="45">
+<p><strong>Dazu muss auf eine Listenoperation zurückgegriffen werden, die zum Glück gar nicht so langsam ist. Die Berechnung der Speichergröße und des Jahresgänge in Jahr Null und den Folgejahren hat 0.09 Sekunden gedauert. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären.</strong>. Auf dieser Grundlage kann eine Funktion entwickelt werden, um anhand der Restlast die erforderliche Speichergröße zu berechnen. Um die Größenordnung besser einordnen zu können, wird die Speichergröße zur bestehenden Pumpspeicherkapazität von 37,4 GWh ins Verhältnis gesetzt. Die Restlast wird wie folgt bestimmt:</p>
+<div id="4bdbe732" class="cell" data-execution_count="45">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>pumpspeicherkapazität_MWh <span class="op">=</span> <span class="fl">37.4</span> <span class="op">*</span> <span class="dv">1000</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>restlast <span class="op">=</span> pd.DataFrame()</span>
@@ -2535,66 +2534,56 @@ Im unteren Beispiel wird der Speicher kleiner dimensioniert. Der Speicher erreic
 <span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>restlast[<span class="st">"Restlast [MWh]"</span>] <span class="op">=</span> restlast[<span class="st">"Netzlast [MWh]"</span>] <span class="op">-</span> restlast[<span class="st">"Erneuerbare [MWh]"</span>]</span>
 <span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>restlast <span class="op">=</span> restlast[<span class="st">"Restlast [MWh]"</span>]</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Verschieben</strong> Da die Datenreihe sehr lang ist, bietet es sich an, für die Funktionsentwicklung eine kürzere Reihe von Testdaten zu benutzen. Auf diese Weise werden Berechnungen schneller durchgeführt und Zwischenergebnisse und Ergebnisse können bei Bedarf zur Überprüfung ausgegeben werden. Die folgende Funktion simuliert mit zehn Werten eine Restlastkurve, die im Jahresgang zufällig eine erneuerbare Überschussproduktion bzw. eine positive Restlast darstellt. Durch Anpassen der Werte für a und b kann das Ergebnis gesteuert werden.</p>
-<div id="da16f1d7" class="cell" data-execution_count="46">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random <span class="im">as</span> rd</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>random_data <span class="op">=</span> []</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  random_data.append(rd.randint(a <span class="op">=</span> <span class="op">-</span><span class="dv">20</span>, b <span class="op">=</span> <span class="dv">20</span>))</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>random_data <span class="op">=</span> pd.Series(random_data, dtype <span class="op">=</span> <span class="st">'float'</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p>Im ersten Schritt muss bestimmt werden, ob im Jahresgang Phasen erneuerbarer Überproduktion oder Phasen positiver Restlast vorherrschen. Dies kann mit der folgenden einfachen Funktion bestimmt werden.</p>
-<div id="636f8359" class="cell" data-execution_count="47">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EE-Überschuss feststellen</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float')</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: über die pd.Series wird die Summe gebildet</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: zurückgegeben wird der Wahrheitswert von data.sum() &lt; 0</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prüfe_EE_Überschuss(data):</span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> data.<span class="bu">sum</span>() <span class="op">&lt;</span> <span class="dv">0</span></span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>prüfe_EE_Überschuss(restlast)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="295">
+<div id="b29c3ef4" class="cell" data-execution_count="46">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EE-Überschuss feststellen</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float')</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: über die pd.Series wird die Summe gebildet</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: zurückgegeben wird der Wahrheitswert von data.sum() &lt; 0</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prüfe_EE_Überschuss(data):</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> data.<span class="bu">sum</span>() <span class="op">&lt;</span> <span class="dv">0</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>prüfe_EE_Überschuss(restlast)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="94">
 <pre><code>False</code></pre>
 </div>
 </div>
 <p>Wie aus der Grenzstromanalyse im Abschnitt <a href="#sec-Pumpspeicherinhalt" class="quarto-xref">Kapitel&nbsp;7.1.5</a> bekannt, herrschte im Jahr 2023 kein Überschuss an erneuerbarer Stromproduktion.<br>
 <strong>Erweitern Sie die Funktion um einen Ein- und Ausspeicherwirkungsgrad (inklusive Speicherverluste).</strong></p>
-<div id="tip-Wirkungsgrad" class="callout callout-style-default callout-tip callout-titled" title="erneuerbarer Überschuss oder Defizit mit Wirkungsgrad">
+<div id="tip-Wirkungsgrad" class="callout callout-style-default callout-tip callout-titled" title="Musterlösung erneuerbarer Überschuss oder Defizit mit Wirkungsgrad">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip&nbsp;11: erneuerbarer Überschuss oder Defizit mit Wirkungsgrad
+Tip&nbsp;11: Musterlösung erneuerbarer Überschuss oder Defizit mit Wirkungsgrad
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-22" class="callout-22-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="7697a46d" class="cell" data-execution_count="48">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EE-Überschuss feststellen, gegeben einen Ein- und Ausspeicherungswirkungsgrad (default = 1)</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Werte kleiner 0 werden mit dem Einspeicherwirkungsgrad multipliziert</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Werte größer 0 werden durch den Ausspeicherwirkungsgrad geteilt</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: über die pd.Series wird die Summe gebildet</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: zurückgegeben wird der Wahrheitswert von data_wirkungsgrad_bereinigt.sum() &lt; 0</span></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>wirkungsgrad <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prüfe_EE_Überschuss(data, einspeicherwirkungsgrad <span class="op">=</span> <span class="dv">1</span>, ausspeicherwirkungsgrad <span class="op">=</span> <span class="dv">1</span>):</span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>  data_wirkungsgrad_bereinigt <span class="op">=</span> data.copy()</span>
-<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&lt;</span> <span class="dv">0</span>] <span class="op">=</span> data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&lt;</span> <span class="dv">0</span>] <span class="op">*</span> einspeicherwirkungsgrad</span>
-<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">/</span> ausspeicherwirkungsgrad</span>
-<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> data_wirkungsgrad_bereinigt.<span class="bu">sum</span>() <span class="op">&lt;</span> <span class="dv">0</span></span>
-<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>prüfe_EE_Überschuss(restlast)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="296">
+<div id="5ba4081f" class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EE-Überschuss feststellen, gegeben einen Ein- und Ausspeicherungswirkungsgrad (default = 1)</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Werte kleiner 0 werden mit dem Einspeicherwirkungsgrad multipliziert</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Werte größer 0 werden durch den Ausspeicherwirkungsgrad geteilt</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: über die pd.Series wird die Summe gebildet</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: zurückgegeben wird der Wahrheitswert von data_wirkungsgrad_bereinigt.sum() &lt; 0</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>wirkungsgrad <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prüfe_EE_Überschuss(data, einspeicherwirkungsgrad <span class="op">=</span> <span class="dv">1</span>, ausspeicherwirkungsgrad <span class="op">=</span> <span class="dv">1</span>):</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  data_wirkungsgrad_bereinigt <span class="op">=</span> data.copy()</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&lt;</span> <span class="dv">0</span>] <span class="op">=</span> data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&lt;</span> <span class="dv">0</span>] <span class="op">*</span> einspeicherwirkungsgrad</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">=</span> data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt <span class="op">&gt;</span> <span class="dv">0</span>] <span class="op">/</span> ausspeicherwirkungsgrad</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> data_wirkungsgrad_bereinigt.<span class="bu">sum</span>() <span class="op">&lt;</span> <span class="dv">0</span></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>prüfe_EE_Überschuss(restlast)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="95">
 <pre><code>False</code></pre>
 </div>
 </div>
@@ -2606,97 +2595,228 @@ Tip&nbsp;11: erneuerbarer Überschuss oder Defizit mit Wirkungsgrad
 <li><p>Ist die Summe der erneuerbaren Überschussproduktion kleiner als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Minimum der kummulierten Summe der Restlast, wenn diese niemals größer 0 gesetzt wird (das Überschreiten wäre der Moment, in dem der Speicher leer ist).</p></li>
 <li><p>Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast, wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).</p></li>
 </ul>
-</section>
-<section id="formel-noch-ohne-wirkungsgrad" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="formel-noch-ohne-wirkungsgrad"><span class="header-section-number">8.5</span> Formel noch ohne Wirkungsgrad</h2>
-<div id="904557c6" class="cell" data-execution_count="49">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Speichergröße berechnen</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float'), output = False</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: aufrufen der Funktion prüfe_EE_Überschuss, um zwischen oberer Grenze = 0 (Speicher ist leer) und unterer Grenze = 0 (Speicher ist überdimensioniert) zu unterscheiden</span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: data wird zwei mal zu data_x2 verkettet. Für data_x2 wird die bei 0 gekappte kumulierte Summe berechnet und die Speichergröße berechnet.</span></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Anhand der Speichergröße wird der Jahresgang in Jahr1 und allen folgenden Jahren simuliert.</span></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: wenn output = False wird ein Tupel ausgegeben: die Speichergröße (float) und der Jahresgang in Jahr1 (Liste) und allen folgenden Jahren (Liste)</span></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> berechne_speichergröße(data, output <span class="op">=</span> <span class="va">False</span>):</span>
-<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  data_x2 <span class="op">=</span> pd.concat([data, data])</span>
-<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>  überschuss <span class="op">=</span> prüfe_EE_Überschuss(data)</span>
-<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> überschuss:</span>
-<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Listenoperation</span></span>
-<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>    capped_cumsum <span class="op">=</span> []</span>
-<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>    summe <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
-<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>      summe <span class="op">+=</span> i </span>
-<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Untergrenze prüfen</span></span>
-<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> summe <span class="op">&lt;</span> <span class="dv">0</span>:</span>
-<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb48-27"><a href="#cb48-27" aria-hidden="true" tabindex="-1"></a>      capped_cumsum.append(summe)</span>
-<span id="cb48-28"><a href="#cb48-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-29"><a href="#cb48-29" aria-hidden="true" tabindex="-1"></a>    speichergröße <span class="op">=</span> <span class="bu">max</span>(capped_cumsum)</span>
-<span id="cb48-30"><a href="#cb48-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb48-31"><a href="#cb48-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>:</span>
-<span id="cb48-32"><a href="#cb48-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-33"><a href="#cb48-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Listenoperation</span></span>
-<span id="cb48-34"><a href="#cb48-34" aria-hidden="true" tabindex="-1"></a>    capped_cumsum <span class="op">=</span> []</span>
-<span id="cb48-35"><a href="#cb48-35" aria-hidden="true" tabindex="-1"></a>    summe <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb48-36"><a href="#cb48-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-37"><a href="#cb48-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
-<span id="cb48-38"><a href="#cb48-38" aria-hidden="true" tabindex="-1"></a>      summe <span class="op">+=</span> i</span>
-<span id="cb48-39"><a href="#cb48-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-40"><a href="#cb48-40" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Obergrenze prüfen</span></span>
-<span id="cb48-41"><a href="#cb48-41" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> summe <span class="op">&gt;</span> <span class="dv">0</span>:</span>
-<span id="cb48-42"><a href="#cb48-42" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb48-43"><a href="#cb48-43" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb48-44"><a href="#cb48-44" aria-hidden="true" tabindex="-1"></a>      capped_cumsum.append(summe)</span>
-<span id="cb48-45"><a href="#cb48-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-46"><a href="#cb48-46" aria-hidden="true" tabindex="-1"></a>    speichergröße <span class="op">=</span> <span class="bu">abs</span>(<span class="bu">min</span>(capped_cumsum))</span>
-<span id="cb48-47"><a href="#cb48-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-48"><a href="#cb48-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Jahresgang des Speichers simulieren</span></span>
-<span id="cb48-49"><a href="#cb48-49" aria-hidden="true" tabindex="-1"></a>  jahresgang_speicher <span class="op">=</span> []</span>
-<span id="cb48-50"><a href="#cb48-50" aria-hidden="true" tabindex="-1"></a>  freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span> <span class="op">-</span> speichergröße <span class="co"># der speicher ist leer</span></span>
-<span id="cb48-51"><a href="#cb48-51" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
-<span id="cb48-52"><a href="#cb48-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-53"><a href="#cb48-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> freie_speicherkapazität <span class="op">-</span> i <span class="op">&lt;</span> <span class="op">-</span>speichergröße: <span class="co"># last ohne vorherige Einspeicherung kann nicht bedient werden</span></span>
-<span id="cb48-54"><a href="#cb48-54" aria-hidden="true" tabindex="-1"></a>      freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span> <span class="op">-</span> speichergröße</span>
-<span id="cb48-55"><a href="#cb48-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-56"><a href="#cb48-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> freie_speicherkapazität <span class="op">-</span> i <span class="op">&gt;</span> <span class="dv">0</span>: <span class="co"># wenn der Speicher voll ist, muss Überschuss verworfen werden.</span></span>
-<span id="cb48-57"><a href="#cb48-57" aria-hidden="true" tabindex="-1"></a>      freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb48-58"><a href="#cb48-58" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb48-59"><a href="#cb48-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb48-60"><a href="#cb48-60" aria-hidden="true" tabindex="-1"></a>      freie_speicherkapazität <span class="op">-=</span> i</span>
-<span id="cb48-61"><a href="#cb48-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-62"><a href="#cb48-62" aria-hidden="true" tabindex="-1"></a>    jahresgang_speicher.append(freie_speicherkapazität)</span>
-<span id="cb48-63"><a href="#cb48-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-64"><a href="#cb48-64" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Vorzeichen invertieren</span></span>
-<span id="cb48-65"><a href="#cb48-65" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(jahresgang_speicher)):</span>
-<span id="cb48-66"><a href="#cb48-66" aria-hidden="true" tabindex="-1"></a>    jahresgang_speicher[i] <span class="op">*=</span> <span class="op">-</span><span class="dv">1</span> </span>
-<span id="cb48-67"><a href="#cb48-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-68"><a href="#cb48-68" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> output: <span class="co"># output = True</span></span>
-<span id="cb48-69"><a href="#cb48-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-70"><a href="#cb48-70" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> pd.DataFrame({<span class="st">'Restlast'</span>: data, <span class="st">'freie Kapazität Jahr1'</span>: jahresgang_speicher[: <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> ], <span class="st">'freie Kapazität Folgejahre'</span>: jahresgang_speicher[ <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> : ]})</span>
-<span id="cb48-71"><a href="#cb48-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-72"><a href="#cb48-72" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n\n</span><span class="ss">Summe data: </span><span class="sc">{</span>data<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ch">\n</span><span class="ss">Speichergröße: </span><span class="sc">{</span>speichergr<span class="sc">öß</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb48-73"><a href="#cb48-73" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(dataset)</span>
-<span id="cb48-74"><a href="#cb48-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-75"><a href="#cb48-75" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>: <span class="co"># output = False</span></span>
-<span id="cb48-76"><a href="#cb48-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> speichergröße, jahresgang_speicher[: <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> ], jahresgang_speicher[ <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> : ]</span>
-<span id="cb48-77"><a href="#cb48-77" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb48-78"><a href="#cb48-78" aria-hidden="true" tabindex="-1"></a>speicher_2023 <span class="op">=</span> berechne_speichergröße(restlast, output <span class="op">=</span> <span class="va">False</span>)</span>
-<span id="cb48-79"><a href="#cb48-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-80"><a href="#cb48-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-81"><a href="#cb48-81" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"erforderliche Speichergröße 2023: </span><span class="sc">{</span>speicher_2023[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> MWh</span><span class="ch">\n</span><span class="ss">Dies entspricht </span><span class="sc">{</span>speicher_2023[<span class="dv">0</span>] <span class="op">/</span> pumpspeicherkapazit<span class="sc">ä</span>t_MWh<span class="sc">:.1f}</span><span class="ss"> Pumpspeicheräquivalenten."</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Nachdem die Speichergröße bestimmt wurde, kann der Jahresgang des Speichers für das erste und das zweite Jahr bestimmt werden. Der Jahresgang des Speichers für das zweite Jahr ist das stabile Gleichgewicht, mit dem eine gegebene Restlastkurve beliebig oft durchlaufen werden kann.</p>
+<section id="berechnung-der-speichergröße-ohne-wirkungsgrad" class="level3">
+<h3 class="anchored" data-anchor-id="berechnung-der-speichergröße-ohne-wirkungsgrad">Berechnung der Speichergröße ohne Wirkungsgrad</h3>
+<div id="caaefb92" class="cell" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Speichergröße berechnen</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float'), output = False</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: aufrufen der Funktion prüfe_EE_Überschuss, um zwischen oberer Grenze = 0 (Speicher ist leer) und unterer Grenze = 0 (Speicher ist überdimensioniert) zu unterscheiden</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: data wird zwei mal zu data_x2 verkettet. Für data_x2 wird die bei 0 gekappte kumulierte Summe berechnet und die Speichergröße berechnet.</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Anhand der Speichergröße wird der Jahresgang in Jahr1 und allen folgenden Jahren simuliert.</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: wenn output = False wird ein Tupel ausgegeben: die Speichergröße (float) und der Jahresgang in Jahr1 (Liste) und allen folgenden Jahren (Liste)</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> berechne_speichergröße(data, output <span class="op">=</span> <span class="va">False</span>):</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>  data_x2 <span class="op">=</span> pd.concat([data, data])</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>  überschuss <span class="op">=</span> prüfe_EE_Überschuss(data)</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> überschuss:</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Listenoperation</span></span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>    capped_cumsum <span class="op">=</span> []</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>    summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>      summe <span class="op">+=</span> i </span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Untergrenze prüfen</span></span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> summe <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a>      capped_cumsum.append(summe)</span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>    speichergröße <span class="op">=</span> <span class="bu">max</span>(capped_cumsum)</span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>:</span>
+<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Listenoperation</span></span>
+<span id="cb47-34"><a href="#cb47-34" aria-hidden="true" tabindex="-1"></a>    capped_cumsum <span class="op">=</span> []</span>
+<span id="cb47-35"><a href="#cb47-35" aria-hidden="true" tabindex="-1"></a>    summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb47-36"><a href="#cb47-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-37"><a href="#cb47-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
+<span id="cb47-38"><a href="#cb47-38" aria-hidden="true" tabindex="-1"></a>      summe <span class="op">+=</span> i</span>
+<span id="cb47-39"><a href="#cb47-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-40"><a href="#cb47-40" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Obergrenze prüfen</span></span>
+<span id="cb47-41"><a href="#cb47-41" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> summe <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb47-42"><a href="#cb47-42" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb47-43"><a href="#cb47-43" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb47-44"><a href="#cb47-44" aria-hidden="true" tabindex="-1"></a>      capped_cumsum.append(summe)</span>
+<span id="cb47-45"><a href="#cb47-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-46"><a href="#cb47-46" aria-hidden="true" tabindex="-1"></a>    speichergröße <span class="op">=</span> <span class="bu">abs</span>(<span class="bu">min</span>(capped_cumsum))</span>
+<span id="cb47-47"><a href="#cb47-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-48"><a href="#cb47-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Jahresgang des Speichers simulieren</span></span>
+<span id="cb47-49"><a href="#cb47-49" aria-hidden="true" tabindex="-1"></a>  jahresgang_speicher <span class="op">=</span> []</span>
+<span id="cb47-50"><a href="#cb47-50" aria-hidden="true" tabindex="-1"></a>  freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span> <span class="op">-</span> speichergröße <span class="co"># der speicher ist leer</span></span>
+<span id="cb47-51"><a href="#cb47-51" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
+<span id="cb47-52"><a href="#cb47-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-53"><a href="#cb47-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> freie_speicherkapazität <span class="op">-</span> i <span class="op">&lt;</span> <span class="op">-</span>speichergröße: <span class="co"># last ohne vorherige Einspeicherung kann nicht bedient werden</span></span>
+<span id="cb47-54"><a href="#cb47-54" aria-hidden="true" tabindex="-1"></a>      freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span> <span class="op">-</span> speichergröße</span>
+<span id="cb47-55"><a href="#cb47-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-56"><a href="#cb47-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> freie_speicherkapazität <span class="op">-</span> i <span class="op">&gt;</span> <span class="dv">0</span>: <span class="co"># wenn der Speicher voll ist, muss Überschuss verworfen werden.</span></span>
+<span id="cb47-57"><a href="#cb47-57" aria-hidden="true" tabindex="-1"></a>      freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb47-58"><a href="#cb47-58" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb47-59"><a href="#cb47-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb47-60"><a href="#cb47-60" aria-hidden="true" tabindex="-1"></a>      freie_speicherkapazität <span class="op">-=</span> i</span>
+<span id="cb47-61"><a href="#cb47-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-62"><a href="#cb47-62" aria-hidden="true" tabindex="-1"></a>    jahresgang_speicher.append(freie_speicherkapazität)</span>
+<span id="cb47-63"><a href="#cb47-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-64"><a href="#cb47-64" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Vorzeichen invertieren</span></span>
+<span id="cb47-65"><a href="#cb47-65" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(jahresgang_speicher)):</span>
+<span id="cb47-66"><a href="#cb47-66" aria-hidden="true" tabindex="-1"></a>    jahresgang_speicher[i] <span class="op">*=</span> <span class="op">-</span><span class="dv">1</span> </span>
+<span id="cb47-67"><a href="#cb47-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-68"><a href="#cb47-68" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> output: <span class="co"># output = True</span></span>
+<span id="cb47-69"><a href="#cb47-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-70"><a href="#cb47-70" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> pd.DataFrame({<span class="st">'Restlast'</span>: data, <span class="st">'freie Kapazität Jahr1'</span>: jahresgang_speicher[ : <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> ], <span class="st">'freie Kapazität Folgejahre'</span>: jahresgang_speicher[ <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> : ]})</span>
+<span id="cb47-71"><a href="#cb47-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-72"><a href="#cb47-72" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n\n</span><span class="ss">Summe data: </span><span class="sc">{</span>data<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ch">\n</span><span class="ss">Speichergröße: </span><span class="sc">{</span>speichergr<span class="sc">öß</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb47-73"><a href="#cb47-73" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(dataset)</span>
+<span id="cb47-74"><a href="#cb47-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-75"><a href="#cb47-75" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>: <span class="co"># output = False</span></span>
+<span id="cb47-76"><a href="#cb47-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> speichergröße, jahresgang_speicher[ : <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> ], jahresgang_speicher[ <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> : ]</span>
+<span id="cb47-77"><a href="#cb47-77" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-78"><a href="#cb47-78" aria-hidden="true" tabindex="-1"></a>speicher_2023 <span class="op">=</span> berechne_speichergröße(restlast, output <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb47-79"><a href="#cb47-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-80"><a href="#cb47-80" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"erforderliche Speichergröße 2023: </span><span class="sc">{</span>speicher_2023[<span class="dv">0</span>]<span class="sc">:.1f}</span><span class="ss"> MWh</span><span class="ch">\n</span><span class="ss">Dies entspricht </span><span class="sc">{</span>speicher_2023[<span class="dv">0</span>] <span class="op">/</span> pumpspeicherkapazit<span class="sc">ä</span>t_MWh<span class="sc">:.1f}</span><span class="ss"> Pumpspeicheräquivalenten."</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>erforderliche Speichergröße 2023: 119667.0 MWh
 Dies entspricht 3.2 Pumpspeicheräquivalenten.</code></pre>
 </div>
 </div>
+<p>Der Füllstand des Speichers im Jahresgang kann grafisch dargestellt werden. Die Funktion gibt ein Tupel zurück. An Position 0 ist die Speichergröße gespeichert, an Position 1 der Jahresgang in Jahr 1, an Position 2 der Jahresgang in Jahr 2. Da die Funktion die freie Kapazität als Liste zurückgibt, muss der Füllstand des Speichers mit <code>speichergröße - pd.Series(data = jahresgang_speicher)</code> berechnet werden. <strong>TO DO: panel-tabset, fig-alt, fig-cap ergänzen</strong></p>
+<div id="9612debf" class="cell" data-execution_count="49">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Energiedatenauswertung_files/figure-html/cell-50-output-1.png" width="710" height="569" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Die benötigte Kapazität des Speichers ergibt sich aus den ereuerbaren Erzeugungsüberschüssen während der Weihnachtsfeiertage. Diese Kapazitäten bleiben im Rest des des Jahres ungenutzt. Der Speicher ist die meiste Zeit des Jahres leer. Der Jahresgang für das erste und das zweite Jahr ist identisch.</p>
+</section>
+<section id="berechnung-der-speichergröße-mit-wirkungsgrad" class="level3">
+<h3 class="anchored" data-anchor-id="berechnung-der-speichergröße-mit-wirkungsgrad">Berechnung der Speichergröße mit Wirkungsgrad</h3>
+<p>Die benötigte Kapazität des Speichers sinkt, wenn Ein- und Ausspeicherwirkgungsgrade berücksichtigt werden. Für den Gesamtwirkungsgrad können die bestehenden Pumpspeicherkraftwerke als Orientierung dienen. Der Gesamtwirkungsgrad wurde mit 79.10 Prozent berechnet. Diesem Wirkungsgrad entspricht näherungsweise eine Aufteilung von Einspeicherwirkungsgrad = 0.9, Ausspeicherwirkungsgrad = 0.88.</p>
+<div id="e62a5b69" class="cell" data-execution_count="50">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Speichergröße berechnen</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: aufrufen der Funktion prüfe_EE_Überschuss, um zwischen oberer Grenze = 0 (Speicher ist leer) und unterer Grenze = 0 (Speicher ist überdimensioniert) zu unterscheiden</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: data wird zwei mal zu data_x2 verkettet. Für data_x2 wird die bei 0 gekappte kumulierte Summe berechnet und die Speichergröße berechnet.</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Verarbeitung: Anhand der Speichergröße wird der Jahresgang in Jahr1 und allen folgenden Jahren simuliert.</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Ausgabe: wenn output = False wird ein Tupel ausgegeben: die Speichergröße (float) und der Jahresgang in Jahr1 (Liste) und allen folgenden Jahren (Liste)</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> berechne_speichergröße(data, einspeicherwirkungsgrad <span class="op">=</span> <span class="dv">1</span>, ausspeicherwirkungsgrad <span class="op">=</span> <span class="dv">1</span>, output <span class="op">=</span> <span class="va">False</span>):</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  wirkungsgrad <span class="op">=</span> einspeicherwirkungsgrad <span class="op">*</span> ausspeicherwirkungsgrad</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  data_x2 <span class="op">=</span> pd.concat([data, data])</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>  überschuss <span class="op">=</span> prüfe_EE_Überschuss(data, wirkungsgrad)</span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> überschuss:</span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Listenoperation</span></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>    capped_cumsum <span class="op">=</span> []</span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>    summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> i <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">+=</span> i <span class="op">*</span> einspeicherwirkungsgrad</span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>:</span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">+=</span> i <span class="op">/</span> ausspeicherwirkungsgrad</span>
+<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Untergrenze prüfen</span></span>
+<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> summe <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb49-31"><a href="#cb49-31" aria-hidden="true" tabindex="-1"></a>      capped_cumsum.append(summe)</span>
+<span id="cb49-32"><a href="#cb49-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-33"><a href="#cb49-33" aria-hidden="true" tabindex="-1"></a>    speichergröße <span class="op">=</span> <span class="bu">max</span>(capped_cumsum)</span>
+<span id="cb49-34"><a href="#cb49-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb49-35"><a href="#cb49-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>: <span class="co"># Unterproduktion</span></span>
+<span id="cb49-36"><a href="#cb49-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-37"><a href="#cb49-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Listenoperation</span></span>
+<span id="cb49-38"><a href="#cb49-38" aria-hidden="true" tabindex="-1"></a>    capped_cumsum <span class="op">=</span> []</span>
+<span id="cb49-39"><a href="#cb49-39" aria-hidden="true" tabindex="-1"></a>    summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb49-40"><a href="#cb49-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-41"><a href="#cb49-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
+<span id="cb49-42"><a href="#cb49-42" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> i <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb49-43"><a href="#cb49-43" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">+=</span> i <span class="op">*</span> einspeicherwirkungsgrad</span>
+<span id="cb49-44"><a href="#cb49-44" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>:</span>
+<span id="cb49-45"><a href="#cb49-45" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">+=</span> i <span class="op">/</span> ausspeicherwirkungsgrad</span>
+<span id="cb49-46"><a href="#cb49-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-47"><a href="#cb49-47" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Obergrenze prüfen</span></span>
+<span id="cb49-48"><a href="#cb49-48" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> summe <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb49-49"><a href="#cb49-49" aria-hidden="true" tabindex="-1"></a>        summe <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb49-50"><a href="#cb49-50" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb49-51"><a href="#cb49-51" aria-hidden="true" tabindex="-1"></a>      capped_cumsum.append(summe)</span>
+<span id="cb49-52"><a href="#cb49-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-53"><a href="#cb49-53" aria-hidden="true" tabindex="-1"></a>    speichergröße <span class="op">=</span> <span class="bu">abs</span>(<span class="bu">min</span>(capped_cumsum))</span>
+<span id="cb49-54"><a href="#cb49-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-55"><a href="#cb49-55" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Jahresgang des Speichers simulieren</span></span>
+<span id="cb49-56"><a href="#cb49-56" aria-hidden="true" tabindex="-1"></a>  jahresgang_speicher <span class="op">=</span> []</span>
+<span id="cb49-57"><a href="#cb49-57" aria-hidden="true" tabindex="-1"></a>  freie_speicherkapazität <span class="op">=</span> speichergröße <span class="co"># der speicher ist leer </span></span>
+<span id="cb49-58"><a href="#cb49-58" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> data_x2:</span>
+<span id="cb49-59"><a href="#cb49-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-60"><a href="#cb49-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">&gt;</span> <span class="dv">0</span>: <span class="co"># Restlast</span></span>
+<span id="cb49-61"><a href="#cb49-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-62"><a href="#cb49-62" aria-hidden="true" tabindex="-1"></a>      <span class="co"># last ohne entsprechende vorherige Einspeicherung kann nicht vollständig bedient werden, der Speicher ist dann leer</span></span>
+<span id="cb49-63"><a href="#cb49-63" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (speichergröße <span class="op">-</span> freie_speicherkapazität) <span class="op">-</span> i <span class="op">/</span> ausspeicherwirkungsgrad <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb49-64"><a href="#cb49-64" aria-hidden="true" tabindex="-1"></a>        freie_speicherkapazität <span class="op">=</span> speichergröße</span>
+<span id="cb49-65"><a href="#cb49-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-66"><a href="#cb49-66" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>: <span class="co"># Ausspeicherung</span></span>
+<span id="cb49-67"><a href="#cb49-67" aria-hidden="true" tabindex="-1"></a>        freie_speicherkapazität <span class="op">+=</span> i <span class="op">/</span> ausspeicherwirkungsgrad <span class="co"># hier kann zu viel ausgespeichert werden</span></span>
+<span id="cb49-68"><a href="#cb49-68" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> freie_speicherkapazität <span class="op">&gt;</span> speichergröße:</span>
+<span id="cb49-69"><a href="#cb49-69" aria-hidden="true" tabindex="-1"></a>          freie_speicherkapazität <span class="op">=</span> speichergröße</span>
+<span id="cb49-70"><a href="#cb49-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-71"><a href="#cb49-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>: <span class="co"># i &lt;= 0 Restlast</span></span>
+<span id="cb49-72"><a href="#cb49-72" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb49-73"><a href="#cb49-73" aria-hidden="true" tabindex="-1"></a>      <span class="co"># wenn der Speicher voll ist, muss Überschuss verworfen werden.</span></span>
+<span id="cb49-74"><a href="#cb49-74" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> freie_speicherkapazität <span class="op">+</span> i <span class="op">*</span> einspeicherwirkungsgrad <span class="op">&lt;</span> <span class="dv">0</span>: </span>
+<span id="cb49-75"><a href="#cb49-75" aria-hidden="true" tabindex="-1"></a>        freie_speicherkapazität <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb49-76"><a href="#cb49-76" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb49-77"><a href="#cb49-77" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>: <span class="co"># Einspeicherung</span></span>
+<span id="cb49-78"><a href="#cb49-78" aria-hidden="true" tabindex="-1"></a>        freie_speicherkapazität <span class="op">+=</span> i <span class="op">*</span> einspeicherwirkungsgrad</span>
+<span id="cb49-79"><a href="#cb49-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-80"><a href="#cb49-80" aria-hidden="true" tabindex="-1"></a>    jahresgang_speicher.append(freie_speicherkapazität)</span>
+<span id="cb49-81"><a href="#cb49-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-82"><a href="#cb49-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-83"><a href="#cb49-83" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> output: <span class="co"># output = True</span></span>
+<span id="cb49-84"><a href="#cb49-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-85"><a href="#cb49-85" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> pd.DataFrame({<span class="st">'Restlast'</span>: data, <span class="st">'freie Kapazität Jahr1'</span>: jahresgang_speicher[ : <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> ], <span class="st">'freie Kapazität Folgejahre'</span>: jahresgang_speicher[ <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> : ]})</span>
+<span id="cb49-86"><a href="#cb49-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-87"><a href="#cb49-87" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n\n</span><span class="ss">Überschuss: </span><span class="sc">{ü</span>berschuss<span class="sc">}</span><span class="ch">\t</span><span class="ss"> Einspeicherwirkungsgrad: </span><span class="sc">{</span>einspeicherwirkungsgrad<span class="sc">}</span><span class="ch">\t</span><span class="ss"> Ausspeicherwirkungsgrad: </span><span class="sc">{</span>ausspeicherwirkungsgrad<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb49-88"><a href="#cb49-88" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Summe data: </span><span class="sc">{</span>data<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ch">\n</span><span class="ss">Speichergröße: </span><span class="sc">{</span>speichergr<span class="sc">öß</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb49-89"><a href="#cb49-89" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(dataset)</span>
+<span id="cb49-90"><a href="#cb49-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-91"><a href="#cb49-91" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>: <span class="co"># output = False</span></span>
+<span id="cb49-92"><a href="#cb49-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> speichergröße, jahresgang_speicher[ : <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> ], jahresgang_speicher[ <span class="bu">len</span>(jahresgang_speicher) <span class="op">//</span> <span class="dv">2</span> : ]</span>
+<span id="cb49-93"><a href="#cb49-93" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb49-94"><a href="#cb49-94" aria-hidden="true" tabindex="-1"></a>speicher_2023 <span class="op">=</span> berechne_speichergröße(restlast, einspeicherwirkungsgrad <span class="op">=</span> <span class="fl">0.9</span>, ausspeicherwirkungsgrad <span class="op">=</span> <span class="fl">0.88</span>, output <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb49-95"><a href="#cb49-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-96"><a href="#cb49-96" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"erforderliche Speichergröße 2023: </span><span class="sc">{</span>speicher_2023[<span class="dv">0</span>]<span class="sc">:.1f}</span><span class="ss"> MWh</span><span class="ch">\n</span><span class="ss">Dies entspricht </span><span class="sc">{</span>speicher_2023[<span class="dv">0</span>] <span class="op">/</span> pumpspeicherkapazit<span class="sc">ä</span>t_MWh<span class="sc">:.1f}</span><span class="ss"> Pumpspeicheräquivalenten."</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>erforderliche Speichergröße 2023: 102073.4 MWh
+Dies entspricht 2.7 Pumpspeicheräquivalenten.</code></pre>
+</div>
+</div>
+<p>Text</p>
+</section>
+<section id="dies-und-das" class="level3">
+<h3 class="anchored" data-anchor-id="dies-und-das">Dies und das</h3>
+<p>Wirkungsgrad Pumpspeicher in Prozent: 79.10 … also sagen wir <strong>Die Aufteilung lässt sich anhand der Zyklenzahl gut begründen (die kommt aber erst später)</strong> Da die Datenreihe sehr lang ist, bietet es sich an, für die Funktionsentwicklung eine kürzere Reihe von Testdaten zu benutzen. Auf diese Weise werden Berechnungen schneller durchgeführt und Zwischenergebnisse und Ergebnisse können bei Bedarf zur Überprüfung ausgegeben werden. Die folgende Funktion simuliert mit zehn Werten eine Restlastkurve, die im Jahresgang zufällig eine erneuerbare Überschussproduktion bzw. eine positive Restlast darstellt. Durch Anpassen der Werte für a und b kann das Ergebnis gesteuert werden. <strong>Eventl. Ausgabefunktion hier ergänzen</strong></p>
+<div id="386f5a2b" class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random <span class="im">as</span> rd</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>random_data <span class="op">=</span> []</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  random_data.append(rd.randint(a <span class="op">=</span> <span class="op">-</span><span class="dv">20</span>, b <span class="op">=</span> <span class="dv">20</span>))</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>random_data <span class="op">=</span> pd.Series(random_data, dtype <span class="op">=</span> <span class="st">'float'</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt? –&gt; benötigte Leistung und Kapazität sowie die Zyklenzahl sind interessant. <strong>Anschließend könnte man die Wirtschaftlichkeit ausrechnen mit den Börsenstrompreisen.</strong> = Minimumabschätzung im „Kupferplattenmodell“ also ohne technische Verluste</p>
+</section>
 <section id="zyklenzahl-berechnen-mit-teilzyklen" class="level3">
 <h3 class="anchored" data-anchor-id="zyklenzahl-berechnen-mit-teilzyklen">Zyklenzahl berechnen (mit Teilzyklen)</h3>
 <p><strong>Den Jahresgang des Speichers habe ich bereits… hier braucht man nur die elementweise Differenz aufsummieren, durch 2 teilen und man hat die Zyklenzahl. Als Vergleich kann man die Zyklenzahl der deutschen Pumpspeicher nehmen: Das sollten etwa 297 sein (Ausspeicherung von 11,1 TWh / 37,4 GWh Kapazität).</strong></p>

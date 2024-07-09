@@ -1609,8 +1609,8 @@ plt.tight_layout()
 
 Erneuerbare Stromproduktion: Überschuss oder Defizit?
 : Die erforderliche Größe des Stromspeichers ist abhängig von dem Verhältnis aus der Menge der erneuerbaren Überschussproduktion und der aus dem Speicher zu bedienenden Restlast.
-: Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
-: Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße der Summe der zu bedienenden Restlast.
+: Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
+: Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße der Summe der zu bedienenden Restlast.
 : Ob ein Überschuss oder ein Defizit erneuerbarer Stromproduktion vorliegt, kann am Vorzeichen der summierten Restlast abgelesen werden. Ein negatives Vorzeichen entspricht einem erneuerbaren Stromüberschuss, ein positives Vorzeichen einem erneuerbaren Stromdefizit.
 
 ```{python}
@@ -1692,9 +1692,8 @@ Reihenfolgeabhängigkeit
 ![Platzhalter](skript/00-bilder/Platzhalter%20Wirkungsgrad.png)
 
 Wirkungsgrad
-: Einspeicherwirkungsgrad vermindert den verfügbaren Überschussstrom.
-: Ausspeicherwirkungsgrad (inklusive Speicherverluste) erhöht die durch den Speicher zu bedienende Last.
-: **braucht man dafür Grafiken?**
+: Einspeicherwirkungsgrad vermindert den verfügbaren Überschussstrom. Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienende Restlast, kann der Speicher um den Einspeicherwirkungsgrad kleiner dimensioniert werden.
+: Ausspeicherwirkungsgrad (inklusive Speicherverluste) erhöht die durch den Speicher zu bedienende Last. Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienende Restlast, muss der Speicher um den Ausspeicherwirkungsgrad größer dimensioniert werden.
 
 ```{python}
 #| echo: false
@@ -1840,8 +1839,8 @@ Kappung von Erzeugungsspitzen
 :::
 
 ## Speichergröße berechnen
-**Dazu muss auf eine Listenoperation zurückgegriffen werden. Was schade ist, weil es langsam ist. Ist gar nicht so langsam. Die Berechnung der Speichergröße und des Jahresgänge in Jahr Null und den Folgejahren hat 0.09 Sekunden gedauert. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären.**.
-Auf dieser Grundlage kann eine Funktion entwickelt werden, um anhand der Restlast die erforderliche Speichergröße zu berechnen. Diese soll zur besseren Verständlichkeit mit der bestehenden Pumpspeicherkapazität von 37,4 GWh ins Verhältnis gesetzt werden. Die Restlast wird wie folgt bestimmt:
+**Dazu muss auf eine Listenoperation zurückgegriffen werden, die zum Glück gar nicht so langsam ist. Die Berechnung der Speichergröße und des Jahresgänge in Jahr Null und den Folgejahren hat 0.09 Sekunden gedauert. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären.**.
+Auf dieser Grundlage kann eine Funktion entwickelt werden, um anhand der Restlast die erforderliche Speichergröße zu berechnen. Um die Größenordnung besser einordnen zu können, wird die Speichergröße zur bestehenden Pumpspeicherkapazität von 37,4 GWh ins Verhältnis gesetzt. Die Restlast wird wie folgt bestimmt:
 
 ```{python}
 
@@ -1852,19 +1851,6 @@ restlast["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy()
 restlast["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
 restlast["Restlast [MWh]"] = restlast["Netzlast [MWh]"] - restlast["Erneuerbare [MWh]"]
 restlast = restlast["Restlast [MWh]"]
-
-```
-
-**Verschieben** Da die Datenreihe sehr lang ist, bietet es sich an, für die Funktionsentwicklung eine kürzere Reihe von Testdaten zu benutzen. Auf diese Weise werden Berechnungen schneller durchgeführt und Zwischenergebnisse und Ergebnisse können bei Bedarf zur Überprüfung ausgegeben werden. Die folgende Funktion simuliert mit zehn Werten eine Restlastkurve, die im Jahresgang zufällig eine erneuerbare Überschussproduktion bzw. eine positive Restlast darstellt. Durch Anpassen der Werte für a und b kann das Ergebnis gesteuert werden.
-
-``` {python}
-import random as rd
-
-random_data = []
-for i in range(10):
-  random_data.append(rd.randint(a = -20, b = 20))
-
-random_data = pd.Series(random_data, dtype = 'float')
 
 ```
 
@@ -1887,7 +1873,8 @@ Wie aus der Grenzstromanalyse im Abschnitt [@sec-Pumpspeicherinhalt] bekannt, he
 **Erweitern Sie die Funktion um einen Ein- und Ausspeicherwirkungsgrad (inklusive Speicherverluste).**
 
 
-:::{#tip-Wirkungsgrad .callout-tip collapse="true" title="erneuerbarer Überschuss oder Defizit mit Wirkungsgrad"}
+:::{#tip-Wirkungsgrad .callout-tip collapse="true" title="Musterlösung erneuerbarer Überschuss oder Defizit mit Wirkungsgrad"}
+
 ``` {python}
 
 #| output = false
@@ -1918,8 +1905,10 @@ Im zweiten Schritt kann die Speichergröße aus dem Jahresgang der Restlast bere
   - Ist die Summe der erneuerbaren Überschussproduktion kleiner als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Minimum der kummulierten Summe der Restlast, wenn diese niemals größer 0 gesetzt wird (das Überschreiten wäre der Moment, in dem der Speicher leer ist). 
   
   - Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast, wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).
+
+Nachdem die Speichergröße bestimmt wurde, kann der Jahresgang des Speichers für das erste und das zweite Jahr bestimmt werden. Der Jahresgang des Speichers für das zweite Jahr ist das stabile Gleichgewicht, mit dem eine gegebene Restlastkurve beliebig oft durchlaufen werden kann.
   
-## Formel noch ohne Wirkungsgrad
+### Berechnung der Speichergröße ohne Wirkungsgrad
 ```{python}
 # Speichergröße berechnen
 ## Eingabe: data = pd.Series(data, dtype = 'float'), output = False
@@ -1990,19 +1979,191 @@ def berechne_speichergröße(data, output = False):
 
   if output: # output = True
 
-    dataset = pd.DataFrame({'Restlast': data, 'freie Kapazität Jahr1': jahresgang_speicher[: len(jahresgang_speicher) // 2 ], 'freie Kapazität Folgejahre': jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]})
+    dataset = pd.DataFrame({'Restlast': data, 'freie Kapazität Jahr1': jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], 'freie Kapazität Folgejahre': jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]})
 
     print(f"\n\nSumme data: {data.sum()}\nSpeichergröße: {speichergröße}")
     print(dataset)
 
   else: # output = False
-    return speichergröße, jahresgang_speicher[: len(jahresgang_speicher) // 2 ], jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]
+    return speichergröße, jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]
   
 speicher_2023 = berechne_speichergröße(restlast, output = False)
 
-print(f"erforderliche Speichergröße 2023: {speicher_2023[0]} MWh\nDies entspricht {speicher_2023[0] / pumpspeicherkapazität_MWh:.1f} Pumpspeicheräquivalenten.")
+print(f"erforderliche Speichergröße 2023: {speicher_2023[0]:.1f} MWh\nDies entspricht {speicher_2023[0] / pumpspeicherkapazität_MWh:.1f} Pumpspeicheräquivalenten.")
 
 ```
+
+Der Füllstand des Speichers im Jahresgang kann grafisch dargestellt werden. Die Funktion gibt ein Tupel zurück. An Position 0 ist die Speichergröße gespeichert, an Position 1 der Jahresgang in Jahr 1, an Position 2 der Jahresgang in Jahr 2. Da die Funktion die freie Kapazität als Liste zurückgibt, muss der Füllstand des Speichers mit `speichergröße - pd.Series(data = jahresgang_speicher)` berechnet werden. **TO DO: panel-tabset, fig-alt, fig-cap ergänzen**
+
+``` {python}
+#| echo: false
+
+# Daten erzeugen
+jahresgang_speicher_jahr1 = pd.Series()
+jahresgang_speicher_jahr1 = speicher_2023[0] - pd.Series(speicher_2023[1])
+
+jahresgang_speicher_jahr2 = pd.Series()
+jahresgang_speicher_jahr2 = speicher_2023[0] - pd.Series(speicher_2023[2])
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+font_size = 10
+
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2023 und Jahresgang eines Speichers mit Wirkungsgrad 1')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.1))
+
+## plot restlast
+ax1.plot(restlast, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+```
+
+Die benötigte Kapazität des Speichers ergibt sich aus den ereuerbaren Erzeugungsüberschüssen während der Weihnachtsfeiertage. Diese Kapazitäten bleiben im Rest des des Jahres ungenutzt. Der Speicher ist die meiste Zeit des Jahres leer. Der Jahresgang für das erste und das zweite Jahr ist identisch.
+
+### Berechnung der Speichergröße mit Wirkungsgrad
+Die benötigte Kapazität des Speichers sinkt, wenn Ein- und Ausspeicherwirkgungsgrade berücksichtigt werden. Für den Gesamtwirkungsgrad können die bestehenden Pumpspeicherkraftwerke als Orientierung dienen. Der Gesamtwirkungsgrad wurde mit 79.10 Prozent berechnet. Diesem Wirkungsgrad entspricht näherungsweise eine Aufteilung von Einspeicherwirkungsgrad = 0.9, Ausspeicherwirkungsgrad = 0.88.
+
+```{python}
+
+# Speichergröße berechnen
+## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False
+## Verarbeitung: aufrufen der Funktion prüfe_EE_Überschuss, um zwischen oberer Grenze = 0 (Speicher ist leer) und unterer Grenze = 0 (Speicher ist überdimensioniert) zu unterscheiden
+## Verarbeitung: data wird zwei mal zu data_x2 verkettet. Für data_x2 wird die bei 0 gekappte kumulierte Summe berechnet und die Speichergröße berechnet.
+## Verarbeitung: Anhand der Speichergröße wird der Jahresgang in Jahr1 und allen folgenden Jahren simuliert.
+## Ausgabe: wenn output = False wird ein Tupel ausgegeben: die Speichergröße (float) und der Jahresgang in Jahr1 (Liste) und allen folgenden Jahren (Liste)
+
+def berechne_speichergröße(data, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False):
+
+  wirkungsgrad = einspeicherwirkungsgrad * ausspeicherwirkungsgrad
+  data_x2 = pd.concat([data, data])
+
+  überschuss = prüfe_EE_Überschuss(data, wirkungsgrad)
+  
+  if überschuss:
+    
+    # Listenoperation
+    capped_cumsum = []
+    summe = 0
+
+    for i in data_x2:
+      if i < 0:
+        summe += i * einspeicherwirkungsgrad
+      else:
+        summe += i / ausspeicherwirkungsgrad
+
+      # Untergrenze prüfen
+      if summe < 0:
+        summe = 0
+      
+      capped_cumsum.append(summe)
+
+    speichergröße = max(capped_cumsum)
+  
+  else: # Unterproduktion
+
+    # Listenoperation
+    capped_cumsum = []
+    summe = 0
+
+    for i in data_x2:
+      if i < 0:
+        summe += i * einspeicherwirkungsgrad
+      else:
+        summe += i / ausspeicherwirkungsgrad
+
+      # Obergrenze prüfen
+      if summe > 0:
+        summe = 0
+      
+      capped_cumsum.append(summe)
+
+    speichergröße = abs(min(capped_cumsum))
+
+  # Jahresgang des Speichers simulieren
+  jahresgang_speicher = []
+  freie_speicherkapazität = speichergröße # der speicher ist leer 
+  for i in data_x2:
+
+    if i > 0: # Restlast
+
+      # last ohne entsprechende vorherige Einspeicherung kann nicht vollständig bedient werden, der Speicher ist dann leer
+      if (speichergröße - freie_speicherkapazität) - i / ausspeicherwirkungsgrad < 0:
+        freie_speicherkapazität = speichergröße
+
+      else: # Ausspeicherung
+        freie_speicherkapazität += i / ausspeicherwirkungsgrad # hier kann zu viel ausgespeichert werden
+        if freie_speicherkapazität > speichergröße:
+          freie_speicherkapazität = speichergröße
+    
+    else: # i <= 0 Restlast
+      
+      # wenn der Speicher voll ist, muss Überschuss verworfen werden.
+      if freie_speicherkapazität + i * einspeicherwirkungsgrad < 0: 
+        freie_speicherkapazität = 0
+      
+      else: # Einspeicherung
+        freie_speicherkapazität += i * einspeicherwirkungsgrad
+
+    jahresgang_speicher.append(freie_speicherkapazität)
+
+
+  if output: # output = True
+
+    dataset = pd.DataFrame({'Restlast': data, 'freie Kapazität Jahr1': jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], 'freie Kapazität Folgejahre': jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]})
+
+    print(f"\n\nÜberschuss: {überschuss}\t Einspeicherwirkungsgrad: {einspeicherwirkungsgrad}\t Ausspeicherwirkungsgrad: {ausspeicherwirkungsgrad}")
+    print(f"Summe data: {data.sum()}\nSpeichergröße: {speichergröße}")
+    print(dataset)
+
+  else: # output = False
+    return speichergröße, jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]
+    
+speicher_2023 = berechne_speichergröße(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+
+print(f"erforderliche Speichergröße 2023: {speicher_2023[0]:.1f} MWh\nDies entspricht {speicher_2023[0] / pumpspeicherkapazität_MWh:.1f} Pumpspeicheräquivalenten.")
+
+```
+
+Text
+
+### Dies und das
+Wirkungsgrad Pumpspeicher in Prozent: 79.10 ... also sagen wir 
+**Die Aufteilung lässt sich anhand der Zyklenzahl gut begründen (die kommt aber erst später)** Da die Datenreihe sehr lang ist, bietet es sich an, für die Funktionsentwicklung eine kürzere Reihe von Testdaten zu benutzen. Auf diese Weise werden Berechnungen schneller durchgeführt und Zwischenergebnisse und Ergebnisse können bei Bedarf zur Überprüfung ausgegeben werden. Die folgende Funktion simuliert mit zehn Werten eine Restlastkurve, die im Jahresgang zufällig eine erneuerbare Überschussproduktion bzw. eine positive Restlast darstellt. Durch Anpassen der Werte für a und b kann das Ergebnis gesteuert werden. **Eventl. Ausgabefunktion hier ergänzen**
+
+``` {python}
+import random as rd
+
+random_data = []
+for i in range(10):
+  random_data.append(rd.randint(a = -20, b = 20))
+
+random_data = pd.Series(random_data, dtype = 'float')
+
+```
+
 
 
 Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt? --> benötigte Leistung und Kapazität sowie die Zyklenzahl sind interessant. **Anschließend könnte man die Wirtschaftlichkeit ausrechnen mit den Börsenstrompreisen.**
