@@ -1,7 +1,7 @@
 # Voraussetzungen
 Die Bearbeitungszeit dieses Bausteins beträgt circa **Platzhalter**. Für die Bearbeitung dieses Bausteins werden folgende Bausteine vorausgesetzt und die genannten Bibliotheken verwendet:
 
-- Werkzeugbaustein Python **3 Links, 3 verschiedene Quellen**
+- Werkzeugbaustein Python **4 Links, 4 verschiedene Quellen**
 
   - Modul [random](https://docs.python.org/3/library/random.html)
   
@@ -10,6 +10,8 @@ Die Bearbeitungszeit dieses Bausteins beträgt circa **Platzhalter**. Für die B
   - Modul [NumPy](https://numpy.org/)
 
   - Modul [matplotlib.pyplot](https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html)
+
+  - Modul [matplotlib.patches](https://matplotlib.org/stable/api/patches_api.html)
 
 - Methodenbaustein Einlesen strukturierter Datensätze
 

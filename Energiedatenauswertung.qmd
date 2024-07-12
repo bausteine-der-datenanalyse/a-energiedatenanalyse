@@ -53,7 +53,7 @@ fig-asp: 0.618
 :::: {layout="[20, 80]"}
 ![](skript/00-bilder/CC-BY.svg)
 
-Bausteine Computergestützter Datenanalyse. Anwendungsbaustein Energiedatenanalyse von Lukas Arnold, Simone Arnold, Florian Bagemihl, Matthias Baitsch, Marc Fehr, Maik Poetzsch und Sebastian Seipel ist lizensiert unter [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de). Das Werk ist abrufbar auf [GitHub](https://github.com/bausteine-der-datenanalyse/bcd-styleguide). Ausgenommen von der Lizenz sind alle Logos und anders gekennzeichneten Inhalte. 2024
+Bausteine Computergestützter Datenanalyse von Lukas Arnold, Simone Arnold, Florian Bagemihl, Matthias Baitsch, Marc Fehr, Maik Poetzsch und Sebastian Seipel. Anwendungsbaustein Energiedatenanalyse von Maik Poetzsch ist lizensiert unter [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de). Das Werk ist abrufbar auf [GitHub](https://github.com/bausteine-der-datenanalyse/bcd-styleguide). Ausgenommen von der Lizenz sind alle Logos und anders gekennzeichneten Inhalte. 2024
 
 ::::
 
@@ -132,6 +132,7 @@ import pandas as pd
 pd.set_option("display.precision", 2) # places after decimal for floats
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 installierte_leistung0 = pd.read_csv(filepath_or_buffer = \
 "skript/01-daten/Installierte_Erzeugungsleistung_202301010000_202401010000_Jahr.csv", \
@@ -393,6 +394,7 @@ ax.add_patch(circle)
 
 :::
 
+**wird `my_axis = plt.gca()` überhaupt benötigt?** 
 ### Daten aggregieren
 
 Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visuellen Beschreibung der Erzeugungsleistung nicht unbedingt ein prägnanter Befund. Eine Möglichkeit, um Daten besser zu verstehen, besteht darin, ähnliche Merkmale zusammenzufassen. Im Folgenden werden erneuerbare und konventionelle (mit fossilen Brennstoffen betriebene) Erzeugungsarten für die Darstellung der Anteilswerte in einem Ringdiagramm zusammengefasst. Beide Gruppen werden zusätzlich in einem Balkendiagramm dargestellt. Für die Darstellung wird das Modul `matplotlib.pyplot` verwendet. Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen. **Marc fragen, ob er Erläuterungen zum Plot wünscht.**
@@ -1552,9 +1554,54 @@ Energietechnik. 14 Energiespeicherung. 14.03 Kenngrößen und Begriffsdefinitio
 
 **Was noch fehlt: Zyklenzahl**
 
-## Grundlagen der Speicherauslegung {#sec-grundlagen-speicherauslegung}
-Für die Bestimmung der erforderlichen Speichergröße in einem zunehmend von erneuerbarer Überschussproduktion gekennzeichneten Stromsystem werden zunächst verschiedene Bedingungen betrachtet, die die Auslegung der Kapazität beeinflussen. Grundlage der Betrachtung ist die Restlast.
+## Speichergröße berechnen
+Im Folgenden werden verschiedene **Anzahl benennen** Grundprinzipien der Speicherauslegung und die entsprechenden Verfahren zu ihrer Berechnung entwickelt. Grundlage aller Überlegungen ist die Restlastkurve. Werte kleiner als Null entsprechen einer erneuerbaren Überschussproduktion, Werte größer als Null einer durch Lastfolgekraftwerke oder Speicher zu bedienenden Netzlast. Die Restlast wird wie folgt bestimmt:  
+**Dazu muss auf eine Listenoperation zurückgegriffen werden. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären (.clip(0) maskiert nur die Ausgabe).**
 
+```{python}
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
+
+restlast = pd.DataFrame()
+restlast["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
+restlast["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
+restlast["Restlast [MWh]"] = restlast["Netzlast [MWh]"] - restlast["Erneuerbare [MWh]"]
+restlast = restlast["Restlast [MWh]"]
+
+```
+
+Um die Größenordnung der Berechnungen besser einordnen zu können, wird die Speichergröße zur bestehenden Pumpspeicherkapazität von 37,4 GWh ins Verhältnis gesetzt. 
+
+```{python}
+pumpspeicherkapazität_MWh = 37.4 * 1000
+```
+
+&nbsp;
+
+:::{#tip-Testdaten .callout-tip collapse="false" title="Funktionsentwicklung mit Testdaten"}
+
+Die im Folgenden entwickelten Funktionen bieten in der Regel eine Option zur Ausgabe der Rechenergebnisse, die aber aufgrund der Länge der vorliegenden Datenreihe zur Restlast nicht sinnvoll darstellbar sind. Dadurch sind die Datenreihe selbst wie auch die Zwischen- und Endergebnisse durchgeführter Berechnungen sowie vorhandene Fehler nicht zu überblicken. Für die Funktionsentwicklung empfiehlt es sich daher, mit Testdaten zu arbeiten. Auf diese Weise werden Berechnungen schneller durchgeführt und Zwischenergebnisse und Ergebnisse können bei Bedarf zur Überprüfung ausgegeben werden. Die nachfolgenden Funktionen wurden mit diesen Testdaten entwickelt.
+
+Im folgenden Code-Block wird eine Restlastkurve aus zehn zufälligen Werten simuliert. Durch Anpassen der Werte für a und b kann das Ergebnis gesteuert werden. In der Ausgabe ist die Summe der Datenreihe festgehalten. Ein negativer Wert bedeutet, dass über die simulierte Restlastkurve eine Überschussproduktion erneuerbarer Energien herrscht. Ein positiver Wert bedeutet, dass über die simulierte Restlastkurve die positive Restlast größer als die erneuerbare Überschussproduktion ist. 
+
+Im Code-Block wird außerdem eine statische Datenreihe angelegt. Diese dient dazu, Testdaten festzuhalten, die zu Fehlern geführt haben. Dazu wird die Datenreihe random_data in Listenform ausgegeben, sodass diese durch kopieren und einfügen in die statische Datenreihe eingesetzt werden kann.
+
+``` {python}
+import random as rd
+
+random_data = []
+for i in range(10):
+  random_data.append(rd.randint(a = -20, b = 20))
+
+random_data = pd.Series(random_data, dtype = 'float')
+print(f"random_data: {list(random_data)}\nSumme random_data: {random_data.sum()}\n")
+
+static_data = pd.Series([8, -14, -7, 1, 3, -6, 5, -20, -2, 12], dtype = 'float')
+```
+
+:::
+
+### Überschuss oder Defizit erneuerbarer Energien
+Die erforderliche Größe des Stromspeichers ist einerseits abhängig von dem Verhältnis aus der Menge der erneuerbaren Überschussproduktion und der aus dem Speicher zu bedienenden Restlast. Andererseits spielen die Wirkungsgrade des Speichers beim Ein- und Ausspeichern von Strom eine Rolle.
 
 **Man könnte noch eine gestrichelte Linie einzeichnen, die den Gang der Speicherfüllung zeigt. Dafür habe ich auch schon eine Funktion.**  
 **TO DO: fig-alt**
@@ -1582,11 +1629,17 @@ dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-0.5, -0.5, 365 /
 ## plotten
 plt.subplot(2, 1, 1)
 plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), alpha = my_alpha, hatch = '//', label = my_label)
+
+# plot the fill
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), alpha = my_alpha,  label = my_label)
+
+# plot the hatches
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = '//', label = 'Einspeicherung')
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = r'\\', label = 'Ausspeicherung')
 
 plt.ylim(bottom = my_bottom, top = my_top)
 plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = my_title);
+plt.title(label = my_title + ' bei EE-Defizit');
 plt.legend()
 
 # erneuerbare Überproduktion
@@ -1596,22 +1649,132 @@ dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 2 
 ## plotten
 plt.subplot(2, 1, 2)
 plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), color = my_color, alpha = my_alpha)
-plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), hatch = '//', facecolor = 'None', edgecolor = my_color, label = my_label)
+
+# plot the fill
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), color = my_color, alpha = my_alpha, label = my_label)
+
+# plot the hatches
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), hatch = '//', facecolor = 'None', edgecolor = my_color, label = 'Einspeicherung')
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), hatch = r'\\', facecolor = 'None', edgecolor = my_color, label = 'Ausspeicherung')
 
 plt.ylim(bottom = my_bottom, top = my_top)
 plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = my_title);
+plt.title(label = my_title + ' bei EE-Überschuss');
 plt.legend()
 
 plt.tight_layout()
 ```
 
 Erneuerbare Stromproduktion: Überschuss oder Defizit?
-: Die erforderliche Größe des Stromspeichers ist abhängig von dem Verhältnis aus der Menge der erneuerbaren Überschussproduktion und der aus dem Speicher zu bedienenden Restlast.
 : Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße der Summe der erneuerbaren Überschussproduktion.
 : Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße der Summe der zu bedienenden Restlast.
 : Ob ein Überschuss oder ein Defizit erneuerbarer Stromproduktion vorliegt, kann am Vorzeichen der summierten Restlast abgelesen werden. Ein negatives Vorzeichen entspricht einem erneuerbaren Stromüberschuss, ein positives Vorzeichen einem erneuerbaren Stromdefizit.
+
+```{python}
+#| echo: false
+
+# Ein- und Ausspeicherwirkungsgrad
+## dummy Daten erzeugen
+dummy_index = np.linspace(1, 365, 365)
+dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 2 - 1), np.linspace(1, 1, 365 // 2), np.linspace(0, 0, 1)])
+
+## plotten
+# plt.subplot(2, 1, 1)
+plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+
+# plot the fill
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.8, -0.8, 365 // 2), alpha = my_alpha,  label = my_label)
+
+# plot the hatches
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.8, -0.8, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = '//', label = 'Einspeicherung')
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.8, -0.8, 365 // 2), y2 = np.linspace(-1, -1, 365 // 2), facecolor = 'None', edgecolor = 'black', hatch = '..', label = 'Einspeicherverlust η = 0.8')
+
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(0.64, 0.64, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = r'\\', label = 'Ausspeicherung')
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(0.64, 0.64, 365 // 2), y2 = np.linspace(0.8, 0.8, 365 // 2), facecolor = 'None', edgecolor = 'black', hatch = 'o', label = 'Ausspeicherverlust η = 0.8')
+
+plt.ylim(bottom = my_bottom, top = my_top)
+plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.title(label = my_title);
+plt.legend()
+
+# erneuerbare Überproduktion
+## dummy Daten erzeugen
+# dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 2 - 1), np.linspace(0.5, 0.5, 365 // 2), np.linspace(0, 0, 1)])
+
+# ## plotten
+# plt.subplot(2, 1, 2)
+# plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+
+# # plot the fill
+# plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), color = my_color, alpha = my_alpha, label = my_label)
+
+# # plot the hatches
+# plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), hatch = '//', facecolor = 'None', edgecolor = my_color, label = 'Einspeicherung')
+# plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), hatch = r'\\', facecolor = 'None', edgecolor = my_color, label = 'Ausspeicherung')
+
+# plt.ylim(bottom = my_bottom, top = my_top)
+# plt.axhline(y = 0, color = 'black', linestyle = '-')
+# plt.title(label = my_title);
+# plt.legend()
+
+plt.tight_layout()
+```
+
+Wirkungsgrad
+: Der Einspeicherwirkungsgrad vermindert den verfügbaren Überschussstrom. Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienende Restlast, kann der Speicher um den Einspeicherwirkungsgrad kleiner dimensioniert werden.
+: Der Ausspeicherwirkungsgrad (inklusive Speicherverluste) erhöht die durch den Speicher zu bedienende Last. Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienende Restlast, muss der Speicher um den Ausspeicherwirkungsgrad größer dimensioniert werden.
+
+:::
+
+#### Berechnung
+Ob im Jahresgang Phasen erneuerbarer Überproduktion oder Phasen positiver Restlast vorherrschen, kann mit den folgenden Funktionen bestimmt werden.
+
+::: {.panel-tabset}
+## ohne Wirkungsgrad
+
+```{python}
+# EE-Überschuss feststellen
+## Eingabe: data = pd.Series(data, dtype = 'float')
+## Verarbeitung: über die pd.Series wird die Summe gebildet
+## Ausgabe: zurückgegeben wird der Wahrheitswert von data.sum() < 0
+
+def prüfe_EE_Überschuss(data):
+  
+  return data.sum() < 0
+
+prüfe_EE_Überschuss(restlast)
+```
+
+## mit Wirkungsgrad
+```{python}
+# EE-Überschuss feststellen, gegeben einen Ein- und Ausspeicherungswirkungsgrad
+## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1
+## Verarbeitung: Werte kleiner 0 werden mit dem Einspeicherwirkungsgrad multipliziert
+## Verarbeitung: Werte größer 0 werden durch den Ausspeicherwirkungsgrad geteilt
+## Verarbeitung: über die pd.Series wird die Summe gebildet
+## Ausgabe: zurückgegeben wird der Wahrheitswert von data_wirkungsgrad_bereinigt.sum() < 0
+
+def prüfe_EE_Überschuss(data, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1):
+  data_wirkungsgrad_bereinigt = data.copy()
+
+  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt < 0] = data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt < 0] * einspeicherwirkungsgrad
+  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt > 0] = data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt > 0] / ausspeicherwirkungsgrad
+  
+  return data_wirkungsgrad_bereinigt.sum() < 0
+
+prüfe_EE_Überschuss(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.9)
+```
+
+:::
+
+Wie aus der Grenzstromanalyse im Abschnitt [@sec-Pumpspeicherinhalt] bekannt, herrschte im Jahr 2023 kein Überschuss an erneuerbarer Stromproduktion. 
+
+### Zyklik
+Im Zeitraum eines Jahres beeinflusst die Reihenfolge von Phasen mit erneuerbaren Überschüssen und mit positiver Restlast, wie groß ein Speicher ausgelegt werden muss.
+**Man könnte noch eine gestrichelte Linie einzeichnen, die den Gang der Speicherfüllung zeigt. Dafür habe ich auch schon eine Funktion.**  
+**TO DO: fig-alt**
+
+::: {layout="[40, 60]"}
 
 ```{python}
 #| echo: false
@@ -1621,30 +1784,29 @@ Erneuerbare Stromproduktion: Überschuss oder Defizit?
 dummy_index = np.linspace(1, 365, 365)
 dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(1, 1, 365 // 2), np.linspace(-0.5, -0.5, 365 // 2 - 1), np.linspace(0, 0, 1)])
 
-## plotten
-plt.subplot(2, 2, 1)
-plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), alpha = my_alpha, label = my_label + ' = 0')
+# ## plotten
+# plt.subplot(2, 2, 1)
+# plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+# # plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), alpha = my_alpha, label = my_label + ' = 0')
 
-plt.ylim(bottom = my_bottom, top = my_top)
-plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = my_title);
-plt.legend()
+# plt.ylim(bottom = my_bottom, top = my_top)
+# plt.axhline(y = 0, color = 'black', linestyle = '-')
+# plt.title(label = my_title);
+# # plt.legend()
 
-# Reihenfolgerisiko erneuerbare Überproduktion 1 Jahr
-## dummy Daten erzeugen
-dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(0.5, 0.5, 365 // 2), np.linspace(-1, -1, 365 // 2 - 1),np.linspace(0, 0, 1)])
+# # Reihenfolgerisiko erneuerbare Überproduktion 1 Jahr
+# ## dummy Daten erzeugen
+# dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(0.5, 0.5, 365 // 2), np.linspace(-1, -1, 365 // 2 - 1),np.linspace(0, 0, 1)])
 
-## plotten
-plt.subplot(2, 2, 2)
-plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), color = my_color, alpha = my_alpha, label = my_label + ' = 0')
+# ## plotten
+# plt.subplot(2, 2, 2)
+# plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
+# # plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), color = my_color, alpha = my_alpha, label = my_label + ' = 0')
 
-plt.ylim(bottom = my_bottom, top = my_top)
-plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = my_title);
-plt.legend()
-
+# plt.ylim(bottom = my_bottom, top = my_top)
+# plt.axhline(y = 0, color = 'black', linestyle = '-')
+# plt.title(label = my_title);
+# # plt.legend()
 
 # Reihenfolgerisiko erneuerbare Unterproduktion 2 Jahre
 ## dummy Daten erzeugen
@@ -1652,48 +1814,50 @@ dummy_index = np.linspace(1, 365 * 2, 365 * 2)
 dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(1, 1, 365 // 2), np.linspace(-0.5, -0.5, 365 // 2 - 1), np.linspace(0, 0, 1), np.linspace(0, 0, 1), np.linspace(1, 1, 365 // 2), np.linspace(-0.5, -0.5, 365 // 2 - 1), np.linspace(0, 0, 1)])
 
 ## plotten
-plt.subplot(2, 2, 3)
+plt.subplot(2, 1, 1)
 plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), hatch = '//', color = my_color, alpha = my_alpha, label = my_label)
-plt.fill_between(x = np.linspace(365 // 2 + 365, 365 + 365, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), color = my_color, alpha = my_alpha)
-plt.axvline(x = 366, linestyle = ':')
+
+# plot the fill
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), color = my_color, alpha = my_alpha, label = my_label)
+
+# plot the hatches
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = '//', label = 'Einspeicherung')
+plt.fill_between(x = np.linspace(365 // 2 + 365, 365 + 365, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = '//')
+plt.fill_between(x = np.linspace(365, 365 // 2 + 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = r'\\', label = 'Ausspeicherung')
 
 plt.ylim(bottom = my_bottom, top = my_top)
 plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = '2 Jahresgänge der Restlast');
-plt.legend()
+plt.title(label = '2 Jahresgänge der Restlast' + ' bei EE-Defizit');
+plt.legend(loc = 'lower center', ncols = 3)
 
 # Reihenfolgerisiko erneuerbare Überproduktion 2 Jahre
 ## dummy Daten erzeugen
 dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(0.5, 0.5, 365 // 2), np.linspace(-1, -1, 365 // 2 - 1),np.linspace(0, 0, 1), np.linspace(0, 0, 1), np.linspace(0.5, 0.5, 365 // 2), np.linspace(-1, -1, 365 // 2 - 1),np.linspace(0, 0, 1)])
 
 ## plotten
-plt.subplot(2, 2, 4)
+plt.subplot(2, 1, 2)
 plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), color = my_color, alpha = my_alpha,)
-plt.fill_between(x = np.linspace(365 // 2 + 365, 365 + 365, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), color = my_color, alpha = my_alpha)
-plt.fill_between(x = np.linspace(1 + 365, 365 // 2 + 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), hatch = '//', facecolor = 'None', edgecolor = my_color, label = my_label)
-plt.axvline(x = 366, linestyle = ':')
+
+# plot the fill
+plt.fill_between(x = np.linspace(1 + 365, 365 // 2 + 365, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), color = my_color, alpha = my_alpha, label = my_label)
+
+# plot the hatches
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = '//', label = 'Einspeicherung')
+plt.fill_between(x = np.linspace(365 // 2 + 365, 365 + 365, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = '//')
+
+plt.fill_between(x = np.linspace(365, 365 + 365 // 2, 365 // 2), y1 = np.linspace(0.5, 0.5, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = r'\\', label = 'Ausspeicherung')
 
 plt.ylim(bottom = my_bottom, top = my_top)
 plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = '2 Jahresgänge der Restlast');
-plt.legend()
+plt.title(label = '2 Jahresgänge der Restlast' + ' bei EE-Überschuss');
+plt.legend(loc = 'upper center', ncols = 3)
 
 plt.tight_layout()
 ```
 
-
 Reihenfolgeabhängigkeit
-: Wird nur ein einziges Jahr betrachtet, entscheidet die Reihenfolge von erneuerbarer Über- und Unterproduktion, wie viel Strom eingespeichert werden kann. Die gezeigten Beispiele entsprechen den gerade gezeigten, die Phasen von erneuerbarer Überschussproduktion und positiver Restlast treten aber in umgekehrter Reihenfolge auf.
+: Wird nur ein einziges Jahr betrachtet, entscheidet die Reihenfolge von erneuerbarer Über- und Unterproduktion, wie viel Strom eingespeichert werden kann. Im ungünstigstes Fall liegt im ersten Halbjahr eine positive Restlast vor (der Speicher ist aber noch leer) und im zweiten Halbjahr herrscht erneuerbare Überproduktion (die im zweiten Halbjahr nicht mehr abgenommen werden würde).
 : Die Reihenfolgeabhängigkeit kann aufgelöst werden, indem zwei aufeinanderfolgende Jahresgänge betrachtet werden. Im ersten Jahr wird der Speicher leer ans Netz angeschlossen. Das zweite Jahr beginnt der Speicher gefüllt durch die Überschussproduktion aus dem Vorjahr.
-: **Reichen die oberen beiden Grafiken oder sind vier Grafiken besser?**
-
-![Platzhalter](skript/00-bilder/Platzhalter%20Wirkungsgrad.png)
-
-Wirkungsgrad
-: Einspeicherwirkungsgrad vermindert den verfügbaren Überschussstrom. Ist die Summe der erneuerbaren Überschussproduktion kleiner als die aus dem Speicher zu bedienende Restlast, kann der Speicher um den Einspeicherwirkungsgrad kleiner dimensioniert werden.
-: Ausspeicherwirkungsgrad (inklusive Speicherverluste) erhöht die durch den Speicher zu bedienende Last. Ist die Summe der erneuerbaren Überschussproduktion größer als die aus dem Speicher zu bedienende Restlast, muss der Speicher um den Ausspeicherwirkungsgrad größer dimensioniert werden.
 
 ```{python}
 #| echo: false
@@ -1707,23 +1871,36 @@ dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 2 
 # plt.figure(figsize = (4, 5))
 plt.subplot(2, 1, 1)
 plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), alpha = my_alpha, hatch = '//', label = my_label + ': 1 Zyklus')
+
+## plot the fill
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), alpha = my_alpha, label = my_label + '\n für einen Zyklus')
+
+## plot the hatches
+plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = '//', label = 'Einspeicherung')
+plt.fill_between(x = np.linspace(365 // 2, 365, 365 // 2), y1 = np.linspace(1, 1, 365 // 2), facecolor = 'None', edgecolor = my_color, hatch = r'\\', label = 'Ausspeicherung')
 
 plt.ylim(bottom = my_bottom, top = my_top)
 plt.axhline(y = 0, color = 'black', linestyle = '-')
 plt.title(label = my_title);
 plt.legend()
 
-## n Vollzyklen
+## 2 Vollzyklen
 ## dummy Daten erzeugen
 dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 4 - 1), np.linspace(1, 1, 365 // 4), np.linspace(-1, -1, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(0, 0, 1)])
 
 ## plotten
 plt.subplot(2, 1, 2)
 plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = my_color, alpha = my_alpha)
-plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = my_color, alpha = my_alpha)
-plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), alpha = my_alpha, hatch = '//', label = 'halbe ' + my_label + ' bei 2 Zyklen')
+
+## plot the fill
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), alpha = my_alpha, color = my_color, label = my_label + ' für 2 Zyklen')
+
+## plot the hatches
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = 'None', edgecolor = my_color, hatch = '//', label = 'Einspeicherung')
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = 'None', edgecolor = my_color, hatch = '//')
+
+plt.fill_between(x = np.linspace(365 // 4, 365 // 2, 365 // 4), y1 = np.linspace(1, 1, 365 // 4), color = 'None', edgecolor = my_color, hatch = r'\\', label = 'Ausspeicherung')
+plt.fill_between(x = np.linspace((365 * 3) // 4, 365, 365 // 4), y1 = np.linspace(1, 1, 365 // 4), color = 'None', edgecolor = my_color, hatch = r'\\')
 
 plt.ylim(bottom = my_bottom, top = my_top)
 plt.axhline(y = 0, color = 'black', linestyle = '-')
@@ -1750,17 +1927,22 @@ dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-0.5, -0.5, 365 /
 ## plotten
 plt.subplot(2, 1, 1)
 plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), alpha = my_alpha, hatch = '//', label = my_label  + ' = 0.75')
-plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), color = my_color, alpha = my_alpha)
-### plot only the hatch
-plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y2 = np.linspace(-0.25, -0.25, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4),  facecolor = 'None', edgecolor = my_color, hatch = '//')
-### plot only the fill
+
+## plot the fill
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), color = my_color, alpha = my_alpha, label = my_label)
 plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y2 = np.linspace(-0.25, -0.25, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4),  color = my_color, alpha = my_alpha)
+
+## plot the hatches
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), facecolor = 'None', edgecolor = my_color, hatch = '//', label = 'Einspeicherung')
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), facecolor = 'None', edgecolor = my_color, hatch = '//')
+
+plt.fill_between(x = np.linspace(365 // 4, 365 // 2, 365 // 4), y1 = np.linspace(0.25, 0.25, 365 // 4),facecolor = 'None', edgecolor = my_color, hatch = r'\\', label = 'Ausspeicherung')
+plt.fill_between(x = np.linspace((365 * 3) // 4, 365, 365 // 4), y1 = np.linspace(0.75, 0.75, 365 // 4), facecolor = 'None', edgecolor = my_color, hatch = r'\\')
 
 plt.ylim(bottom = my_bottom, top = my_top)
 plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = my_title);
-plt.legend()
+plt.title(label = my_title + ' bei EE-Defizit');
+plt.legend(loc = 'lower center', ncols = 3)
 
 # Teilzyklen bei erneuerbarer Überproduktion
 ## dummy Daten erzeugen
@@ -1769,17 +1951,21 @@ dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(-1, -1, 365 // 4 
 ## plotten
 plt.subplot(2, 1, 2)
 plt.plot(dummy_index, dummy_data, linewidth = my_linewidth)
-### erneuerbare Überschuss
-plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = my_color, alpha = my_alpha)
-plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), color = my_color, alpha = my_alpha)
 
-### positive Restlast
-plt.fill_between(x = np.linspace((365 * 3) // 4, 365, 365 // 4), y1 = np.linspace(1, 1, 365 // 4), hatch = '//', facecolor = 'None', edgecolor = my_color, label = my_label + ' = 1')
+## plot the fill
+plt.fill_between(x = np.linspace((365 * 3) // 4, 365, 365 // 4), y1 = np.linspace(1, 1, 365 // 4), color = my_color, alpha = my_alpha, label = my_label)
+
+## plot the hatches
+plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), facecolor = 'None', edgecolor = my_color, hatch = '//', label = 'Einspeicherung')
+plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y1 = np.linspace(-0.25, -0.25, 365 // 4), hatch = '//', facecolor = 'None', edgecolor = my_color)
+
+plt.fill_between(x = np.linspace(365 // 4, 365 // 2, 365 // 4), y1 = np.linspace(0.25, 0.25, 365 // 4), facecolor = 'None', edgecolor = my_color, hatch = r'\\', label = 'Ausspeicherung')
+plt.fill_between(x = np.linspace((365 * 3) // 4, 365, 365 // 4), y1 = np.linspace(1, 1, 365 // 4), facecolor = 'None', edgecolor = my_color, hatch = r'\\')
 
 plt.ylim(bottom = my_bottom, top = my_top)
 plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = my_title);
-plt.legend()
+plt.title(label = my_title + ' bei EE-Überschuss');
+plt.legend(loc = 'upper left', ncols = 2)
 
 plt.tight_layout()
 ```
@@ -1787,8 +1973,548 @@ plt.tight_layout()
 Teilzyklen
 : Auch die Verteilung auftretender Teilzyklen reduziert die erforderliche Speichergröße. 
 : Ist die Summe der erneuerbaren Überschussproduktion kleiner als die durch den Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße dem Minimum der kummulierten Summe der Restlast, wenn diese niemals größer 0 gesetzt wird (das Überschreiten wäre der Moment, in dem der Speicher leer ist).  
-: Ist die Summe der erneuerbaren Überschussproduktion größer als die durch den Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast'.cumsum', wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).
-: **Ich glaube nicht, dass man die Erklärung so versteht. Die Berechnung der Zyklenzahl kommt später.**
+: Ist die Summe der erneuerbaren Überschussproduktion größer als die durch den Speicher zu bedienende Restlast, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast, wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).
+
+:::
+
+#### Berechnung
+Die Speichergröße wird aus dem Jahresgang der Restlast berechnet. Um nicht vom Zeitpunkt abhängig zu sein, an dem der Speicher an das Netz angeschlossen wird, wird der Datensatz zwei mal durchlaufen (auflösen der Reihenfolgeabhängigkeit).
+
+  - Ist die Summe der erneuerbaren Überschussproduktion kleiner als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Minimum der kummulierten Summe der Restlast, wenn diese niemals größer 0 gesetzt wird (das Überschreiten wäre der Moment, in dem der Speicher leer ist). 
+  
+  - Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast, wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).
+
+::: {.panel-tabset}
+## ohne Wirkungsgrad
+```{python}
+# Speichergröße berechnen
+## Eingabe: data = pd.Series(data, dtype = 'float'), output = False
+## Verarbeitung: aufrufen der Funktion prüfe_EE_Überschuss, um zwischen oberer Grenze = 0 (Speicher ist leer) und unterer Grenze = 0 (Speicher ist überdimensioniert) zu unterscheiden
+## Verarbeitung: data wird zwei mal zu data_x2 verkettet. Für data_x2 wird die bei 0 gekappte kumulierte Summe berechnet und die Speichergröße berechnet.
+## Ausgabe: wenn output = False wird die Speichergröße (float) zurückgegeben, wenn output = True werden die Summe von data und die Speichergröße mit print() ausgegeben
+
+def berechne_speichergröße(data, output = False):
+
+  data_x2 = pd.concat([data, data])
+
+  überschuss = prüfe_EE_Überschuss(data)
+  
+  if überschuss:
+    
+    # gekappte kumulierte Summe berechnen
+    capped_cumsum = []
+    summe = 0
+
+    for i in data_x2:
+      summe += i 
+
+      # Untergrenze prüfen
+      if summe < 0:
+        summe = 0
+      
+      capped_cumsum.append(summe)
+
+    speichergröße = max(capped_cumsum)
+  
+  else:
+
+    # gekappte kumulierte Summe berechnen
+    capped_cumsum = []
+    summe = 0
+
+    for i in data_x2:
+      summe += i
+
+      # Obergrenze prüfen
+      if summe > 0:
+        summe = 0
+      
+      capped_cumsum.append(summe)
+
+    speichergröße = abs(min(capped_cumsum))
+
+  if output: # output = True
+
+    print(f"\n\nSumme data: {data.sum()}\nSpeichergröße: {speichergröße}")
+    
+  else: # output = False
+    return speichergröße
+  
+speicher_2023 = berechne_speichergröße(restlast, output = False)
+
+print(f"erforderliche Speichergröße 2023: {speicher_2023:.1f} MWh\nDies entspricht {speicher_2023 / pumpspeicherkapazität_MWh:.1f} Pumpspeicheräquivalenten.")
+
+```
+
+## mit Wirkungsgrad
+
+```{python}
+# Speichergröße berechnen
+## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False
+## Verarbeitung: aufrufen der Funktion prüfe_EE_Überschuss, um zwischen oberer Grenze = 0 (Speicher ist leer) und unterer Grenze = 0 (Speicher ist überdimensioniert) zu unterscheiden
+## Verarbeitung: data wird zwei mal zu data_x2 verkettet. Für data_x2 wird die bei 0 gekappte kumulierte Summe berechnet und die Speichergröße berechnet.
+## Ausgabe: wenn output = False wird die Speichergröße (float) zurückgegeben, wenn output = True werden die Summe von data und die Speichergröße mit print() ausgegeben
+
+def berechne_speichergröße(data, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False):
+
+  data_x2 = pd.concat([data, data])
+
+  überschuss = prüfe_EE_Überschuss(data, einspeicherwirkungsgrad, ausspeicherwirkungsgrad)
+  
+  if überschuss:
+    
+    # gekappte kumulierte Summe berechnen
+    capped_cumsum = []
+    summe = 0
+
+    for i in data_x2:
+      if i < 0:
+        summe += i * einspeicherwirkungsgrad
+      else:
+        summe += i / ausspeicherwirkungsgrad
+
+      # Untergrenze prüfen
+      if summe < 0:
+        summe = 0
+      
+      capped_cumsum.append(summe)
+
+    speichergröße = max(capped_cumsum)
+  
+  else: # Unterproduktion
+
+    # gekappte kumulierte Summe berechnen
+    capped_cumsum = []
+    summe = 0
+
+    for i in data_x2:
+      if i < 0:
+        summe += i * einspeicherwirkungsgrad
+      else:
+        summe += i / ausspeicherwirkungsgrad
+
+      # Obergrenze prüfen
+      if summe > 0:
+        summe = 0
+      
+      capped_cumsum.append(summe)
+
+    speichergröße = abs(min(capped_cumsum))
+
+  if output: # output = True
+
+    print(f"\n\nSumme data: {data.sum()}\nSpeichergröße: {speichergröße}")
+
+  else: # output = False
+    return speichergröße
+
+speicher_2023 = berechne_speichergröße(restlast, einspeicherwirkungsgrad = 0.8, ausspeicherwirkungsgrad = 0.8,output = False)
+
+print(f"erforderliche Speichergröße 2023: {speicher_2023:.1f} MWh\nDies entspricht {speicher_2023 / pumpspeicherkapazität_MWh:.1f} Pumpspeicheräquivalenten.")   
+```
+
+**ist hier ersichtlich, welche Wirkungsgrade benutzt werden? Ich könnte das noch bei output hinterlegen und die Funktion zwei mal aufrufen.**
+:::
+
+#### Jahresgang des Speichers berechnen
+Nachdem die Speichergröße bestimmt wurde, kann der Jahresgang des Speichers für das erste und das zweite Jahr bestimmt werden. Der Jahresgang des Speichers für das zweite Jahr ist das stabile Gleichgewicht, mit dem eine gegebene Restlastkurve beliebig oft durchlaufen werden kann. Die Funktion gibt, wenn `output = False` ist, ein Tupel zurück. An Position 0 ist die Speichergröße gespeichert, an Position 1 der Jahresgang in Jahr 1 als pd.Series, an Position 2 der Jahresgang in Jahr 2 als pd.Series. Der Füllstand des Speichers im Jahresgang kann grafisch dargestellt werden.
+
+::: {.panel-tabset}
+## ohne Wirkungsgrad
+```{python}
+# Jahresgang des Speichers berechnen
+## Eingabe: data = pd.Series(data, dtype = 'float'), speichergröße = -1, output = False
+## Verarbeitung: Wenn speichergröße = -1 wird die Speichergröße mit der Funktion berechne_speichergröße(data) ermittelt
+## Verarbeitung: data wird zwei mal zu data_x2 verkettet.
+## Verarbeitung: Anhand der Speichergröße werden der Ladestand und die freie Kapazität des Speichers für alle Werte von data für Jahr1 und alle Folgejahre berechnet.
+## Ausgabe: Wenn output False ist, wird ein Tupel aus speichergröße (float), Ladestand Jahr1 (pd.Series), Ladestand Jahr2 (pd.Series) zurückgegeben.
+
+def jahresgang_speicher_berechnen(data, speichergröße = -1, output = False):
+
+  data_x2 = pd.concat([data, data])
+
+  if speichergröße == -1:
+    speichergröße = berechne_speichergröße(data) 
+
+# Jahresgang des Speichers berechnen
+  jahresgang_speicher = []
+  ladestand_speicher = []
+  freie_speicherkapazität = speichergröße # der speicher ist leer
+  for i in data_x2:
+
+    if (speichergröße - freie_speicherkapazität) - i < 0: # last ohne vorherige Einspeicherung kann nicht bedient werden
+      freie_speicherkapazität = speichergröße
+
+    elif freie_speicherkapazität + i < 0: # wenn der Speicher voll ist, muss Überschuss verworfen werden.
+      freie_speicherkapazität = 0
+      
+    else: # Ein-/Ausspeicherung
+      freie_speicherkapazität += i
+
+    jahresgang_speicher.append(freie_speicherkapazität)
+    ladestand_speicher.append(speichergröße - freie_speicherkapazität)
+
+  if output: # output = True
+
+    dataset = pd.DataFrame({'Restlast': data, 'Ladestand Jahr1': ladestand_speicher[ : len(jahresgang_speicher) // 2 ], 'freie Kapazität Jahr1': jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], 'Ladestand Folgejahre': ladestand_speicher[ len(jahresgang_speicher) // 2 : ], 'freie Kapazität Folgejahre': jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]})
+
+    print(f"\n\nSumme data: {data.sum()}\nSpeichergröße: {speichergröße}")
+    print(dataset)
+
+  else: # output = False
+    return speichergröße, pd.Series(ladestand_speicher[ : len(jahresgang_speicher) // 2 ]), pd.Series(ladestand_speicher[ len(jahresgang_speicher) // 2 : ])
+
+speicher_2023 = jahresgang_speicher_berechnen(restlast, output = False)
+```
+
+## Plot ohne Wirkungsgrad
+``` {python}
+#| echo: false
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2023 dargestellt. Diese ist zumeist positiv und nur an wenigen Zeitpunkten im Jahr negativ. Um die Weihnachtsfeiertage besteht ein längerer Zeitraum negativer Restlast. Zum anderen ist der Jahresgang des Speichers dargestellt, um alle erneuerbaren Produktionsüberschüsse einzuspeichern und bei positiver Restlast wieder auszuspeichern. Die Interpretation des Jahresgangs folgt im weiteren Text."
+#| fig-cap: Restlast 2023 und Jahresgang eines Speichers mit Wirkungsgrad 1
+
+# Daten einlesen
+jahresgang_speicher_jahr1 = speicher_2023[1]
+jahresgang_speicher_jahr2 = speicher_2023[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+font_size = 10
+
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2023 und Jahresgang eines Speichers mit Wirkungsgrad 1')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.1))
+
+## plot restlast
+ax1.plot(restlast, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+```
+
+## Code für den Plot
+``` {python}
+#| output: false
+
+# Daten einlesen
+jahresgang_speicher_jahr1 = speicher_2023[1]
+jahresgang_speicher_jahr2 = speicher_2023[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+font_size = 10
+
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2023 und Jahresgang eines Speichers mit Wirkungsgrad 1')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.1))
+
+## plot restlast
+ax1.plot(restlast, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+```
+
+## mit Wirkungsgrad
+
+```{python}
+# Jahresgang des Speichers berechnen
+## Eingabe: data = pd.Series(data, dtype = 'float'), speichergröße = -1, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False
+## Verarbeitung: Wenn speichergröße = -1 wird die Speichergröße mit der Funktion berechne_speichergröße(data) ermittelt
+## Verarbeitung: data wird zwei mal zu data_x2 verkettet.
+## Verarbeitung: Anhand der Speichergröße werden der Ladestand und die freie Kapazität des Speichers für alle Werte von data für Jahr1 und alle Folgejahre berechnet.
+## Ausgabe: Wenn output False ist, wird ein Tupel aus speichergröße (float), Ladestand Jahr1 (pd.Series), Ladestand Jahr2 (pd.Series) zurückgegeben.
+## Ausgabe: Wenn output True ist, werden data, Ladestand in Jahr 1, freie Kapazität in Jahr 1, Ladestand in Jahr 2, freie Kapazität in Jahr 2 mit print ausgegeben
+
+def jahresgang_speicher_berechnen(data, speichergröße = -1, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False):
+
+  data_x2 = pd.concat([data, data])
+
+  if speichergröße == -1:
+    speichergröße = berechne_speichergröße(data, einspeicherwirkungsgrad, ausspeicherwirkungsgrad) 
+
+  jahresgang_speicher = []
+  ladestand_speicher = []
+  freie_speicherkapazität = speichergröße # der speicher ist leer 
+  for i in data_x2:
+
+    if i > 0: # Restlast
+
+      # last ohne entsprechende vorherige Einspeicherung kann nicht vollständig bedient werden, der Speicher ist dann leer
+      if (speichergröße - freie_speicherkapazität) - i / ausspeicherwirkungsgrad < 0:
+        freie_speicherkapazität = speichergröße
+
+      else: # Ausspeicherung
+        freie_speicherkapazität += i / ausspeicherwirkungsgrad # hier kann zu viel ausgespeichert werden
+        if freie_speicherkapazität > speichergröße:
+          freie_speicherkapazität = speichergröße
+    
+    else: # i <= 0 EE-Überschuss
+      
+      # wenn der Speicher voll ist, muss Überschuss verworfen werden.
+      if freie_speicherkapazität + i * einspeicherwirkungsgrad < 0: 
+        freie_speicherkapazität = 0
+      
+      else: # Einspeicherung
+        freie_speicherkapazität += i * einspeicherwirkungsgrad
+
+    jahresgang_speicher.append(freie_speicherkapazität)
+    ladestand_speicher.append(speichergröße - freie_speicherkapazität)
+
+  if output: # output = True
+
+    dataset = pd.DataFrame({'Restlast': data, 'Ladestand Jahr1': ladestand_speicher[ : len(jahresgang_speicher) // 2 ], 'freie Kapazität Jahr1': jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], 'Ladestand Folgejahre': ladestand_speicher[ len(jahresgang_speicher) // 2 : ], 'freie Kapazität Folgejahre': jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]})
+
+    print(f"\n\nSumme data: {data.sum()}\nSpeichergröße: {speichergröße}")
+    print(dataset)
+
+  else: # output = False
+    return speichergröße, pd.Series(ladestand_speicher[ : len(jahresgang_speicher) // 2 ]), pd.Series(ladestand_speicher[ len(jahresgang_speicher) // 2 : ])
+
+speicher_2023_wirkungsgrad_90_90 = jahresgang_speicher_berechnen(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.9, output = False)
+```
+
+## Plot mit Wirkungsgrad
+``` {python}
+#| echo: false
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2023 dargestellt. Diese ist zumeist positiv und nur an wenigen Zeitpunkten im Jahr negativ. Um die Weihnachtsfeiertage besteht ein längerer Zeitraum negativer Restlast. Zum anderen ist der Jahresgang des Speichers mit einem Ein- und Ausspeicherwirkungsgrad von 0.9 dargestellt, um alle erneuerbaren Produktionsüberschüsse einzuspeichern und bei positiver Restlast wieder auszuspeichern. Die Interpretation des Jahresgangs folgt im weiteren Text."
+#| fig-cap: Restlast 2023 und Jahresgang eines Speichers mit Ein- und Ausspeicherwirkungsgrad 0.9
+
+# Daten einlesen
+jahresgang_speicher_jahr1 = speicher_2023_wirkungsgrad_90_90[1]
+jahresgang_speicher_jahr2 = speicher_2023_wirkungsgrad_90_90[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+font_size = 10
+
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2023 und Jahresgang eines Speichers mit Ein- und Ausspeicherwirkungsgrad 0.9')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.1))
+
+## plot restlast
+ax1.plot(restlast, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+```
+
+## Code für den Plot
+``` {python}
+#| output: false
+
+# Daten einlesen
+jahresgang_speicher_jahr1 = speicher_2023_wirkungsgrad_90_90[1]
+jahresgang_speicher_jahr2 = speicher_2023_wirkungsgrad_90_90[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+font_size = 10
+
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2023 und Jahresgang eines Speichers mit Ein- und Ausspeicherwirkungsgrad 0.9')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.1))
+
+## plot restlast
+ax1.plot(restlast, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+```
+
+:::
+
+Die benötigte Kapazität des Speichers ergibt sich aus den ereuerbaren Erzeugungsüberschüssen während der Weihnachtsfeiertage. Diese Kapazitäten werden im übrigen Jahr kaum genutzt, der Speicher ist die meiste Zeit des Jahres leer. Der Jahresgang für das erste und das zweite Jahr ist identisch. **wenigstens optisch, das könnte man noch prüfen und ausgeben lassen. `pd1.equals(pd2)`** Wenn Ein- und Ausspeicherwirkungsgrade berücksichtigt, reduzieren sich die ein- und ausgespeicherte Energie. 
+
+#### Zyklenzahl berechnen
+Anhand der Speichergröße und des Jahresgangs des Speichers kann die Zyklenzahl im ersten und in allen Folgejahren berechnet werden. Ein Zyklus entspricht der vollständigen Ladung und Entladung des Speichers bzw. einer entsprechenden Anzahl von Teilladezyklen. Die Zyklenzahl ergibt sich somit aus der Summe der in jedem Zeitpunkt ein- bzw. ausgespeicherten Energie, die durch die Speichergröße und durch 2 geteilt wird.
+
+::: {.panel-tabset}
+
+## ohne Wirkungsgrad
+``` {python}
+# Zyklenzahl berechnen
+## Eingabe: data = pd.Series(data, dtype = 'float'), output = False
+## Eingabe: Wenn die Eingabe ein Tupel {'speichergröße': float, 'jahresgang_speicher_jahr1': pd.Series, 'jahresgang_speicher_jahr2': pd.Series} ist, wird die Zyklenzahl direkt berechnet.
+## Eingabe: Wenn die Eingabe data = pd.Series(data, dtype = 'float') ist, wird jahresgang_speicher_berechnen(data, speichergröße = -1, output = False) aufgerufen
+## Verarbeitung: Elementweise wird für Jahr 1 und Jahr 2 die Differenz aufeinanderfolgender Werte gebildet, absolut gesetzt und aufsummiert
+## Verarbeitung: Für die gleitende Differenzberechnung muss dem Jahresgang in Jahr 1 eine Null vorangestellt werden, dem Jahresgang in Jahr 2 der letzte Wert aus Jahr 1
+## Verarbeitung: Die Summe der Speicherladungen und -entladungen wird durch die Speichergröße und durch 2 geteilt.
+## Ausgabe: Zyklenzahl für Jahr 1 und Jahr 2 - wenn output = False als Rückgabewert (Tupel), wenn output = True mit print()
+
+def zyklenzahl_berechnen(data, output = False):
+  
+  if type(data) is tuple: # Speichergröße und Jahresgänge wurden übergeben
+    speichergröße = data[0]
+    jahresgang_speicher_jahr1 = data[1]
+    jahresgang_speicher_jahr2 = data[2]
+  
+  else: # Restlast wurde übergeben
+    ergebnis = jahresgang_speicher_berechnen(data, speichergröße = -1, output = False)
+    speichergröße = ergebnis[0]
+    jahresgang_speicher_jahr1 = ergebnis[1]
+    jahresgang_speicher_jahr2 = ergebnis[2]
+  
+  # Jahresgang Jahr 1 eine Null voranstellen, Jahresgang Jahr 2 den letzen Wert aus Jahr 1
+  jahresgang_speicher_jahr1 = pd.concat([pd.Series(0), jahresgang_speicher_jahr1])
+  jahresgang_speicher_jahr2 = pd.concat([jahresgang_speicher_jahr1[ len(jahresgang_speicher_jahr1) - 1: ], jahresgang_speicher_jahr2])
+
+  # Zyklenzahl berechnen
+  zyklenzahl_jahr1 = jahresgang_speicher_jahr1.diff().abs().sum() / (speichergröße * 2) # ein Zyklus = vollständiges Be- und Entladen --> durch 2 teilen
+  zyklenzahl_jahr2 = jahresgang_speicher_jahr2.diff().abs().sum() / (speichergröße * 2) # ein Zyklus = vollständiges Be- und Entladen --> durch 2 teilen
+  
+  if output:
+    print(f"Zyklenzahl Jahr 1: {zyklenzahl_jahr1:.2f}\n"
+          f"Zyklenzahl Jahr 2: {zyklenzahl_jahr2:.2f}")
+  
+  else:
+    return zyklenzahl_jahr1, zyklenzahl_jahr2
+  
+zyklenzahl_berechnen(speicher_2023, output = True)
+
+```
+
+## mit Wirkungsgrad
+
+``` {python}
+
+# Zyklenzahl berechnen mit Wirkungsgrad
+## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False
+## Eingabe: Wenn die Eingabe ein Tupel {'speichergröße': float, 'jahresgang_speicher_jahr1': pd.Series, 'jahresgang_speicher_jahr2': pd.Series} ist, wird die Zyklenzahl direkt berechnet.
+## Eingabe: Wenn die Eingabe data = pd.Series(data, dtype = 'float') ist, wird jahresgang_speicher_berechnen(data, speichergröße = -1, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False) aufgerufen
+## Verarbeitung: Elementweise wird für Jahr 1 und Jahr 2 die Differenz aufeinanderfolgender Werte gebildet, absolut gesetzt und aufsummiert
+## Verarbeitung: Für die gleitende Differenzberechnung muss dem Jahresgang in Jahr 1 eine Null vorangestellt werden, dem Jahresgang in Jahr 2 der letzte Wert aus Jahr 1
+## Verarbeitung: Die Summe der Speicherladungen und -entladungen wird durch die Speichergröße und durch 2 geteilt.
+## Ausgabe: Zyklenzahl für Jahr 1 und Jahr 2 - wenn output = False als Rückgabewert (Tupel), wenn output = True mit print()
+
+def zyklenzahl_berechnen(data, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False):
+  
+  if type(data) is tuple: # Speichergröße und Jahresgänge wurden übergeben
+    speichergröße = data[0]
+    jahresgang_speicher_jahr1 = data[1]
+    jahresgang_speicher_jahr2 = data[2]
+  
+  else: # Restlast wurde übergeben
+    ergebnis = jahresgang_speicher_berechnen(data, speichergröße = -1, einspeicherwirkungsgrad = einspeicherwirkungsgrad, ausspeicherwirkungsgrad = ausspeicherwirkungsgrad, output = False)
+    speichergröße = ergebnis[0]
+    jahresgang_speicher_jahr1 = ergebnis[1]
+    jahresgang_speicher_jahr2 = ergebnis[2]
+  
+  # Jahresgang Jahr 1 eine Null voranstellen, Jahresgang Jahr 2 den letzen Wert aus Jahr 1
+  jahresgang_speicher_jahr1 = pd.concat([pd.Series(0), jahresgang_speicher_jahr1])
+  jahresgang_speicher_jahr2 = pd.concat([jahresgang_speicher_jahr1[ len(jahresgang_speicher_jahr1) - 1: ], jahresgang_speicher_jahr2])
+
+  # Zyklenzahl berechnen  
+  zyklenzahl_jahr1 = jahresgang_speicher_jahr1.diff().abs().sum() / (speichergröße * 2) # ein Zyklus = vollständiges Be- und Entladen --> durch 2 teilen
+  zyklenzahl_jahr2 = jahresgang_speicher_jahr2.diff().abs().sum() / (speichergröße * 2) # ein Zyklus = vollständiges Be- und Entladen --> durch 2 teilen
+  
+  if output:
+    print(f"Zyklenzahl Jahr 1: {zyklenzahl_jahr1:.2f}\n"
+          f"Zyklenzahl Jahr 2: {zyklenzahl_jahr2:.2f}")
+  
+  else:
+    return zyklenzahl_jahr1, zyklenzahl_jahr2
+  
+zyklenzahl_berechnen(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.9, output = True)
+
+```
+
+:::
+
+Wenn der Wirkungsgrad berücksichtigt wird, steigt die Zyklenzahl, weil der Speicher kleiner dimensioniert ist.
+
+**Stellen Sie den Jahresgang der Pumpspeicherkraftwerke dar. Welche Zyklenzahl erreichen die Pumpspeicherkraftwerke?**  
+Hierfür muss man die Datensätze erzeugung und verbrauch zusammenlegen, wobei die Verbrauchswerte negativ gesetzt werden müssen (dass entspricht dann dem EE-Überschuss). Die Speichergröße ist im Objekt `pumpspeicherkapazität_MWh = 37.4 * 1000` gespeichert. **Hier müsste man vorher gucken, ob es in den Datensätzen erzeugung und verbrauch gleichzeitig auftretende Werte > 0 gibt. Die sollten etwa 297 sein (Ausspeicherung von 11,1 TWh / 37,4 GWh Kapazität). Die Fahren ja nicht im EE-Betrieb**
+
+### Kappung
+**Man könnte noch eine gestrichelte Linie einzeichnen, die den Gang der Speicherfüllung zeigt. Dafür habe ich auch schon eine Funktion.**  
+**TO DO: Grafiken aktualisieren, fig-alt**
+
+::: {layout="[40, 60]"}
 
 ```{python}
 #| echo: false
@@ -1838,334 +2564,122 @@ Kappung von Erzeugungsspitzen
 
 :::
 
-## Speichergröße berechnen
-**Dazu muss auf eine Listenoperation zurückgegriffen werden, die zum Glück gar nicht so langsam ist. Die Berechnung der Speichergröße und des Jahresgänge in Jahr Null und den Folgejahren hat 0.09 Sekunden gedauert. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären.**.
-Auf dieser Grundlage kann eine Funktion entwickelt werden, um anhand der Restlast die erforderliche Speichergröße zu berechnen. Um die Größenordnung besser einordnen zu können, wird die Speichergröße zur bestehenden Pumpspeicherkapazität von 37,4 GWh ins Verhältnis gesetzt. Die Restlast wird wie folgt bestimmt:
+#### Berechnung
+**To Do: Variante ohne Wirkungsgrad zusammenkürzen.**
+für die gleitende Differenzberechnung muss dem Jahresgang in Jahr 1 eine Null vorangestellt werden, dem Jahresgang in Jahr 2 der letzte Wert aus Jahr 1
+jahresgang_speicher_jahr1.diff().clip(lower = 0).sum() macht die Reihe um eins kürzer
 
+
+::: {.panel-tabset}
+## ohne Wirkungsgrad
+TO DO
+
+## mit Wirkungsgrad
 ```{python}
 
-pumpspeicherkapazität_MWh = 37.4 * 1000
+# Kappung berechnen: Wie viel EE wird verworfen, wenn die Speichergröße begrenzt wird?
+## Eingabe: Restlastkurve data = pd.Series(data, dtype = 'float', einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, neue_speichergrößen = [0.9, 0.8, 0.7, 0.6, 0.5], output = False)
+## Verarbeitung: Für data werden mit der Funktion jahresgang_speicher_berechnen() die Speichergröße und die Jahresgänge Jahr 1 und Jahr 2 ohne zusätzliche Kappung bestimmt
+## Verarbeitung: Für data wird mit der Funktion zyklenzahl_berechnen() die Zyklenzahl in Jahr 1 und Jahr 2 ohne zusätzliche Kappung bestimmt
+## Verarbeitung: Anhand der Jahresgänge wird die eingespeicherte Strommenge ohne zusätzliche Kappung bestimmt
+## Verarbeitung: Die Verarbeitungsschritte werden für alle übergebenen Elemente in der Variablen neue_speichergrößen wiederholt
+## Verarbeitung: Die Speichergröße der Basisrestlastkurve data wird dafür mit den in neue_speichergrößen übergebenen Werten multipliziert
+## Verarbeitung: Aus der Differenz der eingespeicherten Strommengen für jede neue Speichergröße zum Basisjahr wird die gekappte Strommenge bestimmt
+## Ausgabe: Wenn output = False werden für jede Speichergröße die gekappten Strommengen in Jahr 1 und Jahr 2 ausgegeben.
+## Ausgabe: Wenn output = True werden zusätzlich die Werte der Basiskurve data und für alle Jahre die eingespeicherte Energiemenge und realisierte Zyklenzahl in Jahr 1 und Jahr 2 ausgegeben
 
-restlast = pd.DataFrame()
-restlast["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
-restlast["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
-restlast["Restlast [MWh]"] = restlast["Netzlast [MWh]"] - restlast["Erneuerbare [MWh]"]
-restlast = restlast["Restlast [MWh]"]
+def effekt_kappung_berechnen(data, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, neue_speichergrößen = [0.9, 0.8, 0.7, 0.6, 0.5], output = False):
 
-```
+  # Speichergröße im Basisjahr bestimmen
+  ergebnis = jahresgang_speicher_berechnen(data, speichergröße = -1, einspeicherwirkungsgrad = einspeicherwirkungsgrad, ausspeicherwirkungsgrad = ausspeicherwirkungsgrad, output = False)
+  speichergröße0 = ergebnis[0]
+  jahresgang_speicher_jahr1 = ergebnis[1]
+  jahresgang_speicher_jahr2 = ergebnis[2]
 
-Im ersten Schritt muss bestimmt werden, ob im Jahresgang Phasen erneuerbarer Überproduktion oder Phasen positiver Restlast vorherrschen. Dies kann mit der folgenden einfachen Funktion bestimmt werden.
-
-```{python}
-# EE-Überschuss feststellen
-## Eingabe: data = pd.Series(data, dtype = 'float')
-## Verarbeitung: über die pd.Series wird die Summe gebildet
-## Ausgabe: zurückgegeben wird der Wahrheitswert von data.sum() < 0
-
-def prüfe_EE_Überschuss(data):
+  # Zyklenzahl im Basisjahr bestimmen, Tupel übergeben
+  zyklen = zyklenzahl_berechnen(ergebnis, einspeicherwirkungsgrad = einspeicherwirkungsgrad, ausspeicherwirkungsgrad = ausspeicherwirkungsgrad, output = False)
+  zyklen_jahr1 = zyklen[0]
+  zyklen_jahr2 = zyklen[1]
   
-  return data.sum() < 0
+  # Jahresgang Jahr 1 eine Null voranstellen, Jahresgang Jahr 2 den letzen Wert aus Jahr 1
+  jahresgang_speicher_jahr1 = pd.concat([pd.Series([0]), jahresgang_speicher_jahr1])
+  jahresgang_speicher_jahr2 = pd.concat([jahresgang_speicher_jahr1[ len(jahresgang_speicher_jahr1) - 1: ], jahresgang_speicher_jahr2])
 
-prüfe_EE_Überschuss(restlast)
-```
+  # eingespeicherte Strommenge im Basisjahr bestimmen
+  einspeicherung_jahr1 = jahresgang_speicher_jahr1.diff().clip(lower = 0).sum()
+  einspeicherung_jahr2 = jahresgang_speicher_jahr2.diff().clip(lower = 0).sum()
 
-Wie aus der Grenzstromanalyse im Abschnitt [@sec-Pumpspeicherinhalt] bekannt, herrschte im Jahr 2023 kein Überschuss an erneuerbarer Stromproduktion.  
-**Erweitern Sie die Funktion um einen Ein- und Ausspeicherwirkungsgrad (inklusive Speicherverluste).**
-
-
-:::{#tip-Wirkungsgrad .callout-tip collapse="true" title="Musterlösung erneuerbarer Überschuss oder Defizit mit Wirkungsgrad"}
-
-``` {python}
-
-#| output = false
-
-# EE-Überschuss feststellen, gegeben einen Ein- und Ausspeicherungswirkungsgrad (default = 1)
-## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1
-## Verarbeitung: Werte kleiner 0 werden mit dem Einspeicherwirkungsgrad multipliziert
-## Verarbeitung: Werte größer 0 werden durch den Ausspeicherwirkungsgrad geteilt
-## Verarbeitung: über die pd.Series wird die Summe gebildet
-## Ausgabe: zurückgegeben wird der Wahrheitswert von data_wirkungsgrad_bereinigt.sum() < 0
-wirkungsgrad = 1
-
-def prüfe_EE_Überschuss(data, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1):
-
-  data_wirkungsgrad_bereinigt = data.copy()
-
-  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt < 0] = data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt < 0] * einspeicherwirkungsgrad
-  data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt > 0] = data_wirkungsgrad_bereinigt[data_wirkungsgrad_bereinigt > 0] / ausspeicherwirkungsgrad
+  # Ergebnisse in DataFrame speichern
+  dataframe = pd.DataFrame({'speichergröße': [speichergröße0], 'Einspeicherung Jahr1': [einspeicherung_jahr1], 'Zyklen Jahr1': zyklen_jahr1, 'Einspeicherung Jahr2': [einspeicherung_jahr2], 'Zyklen Jahr2': zyklen_jahr2})
   
-  return data_wirkungsgrad_bereinigt.sum() < 0
+  # eingespeicherte Strommenge bei alternativen Speichergrößen bestimmen
+  count = 1
 
-prüfe_EE_Überschuss(restlast)
+  for i in range(len(neue_speichergrößen)):
+
+    speichergröße_neu = speichergröße0 * neue_speichergrößen[i]
+    
+    ergebnis = jahresgang_speicher_berechnen(data, speichergröße = speichergröße_neu, einspeicherwirkungsgrad = einspeicherwirkungsgrad, ausspeicherwirkungsgrad = ausspeicherwirkungsgrad, output = False)
+    jahresgang_speicher_jahr1 = ergebnis[1]
+    jahresgang_speicher_jahr2 = ergebnis[2]
+
+    # Zyklenzahl im Basisjahr bestimmen, Tupel übergeben
+    zyklen = zyklenzahl_berechnen(ergebnis, einspeicherwirkungsgrad = einspeicherwirkungsgrad, ausspeicherwirkungsgrad = ausspeicherwirkungsgrad, output = False)
+    zyklen_jahr1 = zyklen[0]
+    zyklen_jahr2 = zyklen[1]
+
+    # Jahresgang Jahr 1 eine Null voranstellen, Jahresgang Jahr 2 den letzen Wert aus Jahr 1
+    jahresgang_speicher_jahr1 = pd.concat([pd.Series([0]), jahresgang_speicher_jahr1])
+    jahresgang_speicher_jahr2 = pd.concat([jahresgang_speicher_jahr1[ len(jahresgang_speicher_jahr1) - 1: ], jahresgang_speicher_jahr2])
+
+    # eingespeicherte Strommenge mit neuer Speichergröße bestimmen
+    einspeicherung_jahr1 = jahresgang_speicher_jahr1.diff().clip(lower = 0).sum()
+    einspeicherung_jahr2 = jahresgang_speicher_jahr2.diff().clip(lower = 0).sum()
+
+    neue_Zeile = [speichergröße_neu, einspeicherung_jahr1, zyklen_jahr1, einspeicherung_jahr2, zyklen_jahr2]
+    dataframe.loc[count] = neue_Zeile
+  
+    count += 1
+  
+  # gekappte Menge berechnen data.sub(data[0]).drop(0)
+  gekappte_einspeicherung_jahr1 = dataframe['Einspeicherung Jahr1'].sub(dataframe['Einspeicherung Jahr1'][0]).abs().drop(0).reset_index(drop = True)
+  gekappte_einspeicherung_jahr2 = dataframe['Einspeicherung Jahr2'].sub(dataframe['Einspeicherung Jahr2'][0]).abs().drop(0).reset_index(drop = True)
+  dataset = pd.DataFrame({'relative Speichergröße': pd.Series(neue_speichergrößen), 'gekappte Einspeicherung Jahr1': gekappte_einspeicherung_jahr1, 'gekappte Einspeicherung Jahr2': gekappte_einspeicherung_jahr2})
+  
+  if output:
+
+    print(dataframe)
+    print("\n")
+    print(dataset)
+
+  else:
+    return(dataset)
+
+effekt_kappung_berechnen(restlast, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = True)
 ```
+
 :::
 
-Im zweiten Schritt kann die Speichergröße aus dem Jahresgang der Restlast berechnet werden. Um nicht vom Zeitpunkt abhängig zu sein, an dem der Speicher an das Netz angeschlossen wird, wird der Datensatz zwei mal durchlaufen.
-
-  - Ist die Summe der erneuerbaren Überschussproduktion kleiner als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Minimum der kummulierten Summe der Restlast, wenn diese niemals größer 0 gesetzt wird (das Überschreiten wäre der Moment, in dem der Speicher leer ist). 
-  
-  - Ist die Summe der erneuerbaren Überschussproduktion größer als die Summe der durch den Speicher zu bedienenden Restlast, entspricht die erforderliche Speichergröße dem Maximum der kummulierten Summe der Restlast, wenn diese niemals kleiner 0 gesetzt wird (das Unterschreiten wäre der Moment, in dem der Speicher überdimensioniert ist).
-
-Nachdem die Speichergröße bestimmt wurde, kann der Jahresgang des Speichers für das erste und das zweite Jahr bestimmt werden. Der Jahresgang des Speichers für das zweite Jahr ist das stabile Gleichgewicht, mit dem eine gegebene Restlastkurve beliebig oft durchlaufen werden kann.
-  
-### Berechnung der Speichergröße ohne Wirkungsgrad
-```{python}
-# Speichergröße berechnen
-## Eingabe: data = pd.Series(data, dtype = 'float'), output = False
-## Verarbeitung: aufrufen der Funktion prüfe_EE_Überschuss, um zwischen oberer Grenze = 0 (Speicher ist leer) und unterer Grenze = 0 (Speicher ist überdimensioniert) zu unterscheiden
-## Verarbeitung: data wird zwei mal zu data_x2 verkettet. Für data_x2 wird die bei 0 gekappte kumulierte Summe berechnet und die Speichergröße berechnet.
-## Verarbeitung: Anhand der Speichergröße wird der Jahresgang in Jahr1 und allen folgenden Jahren simuliert.
-## Ausgabe: wenn output = False wird ein Tupel ausgegeben: die Speichergröße (float) und der Jahresgang in Jahr1 (Liste) und allen folgenden Jahren (Liste)
-
-def berechne_speichergröße(data, output = False):
-
-  data_x2 = pd.concat([data, data])
-
-  überschuss = prüfe_EE_Überschuss(data)
-  
-  if überschuss:
-    
-    # Listenoperation
-    capped_cumsum = []
-    summe = 0
-
-    for i in data_x2:
-      summe += i 
-
-      # Untergrenze prüfen
-      if summe < 0:
-        summe = 0
-      
-      capped_cumsum.append(summe)
-
-    speichergröße = max(capped_cumsum)
-  
-  else:
-
-    # Listenoperation
-    capped_cumsum = []
-    summe = 0
-
-    for i in data_x2:
-      summe += i
-
-      # Obergrenze prüfen
-      if summe > 0:
-        summe = 0
-      
-      capped_cumsum.append(summe)
-
-    speichergröße = abs(min(capped_cumsum))
-
-  # Jahresgang des Speichers simulieren
-  jahresgang_speicher = []
-  freie_speicherkapazität = 0 - speichergröße # der speicher ist leer
-  for i in data_x2:
-
-    if freie_speicherkapazität - i < -speichergröße: # last ohne vorherige Einspeicherung kann nicht bedient werden
-      freie_speicherkapazität = 0 - speichergröße
-
-    elif freie_speicherkapazität - i > 0: # wenn der Speicher voll ist, muss Überschuss verworfen werden.
-      freie_speicherkapazität = 0
-      
-    else:
-      freie_speicherkapazität -= i
-
-    jahresgang_speicher.append(freie_speicherkapazität)
-
-  # Vorzeichen invertieren
-  for i in range(len(jahresgang_speicher)):
-    jahresgang_speicher[i] *= -1 
-
-  if output: # output = True
-
-    dataset = pd.DataFrame({'Restlast': data, 'freie Kapazität Jahr1': jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], 'freie Kapazität Folgejahre': jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]})
-
-    print(f"\n\nSumme data: {data.sum()}\nSpeichergröße: {speichergröße}")
-    print(dataset)
-
-  else: # output = False
-    return speichergröße, jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]
-  
-speicher_2023 = berechne_speichergröße(restlast, output = False)
-
-print(f"erforderliche Speichergröße 2023: {speicher_2023[0]:.1f} MWh\nDies entspricht {speicher_2023[0] / pumpspeicherkapazität_MWh:.1f} Pumpspeicheräquivalenten.")
-
-```
-
-Der Füllstand des Speichers im Jahresgang kann grafisch dargestellt werden. Die Funktion gibt ein Tupel zurück. An Position 0 ist die Speichergröße gespeichert, an Position 1 der Jahresgang in Jahr 1, an Position 2 der Jahresgang in Jahr 2. Da die Funktion die freie Kapazität als Liste zurückgibt, muss der Füllstand des Speichers mit `speichergröße - pd.Series(data = jahresgang_speicher)` berechnet werden. **TO DO: panel-tabset, fig-alt, fig-cap ergänzen**
-
-``` {python}
-#| echo: false
-
-# Daten erzeugen
-jahresgang_speicher_jahr1 = pd.Series()
-jahresgang_speicher_jahr1 = speicher_2023[0] - pd.Series(speicher_2023[1])
-
-jahresgang_speicher_jahr2 = pd.Series()
-jahresgang_speicher_jahr2 = speicher_2023[0] - pd.Series(speicher_2023[2])
-
-# xticks erzeugen
-monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
-monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
-
-# Grafik mit drei subplots erzeugen
-font_size = 10
-
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
-plt.suptitle('Restlast 2023 und Jahresgang eines Speichers mit Wirkungsgrad 1')
-plt.xticks(monate_index, monatsnamen, rotation = 45);
-plt.minorticks_off()
-plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
-plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.1))
-
-## plot restlast
-ax1.plot(restlast, label = "Restlast")
-ax1.grid()
-ax1.set_ylabel('MWh')
-ax1.legend()
-
-## plot jahresgang_speicher_jahr1
-ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
-ax2.grid()
-ax2.set_ylabel('MWh')
-ax2.legend()
-
-## plot jahresgang_speicher_jahr2
-ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
-ax3.tick_params(axis = 'x', rotation = 45)
-ax3.set_ylabel('MWh')
-ax3.grid()
-ax3.legend()
-
-plt.show()
-```
-
-Die benötigte Kapazität des Speichers ergibt sich aus den ereuerbaren Erzeugungsüberschüssen während der Weihnachtsfeiertage. Diese Kapazitäten bleiben im Rest des des Jahres ungenutzt. Der Speicher ist die meiste Zeit des Jahres leer. Der Jahresgang für das erste und das zweite Jahr ist identisch.
-
-### Berechnung der Speichergröße mit Wirkungsgrad
+### Anteil EE bestimmen
+Ausbauziele durchrechnen: welcher Anteil EE wird erreicht.  
 Die benötigte Kapazität des Speichers sinkt, wenn Ein- und Ausspeicherwirkgungsgrade berücksichtigt werden. Für den Gesamtwirkungsgrad können die bestehenden Pumpspeicherkraftwerke als Orientierung dienen. Der Gesamtwirkungsgrad wurde mit 79.10 Prozent berechnet. Diesem Wirkungsgrad entspricht näherungsweise eine Aufteilung von Einspeicherwirkungsgrad = 0.9, Ausspeicherwirkungsgrad = 0.88.
 
-```{python}
-
-# Speichergröße berechnen
-## Eingabe: data = pd.Series(data, dtype = 'float'), einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False
-## Verarbeitung: aufrufen der Funktion prüfe_EE_Überschuss, um zwischen oberer Grenze = 0 (Speicher ist leer) und unterer Grenze = 0 (Speicher ist überdimensioniert) zu unterscheiden
-## Verarbeitung: data wird zwei mal zu data_x2 verkettet. Für data_x2 wird die bei 0 gekappte kumulierte Summe berechnet und die Speichergröße berechnet.
-## Verarbeitung: Anhand der Speichergröße wird der Jahresgang in Jahr1 und allen folgenden Jahren simuliert.
-## Ausgabe: wenn output = False wird ein Tupel ausgegeben: die Speichergröße (float) und der Jahresgang in Jahr1 (Liste) und allen folgenden Jahren (Liste)
-
-def berechne_speichergröße(data, einspeicherwirkungsgrad = 1, ausspeicherwirkungsgrad = 1, output = False):
-
-  wirkungsgrad = einspeicherwirkungsgrad * ausspeicherwirkungsgrad
-  data_x2 = pd.concat([data, data])
-
-  überschuss = prüfe_EE_Überschuss(data, wirkungsgrad)
-  
-  if überschuss:
-    
-    # Listenoperation
-    capped_cumsum = []
-    summe = 0
-
-    for i in data_x2:
-      if i < 0:
-        summe += i * einspeicherwirkungsgrad
-      else:
-        summe += i / ausspeicherwirkungsgrad
-
-      # Untergrenze prüfen
-      if summe < 0:
-        summe = 0
-      
-      capped_cumsum.append(summe)
-
-    speichergröße = max(capped_cumsum)
-  
-  else: # Unterproduktion
-
-    # Listenoperation
-    capped_cumsum = []
-    summe = 0
-
-    for i in data_x2:
-      if i < 0:
-        summe += i * einspeicherwirkungsgrad
-      else:
-        summe += i / ausspeicherwirkungsgrad
-
-      # Obergrenze prüfen
-      if summe > 0:
-        summe = 0
-      
-      capped_cumsum.append(summe)
-
-    speichergröße = abs(min(capped_cumsum))
-
-  # Jahresgang des Speichers simulieren
-  jahresgang_speicher = []
-  freie_speicherkapazität = speichergröße # der speicher ist leer 
-  for i in data_x2:
-
-    if i > 0: # Restlast
-
-      # last ohne entsprechende vorherige Einspeicherung kann nicht vollständig bedient werden, der Speicher ist dann leer
-      if (speichergröße - freie_speicherkapazität) - i / ausspeicherwirkungsgrad < 0:
-        freie_speicherkapazität = speichergröße
-
-      else: # Ausspeicherung
-        freie_speicherkapazität += i / ausspeicherwirkungsgrad # hier kann zu viel ausgespeichert werden
-        if freie_speicherkapazität > speichergröße:
-          freie_speicherkapazität = speichergröße
-    
-    else: # i <= 0 Restlast
-      
-      # wenn der Speicher voll ist, muss Überschuss verworfen werden.
-      if freie_speicherkapazität + i * einspeicherwirkungsgrad < 0: 
-        freie_speicherkapazität = 0
-      
-      else: # Einspeicherung
-        freie_speicherkapazität += i * einspeicherwirkungsgrad
-
-    jahresgang_speicher.append(freie_speicherkapazität)
-
-
-  if output: # output = True
-
-    dataset = pd.DataFrame({'Restlast': data, 'freie Kapazität Jahr1': jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], 'freie Kapazität Folgejahre': jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]})
-
-    print(f"\n\nÜberschuss: {überschuss}\t Einspeicherwirkungsgrad: {einspeicherwirkungsgrad}\t Ausspeicherwirkungsgrad: {ausspeicherwirkungsgrad}")
-    print(f"Summe data: {data.sum()}\nSpeichergröße: {speichergröße}")
-    print(dataset)
-
-  else: # output = False
-    return speichergröße, jahresgang_speicher[ : len(jahresgang_speicher) // 2 ], jahresgang_speicher[ len(jahresgang_speicher) // 2 : ]
-    
-speicher_2023 = berechne_speichergröße(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
-
-print(f"erforderliche Speichergröße 2023: {speicher_2023[0]:.1f} MWh\nDies entspricht {speicher_2023[0] / pumpspeicherkapazität_MWh:.1f} Pumpspeicheräquivalenten.")
-
-```
-
-Text
-
-### Dies und das
-Wirkungsgrad Pumpspeicher in Prozent: 79.10 ... also sagen wir 
-**Die Aufteilung lässt sich anhand der Zyklenzahl gut begründen (die kommt aber erst später)** Da die Datenreihe sehr lang ist, bietet es sich an, für die Funktionsentwicklung eine kürzere Reihe von Testdaten zu benutzen. Auf diese Weise werden Berechnungen schneller durchgeführt und Zwischenergebnisse und Ergebnisse können bei Bedarf zur Überprüfung ausgegeben werden. Die folgende Funktion simuliert mit zehn Werten eine Restlastkurve, die im Jahresgang zufällig eine erneuerbare Überschussproduktion bzw. eine positive Restlast darstellt. Durch Anpassen der Werte für a und b kann das Ergebnis gesteuert werden. **Eventl. Ausgabefunktion hier ergänzen**
+ein Test: die Summe der positiven Restlast müsste dem Anteil nicht-EE entsprechen --> haut so ungefähr hin (ein Prozent), müsste passen, wenn man mit summe erzeugung rechnet
 
 ``` {python}
-import random as rd
 
-random_data = []
-for i in range(10):
-  random_data.append(rd.randint(a = -20, b = 20))
+restlast.clip(lower = 0).sum() / verbrauch['Gesamt (Netzlast) [MWh]'].sum()
 
-random_data = pd.Series(random_data, dtype = 'float')
-
+print(f"Summe positive Restlast [MWh]: {restlast.clip(lower = 0).sum()}\n"
+      f"Summe Netzlast: {verbrauch['Gesamt (Netzlast) [MWh]'].sum()}\n"
+      f"Quotient Netzlast: {restlast.clip(lower = 0).sum() / verbrauch['Gesamt (Netzlast) [MWh]'].sum():.2f}\n\n"
+      f"Summe Erzeugung: {erzeugung.sum(numeric_only = True).sum()}\n"
+      f"Quotient Erzeugung: {restlast.clip(lower = 0).sum() / erzeugung.sum(numeric_only = True).sum():.2f}")
 ```
 
+**hier kommt dann noch eine Code-Zelle**
 
-
+### Sammelsurium
 Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt? --> benötigte Leistung und Kapazität sowie die Zyklenzahl sind interessant. **Anschließend könnte man die Wirtschaftlichkeit ausrechnen mit den Börsenstrompreisen.**
 = Minimumabschätzung im „Kupferplattenmodell“ also ohne technische Verluste
 
@@ -2177,6 +2691,37 @@ Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 6
 
 ### Erzeugung kappen
 **Wie kappt man Erzeugungsspitzen sinnvoll?**
+
+Man könnte das aber auch aus dem Jahresgang des Ladestands abgreifen. Der Speicher wird geladen... man sucht elementweise die positive Differenz (der Speicher wird voller) und summiert die. Dann gleicht man das ab mit dem gekappten Speicher -- da müsste die Summe kleiner sein und die Differenz beider Summen ist der nicht eingespeicherte Strom.
+Man muss das für Jahr 1 und Jahr 2 berechnen (Jahr 2 ist relevanter)
+
+dem Jahresgang muss eine Null vorangestellt werden, falls es in der ersten Periode zu einer Einspeicherung kommt
+data.diff().clip(lower = 0).sum()
+
+dann für originale und verschiedene Speichergrößen vergleichen
+
+Es wird ja schon jetzt gekappt, wenn EE-Überschuss herrscht. Das kann man bei EE-Überschuss in der Formel selbst abgreifen und zwar hier:
+
+```
+    else: # i <= 0 EE-Überschuss
+      
+      # wenn der Speicher voll ist, muss Überschuss verworfen werden.
+      if freie_speicherkapazität + i * einspeicherwirkungsgrad < 0: 
+        freie_speicherkapazität = 0
+```
+
+man muss die Differenz aus i und freie_speicherkapazität bilden - das ist der "Überhang" der gekappt wird
+    else: # i <= 0 EE-Überschuss
+      
+      # wenn der Speicher voll ist, muss Überschuss verworfen werden.
+      if freie_speicherkapazität + i * einspeicherwirkungsgrad < 0:
+        gekappte_einspeisung = i - freie_speicherkapazität 
+        freie_speicherkapazität = 0
+
+Man könnte das aber auch aus dem Jahresgang des Ladestands abgreifen. Der Speicher wird geladen... man sucht elementweise die positive Differenz (der Speicher wird voller) und summiert die. Dann gleicht man das ab mit dem gekappten Speicher -- da müsste die Summe kleiner sein und die Differenz beider Summen ist der nicht eingespeicherte Strom.
+Man muss das in Jahr 2 abgreifen
+
+**Vorüberlegungen**
 : **Variante 1: naives kappen der größten Überschüsse.** Hier müsste man in der .cumsum() (niemals über/unter 0) einfach das Minimum suchen und um den gewünschten Prozentwert reduzieren. Problem 1: Einzelne Spitzen müssen nicht notwendigerweise die Phasen sein, die die Speichergröße bestimmen - das können auch aufeinanderfolgende kleinere Überschüsse sein. Problem 2: Die Kappung führt nicht zwangsläufig zu einer höheren Zyklenzahl (bspw. [8, 16, 8, -12, -16, 10, 13, 10]) - hier wird immer ein Zyklus gefahren, egal wie groß der Speicher ist. Eine anteilige Begrenzung der Einspeicherung bewirkt lediglich eine anteilige Reduktion der Speichergröße. --> man muss das vom Jahresgang des Speichers / eventl. auch der Zyklenzahl abhängig machen.
 : **Wie reduziert man prozentual Erzeugungsspitzen? Man sortiert die Restlast aufsteigend (große negative Werte zuerst), schneidet alle Werte größer gleich Null ab, setzt den Betrag absolut, lässt cumsum() darüber laufen und setzt mit der sum() ins Verhältnis. Dann legt man einen Anteilswert fest, z. B. 0.05 und bestimmt dessen Indexposition (man schreibe eine Funktion find_nearest(array, value = 0.05).**
 **def find_nearest(a, a0): # gibt den Wert zurück, man kann aber auch den .index zurückgeben
