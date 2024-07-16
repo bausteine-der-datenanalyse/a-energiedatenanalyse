@@ -11,8 +11,6 @@ Die Bearbeitungszeit dieses Bausteins beträgt circa **Platzhalter**. Für die B
 
   - Modul [matplotlib.pyplot](https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html)
 
-  - Modul [matplotlib.patches](https://matplotlib.org/stable/api/patches_api.html)
-
 - Methodenbaustein Einlesen strukturierter Datensätze
 
 Querverweis auf: 
