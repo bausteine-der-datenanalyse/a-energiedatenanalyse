@@ -562,10 +562,10 @@ Welche Erzeuger Strom zum Befüllen der Pumpspeicher lieferten, wird in [@sec-ex
 #| output: true
 #| results: hold # process code first, then print output
 
-print(f"Summe Erzeugung Pumpspeicher: {erzeugung["Pumpspeicher [MWh]"].sum():.2f}\n"
-      f"Summe Verbrauch Pumpspeicher: {verbrauch["Pumpspeicher [MWh]"].sum():.2f}\n"
+print(f"Summe Erzeugung Pumpspeicher: {erzeugung["Pumpspeicher [MWh]"].sum():,.2f}\n"
+      f"Summe Verbrauch Pumpspeicher: {verbrauch["Pumpspeicher [MWh]"].sum():,.2f}\n"
       f"{41 * "="}\n"
-      f"Wirkungsgrad in Prozent: \t\t\t{( erzeugung["Pumpspeicher [MWh]"].sum() / verbrauch["Pumpspeicher [MWh]"].sum() ) * 100:.2f}")
+      f"Wirkungsgrad in Prozent: \t\t\t{( erzeugung["Pumpspeicher [MWh]"].sum() / verbrauch["Pumpspeicher [MWh]"].sum() ) * 100:,.2f}")
 
 ```
 
@@ -578,12 +578,12 @@ Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzag
 #| results: hold # process code first, then print output
 
 print(f"Speicherverluste:\t\t\t{ (speicherverluste := ( verbrauch["Pumpspeicher [MWh]"].sum() - erzeugung["Pumpspeicher [MWh]"].sum() ) / (1000 * 1000) ):>6.2f} TWh\n"
-      f"kumulierte Stromerzeugung:\t{ ( kumulierte_erzeugung := erzeugung.sum(numeric_only = True).sum() // (1000 * 1000) ):.2f} TWh\n"
-      f"Summe:\t\t\t\t\t\t{speicherverluste + kumulierte_erzeugung:.2f} TWh\n\n"
+      f"kumulierte Stromerzeugung:\t{ ( kumulierte_erzeugung := erzeugung.sum(numeric_only = True).sum() // (1000 * 1000) ):,.2f} TWh\n"
+      f"Summe:\t\t\t\t\t\t{speicherverluste + kumulierte_erzeugung:,.2f} TWh\n\n"
 
-      f"Erzeugung durch Pumpspeicher:\t\t\t\t{erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000):.2f} TWh\n"
-      f"Erzeugung Pumpspeicher + Speicherverluste:\t{(erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000)) + speicherverluste:.2f} TWh\n"
-      f"Verbrauch Pumpspeicherkraftwerke:\t\t\t{verbrauch["Pumpspeicher [MWh]"].sum() / (1000 * 1000):.2f} TWh")
+      f"Erzeugung durch Pumpspeicher:\t\t\t\t{erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000):,.2f} TWh\n"
+      f"Erzeugung Pumpspeicher + Speicherverluste:\t{(erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000)) + speicherverluste:,.2f} TWh\n"
+      f"Verbrauch Pumpspeicherkraftwerke:\t\t\t{verbrauch["Pumpspeicher [MWh]"].sum() / (1000 * 1000):,.2f} TWh")
       
 ```
 
@@ -656,7 +656,7 @@ Alle positiven Werte = Einspeisung (entspricht Erzeugungsdaten der Bundesnetzage
 # Explorative Datenanalyse {#sec-explorative-datenanalyse}
 Explorative Datenanalyse bedeutet, Fragen an die vorliegenden Daten zu stellen und diese mittels datenanalytischer Methoden zu beantworten. Die so gewonnenen Erkenntnisse können helfen, die Fragen zu verfeinern oder neue Fragen zu generieren. Es handelt sich also um einen iterativen Prozess. Dadurch soll vor allem ein tieferes Verständnis der Daten gewonnen werden. [@R-for-Data-Science, Kapitel 10  Exploratory data analysis]
 
-## Grenzstromanalyse
+## Hintergrund: Grenzstromanalyse
 Im vorliegenden Fall wird die explorative Auseinandersetzung mit dem Datensatz von der Frage strukturiert, welche Erzeuger Strom lieferten, um *zusätzlich* zur Netzlast die Pumpspeicher zu befüllen. Es soll also bestimmt werden, welche Stromerzeuger an den Zeitpunkten, an denen die Pumpspeicher befüllt wurden, in der Lage waren, zusätzliche Leistung bereitzustellen. Dieser zusätzliche Strom kann kurz als Grenzstrom bezeichnet werden. 
 
 ::: {.callout-important}
@@ -669,7 +669,7 @@ In der Grenzbetrachtung beträgt der Kohleanteil des zusätzlich verbrauchten St
 
 :::
  
-### Hintergrund: Einspeisevorrang erneuerbarer Energien
+## Hintergrund: Einspeisevorrang erneuerbarer Energien
 In Deutschland gilt seit dem Jahr 2000 das Erneuerbare-Energien-Gesetz, das ursprünglich als Gesetz für den Vorrang Erneuerbarer Energien eingeführt wurde [Dokumentations- und Informationssystem für Parlamentsmaterialien](https://dip.bundestag.de/vorgang/gesetz-f%C3%BCr-den-vorrang-erneuerbarer-energien-erneuerbare-energien-gesetz-eeg-sowie/111957). Dieses regelte in § 3 den Einspeisevorrang erneuerbarer Energien:
 
 ::: {.border layout="[[5, 90, 5], [1]]"}
@@ -714,7 +714,7 @@ Die nicht erneuerbaren Erzeuger arbeiten im Lastfolgebetrieb zur Deckung der Res
 
 Die welches Szenario im Stromnetz zu einem bestimmten Zeitpunkt besteht, lässt sich also an der Restlast ablesen.
 
-### Residual- und Restlast bestimmen
+## Residual- und Restlast bestimmen
 Die Bundesnetzagentur veröffentlicht im Datensatz zum realisierten Stromverbrauch Netzlast, Residuallast und den Stromverbrauch durch Pumpspeicherkraftwerke.
 
 ```{python}
@@ -772,7 +772,7 @@ plotting_data.drop(['Residuallast BNetzA [MWh]'], axis = 'columns', inplace = Tr
 ```
 
 
-### Jahresgang grafisch darstellen
+## Jahresgang grafisch darstellen
 Die Netzlast, die Erzeugung durch erneuerbare Energien sowie die Residual- und Restlast sollen im Jahresgang dargestellt werden. Zur besseren Darstellung wird nur jeder 100. Wert eingezeichnet.
 
 ::: {.panel-tabset}
@@ -898,7 +898,7 @@ Die Netzlast abzüglich der verdoppelten erneuerbaren Stromerzeugung nähert sic
 ::::
 :::
 
-### Hintergrund: Grund-, Mittel und Spitzenlast
+## Hintergrund: Grund-, Mittel und Spitzenlast
 Nicht alle Erzeuer sind aus technischen oder aus wirtschaftlichen Gründen gleichermaßen für den Lastfolgebetrieb geeignet. Beispielsweise sind Kohlekraftwerke weniger flexibel regelbar als Gaskraftwerke. Kernkraftwerke werden aufgrund ihrer hohen Fix- und geringen variablen Kosten bevorzugt im Grundlastbetrieb betrieben. Im Stromnetz werden drei Einsatzprofile für Kraftwerke unterschieden: Grundlast, Mittellast und Spitzenlast.
 
 ::: {.callout-important}
@@ -1271,7 +1271,7 @@ Bisher wurde ausschließlich die Erzeugung durch konventionelle Kraftwerke betra
 
 :::
 
-### Bestimmung des in den Pumpspeichern gespeicherten Stroms {#sec-Pumpspeicherinhalt}
+## Bestimmung des in den Pumpspeichern gespeicherten Stroms {#sec-Pumpspeicherinhalt}
 In den bisherigen Betrachtungen wurde gezeigt, dass zwei grundsätzliche Szenarien im Stromnetz zu unterscheiden sind:
 
 1. Restlast Null oder negativ: Grenzstrom wird von erneuerbaren Energien produziert.
@@ -1398,7 +1398,8 @@ plt.legend()
 
 :::
 
-### Mögliche Erweiterung
+## Mögliche Erweiterung / mögliche Aufgabe
+... wäre gar nicht so schlecht, weil damit der Strommix im Pumpspeicher bestimmt würde ...
 Über den in den Phasen der Einspeicherung bestehenden Strommix kann die Verteilung der für die Einspeicherung weiter approximiert werden. **Das wäre aber nur zur Veranschauung. Da mit Salden für das Gesamtnetz gerechnet wird, die Regelzonen aber kleinteiliger organisiert sind und die physischen Stromflüsse unbekannt sind, erzeugt man einen ökologischen Fehlschluss. Man rechnet dann mit hoher Präzision etwas sehr ungenau aus.**
 
 ```
@@ -1416,14 +1417,13 @@ Vorgehen:
 ```
 
 ## Zusammenfassung und Ausblick
-
 Hier könnte man noch einen inhaltlichen Kommentar ergänzen.
 Ausblick: Auch der Bereich der Mittelllast wird mit zunehmendem Ausbau erneuerbarer Energien immer kleiner werden (siehe @tip-verdopplung-EE). (**ggf. ergänzen: für die verbleibende Spitzenlast werden Speicher mit Spitzenlasterzeugern konkurrieren. Im Forum habe ich das bereits schön formuliert. Hieraus könnte man einen längeren interpretativen Abschnitt machen.**)
 
-# Analytische Statistik
-Analytische Statistik bedeutet, auf Grundlage der Daten Rückschlüsse zu ziehen. Analytische Statistik unterscheidet sich von der beschreibenden und explorativen Statistik dadurch, dass Daten nicht nur betrachtet und zueinander in Verhältnis gesetzt werden, sondern durch Modellierung neue Daten erzeugt werden.
+# Analytische Datenanalyse
+Analytische Datenanalyse bedeutet, auf Grundlage der Daten Rückschlüsse zu ziehen. Die analytische Datenanalyse unterscheidet sich von der beschreibenden und explorativen Datenanalyse dadurch, dass Daten nicht nur betrachtet und zueinander ins Verhältnis gesetzt werden, sondern neue Daten erzeugt werden.
 
-Bei der Analyse der Erzeugungsdaten konnte festgestellt werden, dass im Jahr 2023 punktuell bereits eine Vollversorgung aus erneuerbaren Energien erreicht wird. Aus der Betrachtung der verdoppelten erneuerbaren Stromerzeugung des Jahres 2023 (siehe @tip-verdopplung-EE) kann geschlussfolgert werden, dass mit zunehmenden Ausbau der erneuerbaren Stromproduktion Phasen erneuerbarer Überproduktion immer häufiger der Fall sein werden. Die Perspektive regelmäßiger erneuerbarer Produktionsüberschüsse begründet einen Bedarf für Stromspeicher, um Strom aus Phasen der Überproduktion in Phasen mit positiver Restlast nutzbar zu machen.
+Bei der explorativen Analyse der Erzeugungsdaten konnte festgestellt werden, dass im Jahr 2023 punktuell bereits eine Vollversorgung aus erneuerbaren Energien erreicht wird. Aus der Betrachtung der verdoppelten erneuerbaren Stromerzeugung des Jahres 2023 (siehe @tip-verdopplung-EE) kann geschlussfolgert werden, dass mit zunehmenden Ausbau der erneuerbaren Stromproduktion Phasen erneuerbarer Überproduktion immer häufiger der Fall sein werden. Die Perspektive regelmäßiger erneuerbarer Produktionsüberschüsse begründet einen Bedarf für Stromspeicher, um Strom aus Phasen der Überproduktion in Phasen mit positiver Restlast nutzbar zu machen.
 
 In diesem Abschnitt wird der daraus resultierende Speicherbedarf betrachtet.
 
@@ -1497,18 +1497,21 @@ Die Ausbauziele der Bundesregierung legen also für das Jahr 2030 bzw. 2035 eine
 
 Dies bedeutet einen geplanten Zubau der installierten Leistung gemessen an der installierten Leistung im Jahr 2023 von:
 
-```{python}
+::: {#lst-zubaufaktoren}
+``` {python}
 
-print(f"Wind an Land 2030:\t{( zubaufaktor_windonshore_2030 := 115 / (installierte_leistung['Wind Onshore [MW]'].sum() / 1000) ):.2f}\n"
-      f"Wind auf See 2030:\t{( zubaufaktor_windoffshore_2030 := 30 / (installierte_leistung['Wind Offshore [MW]'].sum() / 1000) ):.2f}\n"
-      f"Solar 2030:\t\t\t{( zubaufaktor_solar_2035 := 215 / (installierte_leistung['Photovoltaik [MW]'].sum() / 1000) ):.2f}\n"
-      f"Biomasse 2030:\t\t{8.4 / (installierte_leistung['Biomasse [MW]'].sum() / 1000):.2f}")
+print(f"Wind an Land 2030:\t{( zubaufaktor_windonshore_2030 := 115 / (installierte_leistung['Wind Onshore [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Wind auf See 2030:\t{( zubaufaktor_windoffshore_2030 := 30 / (installierte_leistung['Wind Offshore [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Solar 2030:\t\t\t{( zubaufaktor_solar_2030 := 215 / (installierte_leistung['Photovoltaik [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Biomasse 2030:\t\t{8.4 / (installierte_leistung['Biomasse [MW]'].sum() / 1000):,.2f}")
 
-print(f"\n\nWind an Land 2035:\t{( zubaufaktor_windonshore_2035 := 157 / (installierte_leistung['Wind Onshore [MW]'].sum() / 1000) ):.2f}\n"
-      f"Wind auf See 2035:\t{( zubaufaktor_windoffshore_2035 := 40 / (installierte_leistung['Wind Offshore [MW]'].sum() / 1000) ):.2f}\n"
-      f"Solar 2035:\t\t\t{( zubaufaktor_solar_2035 := 309 / (installierte_leistung['Photovoltaik [MW]'].sum() / 1000) ):.2f}\n"
-      f"Biomasse 2035:\t\t{8.4 / (installierte_leistung['Biomasse [MW]'].sum() / 1000):.2f}")
+print(f"\n\nWind an Land 2035:\t{( zubaufaktor_windonshore_2035 := 157 / (installierte_leistung['Wind Onshore [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Wind auf See 2035:\t{( zubaufaktor_windoffshore_2035 := 40 / (installierte_leistung['Wind Offshore [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Solar 2035:\t\t\t{( zubaufaktor_solar_2035 := 309 / (installierte_leistung['Photovoltaik [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Biomasse 2035:\t\t{8.4 / (installierte_leistung['Biomasse [MW]'].sum() / 1000):,.2f}")
 ```
+
+:::
 
 Bis 2030 soll die Produktion durch Windkraftanlagen an Land verdoppelt sowie durch Windkraftanlagen auf See und durch Photovoltaik verdreieinhalbfacht werden. Bis 2035 soll Windkraft an Land fast verdreifacht, Wind auf See und Photovoltaik verfünffacht werden. Biomasse soll nicht weiter ausgebaut werden. Die Zubaufaktoren werden jeweils in einem Objekt gespeichert.
 
@@ -1554,8 +1557,8 @@ Energietechnik. 14 Energiespeicherung. 14.03 Kenngrößen und Begriffsdefinitio
 **Was noch fehlt: Zyklenzahl**
 
 ## Speichergröße berechnen
-Im Folgenden werden verschiedene **Anzahl benennen** Grundprinzipien der Speicherauslegung und die entsprechenden Verfahren zu ihrer Berechnung entwickelt. Grundlage aller Überlegungen ist die Restlastkurve. Werte kleiner als Null entsprechen einer erneuerbaren Überschussproduktion, Werte größer als Null einer durch Lastfolgekraftwerke oder Speicher zu bedienenden Netzlast. Die Restlast wird wie folgt bestimmt:  
-**Dazu muss auf eine Listenoperation zurückgegriffen werden. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären (.clip(0) maskiert nur die Ausgabe).**
+Im Folgenden werden Grundprinzipien der Speicherauslegung und die entsprechenden Verfahren zu ihrer Berechnung entwickelt. Grundlage aller Überlegungen ist die Restlastkurve. Werte kleiner als Null entsprechen einer erneuerbaren Überschussproduktion, Werte größer als Null einer durch Lastfolgekraftwerke oder Speicher zu bedienenden Netzlast. Die Restlast wird wie folgt bestimmt:  
+**Dazu muss auf eine Listenoperation zurückgegriffen werden. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären (pd.Series.cumsum.clip(0) maskiert nur die Ausgabe bzw. fehlt pd.Series.cumsum() ein Argument upper_/lower_boundary).**
 
 ```{python}
 erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
@@ -2041,7 +2044,7 @@ def berechne_speichergröße(data, output = False):
   
 speicher_2023 = berechne_speichergröße(restlast, output = False)
 
-print(f"erforderliche Speichergröße 2023: {speicher_2023:.1f} MWh\nDies entspricht {speicher_2023 / pumpspeicherkapazität_MWh:.1f} Pumpspeicheräquivalenten.")
+print(f"erforderliche Speichergröße 2023: {speicher_2023:,.1f} MWh\nDies entspricht {speicher_2023 / pumpspeicherkapazität_MWh:,.1f} Pumpspeicheräquivalenten.")
 
 ```
 
@@ -2109,7 +2112,7 @@ def berechne_speichergröße(data, einspeicherwirkungsgrad = 1, ausspeicherwirku
 
 speicher_2023 = berechne_speichergröße(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.9, output = False)
 
-print(f"erforderliche Speichergröße 2023: {speicher_2023:.1f} MWh\nDies entspricht {speicher_2023 / pumpspeicherkapazität_MWh:.1f} Pumpspeicheräquivalenten.")   
+print(f"erforderliche Speichergröße 2023: {speicher_2023:,.1f} MWh\nDies entspricht {speicher_2023 / pumpspeicherkapazität_MWh:,.1f} Pumpspeicheräquivalenten.")   
 ```
 
 **ist hier ersichtlich, welche Wirkungsgrade benutzt werden? Ich könnte das noch bei output hinterlegen und die Funktion zwei mal aufrufen.**
@@ -2459,8 +2462,8 @@ def zyklenzahl_berechnen(data, output = False):
   zyklenzahl_jahr2 = jahresgang_speicher_jahr2.diff().abs().sum() / (speichergröße * 2) # ein Zyklus = vollständiges Be- und Entladen --> durch 2 teilen
   
   if output:
-    print(f"Zyklenzahl Jahr 1: {zyklenzahl_jahr1:.2f}\n"
-          f"Zyklenzahl Jahr 2: {zyklenzahl_jahr2:.2f}")
+    print(f"Zyklenzahl Jahr 1: {zyklenzahl_jahr1:,.2f}\n"
+          f"Zyklenzahl Jahr 2: {zyklenzahl_jahr2:,.2f}")
   
   else:
     return zyklenzahl_jahr1, zyklenzahl_jahr2
@@ -2504,8 +2507,8 @@ def zyklenzahl_berechnen(data, einspeicherwirkungsgrad = 1, ausspeicherwirkungsg
   zyklenzahl_jahr2 = jahresgang_speicher_jahr2.diff().abs().sum() / (speichergröße * 2) # ein Zyklus = vollständiges Be- und Entladen --> durch 2 teilen
   
   if output:
-    print(f"Zyklenzahl Jahr 1: {zyklenzahl_jahr1:.2f}\n"
-          f"Zyklenzahl Jahr 2: {zyklenzahl_jahr2:.2f}")
+    print(f"Zyklenzahl Jahr 1: {zyklenzahl_jahr1:,.2f}\n"
+          f"Zyklenzahl Jahr 2: {zyklenzahl_jahr2:,.2f}")
   
   else:
     return zyklenzahl_jahr1, zyklenzahl_jahr2
@@ -2516,7 +2519,7 @@ zyklenzahl_berechnen(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwirkung
 
 :::
 
-Wenn der Wirkungsgrad berücksichtigt wird, steigt die Zyklenzahl, weil der Speicher kleiner dimensioniert ist.
+Aufgrund der geringen erneuerbaren Erzeugungsschüsse im Jahr 2023 ist die Zyklenzahl in Jahr 1 und Jahr 2 identisch. Wenn der Wirkungsgrad berücksichtigt wird, steigt die Zyklenzahl, weil der Speicher kleiner dimensioniert ist.
 
 ### Kappung
 **Man könnte noch eine gestrichelte Linie einzeichnen, die den Gang der Speicherfüllung zeigt. Dafür habe ich auch schon eine Funktion.**  
@@ -2767,7 +2770,7 @@ effekt_kappung_berechnen(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwir
 
 :::
 
-### Anteil EE bestimmen
+## Anteil erneuerbarer Stromerzeugung bestimmen
 Durch die Integration eines Stromspeichers in das Stromsystem kann erneuerbare Überschussproduktion in Phasen mit einer positiven Restlast verschoben werden, die andernfalls durch Lastfolgekraftwerke zu decken wäre. Dadurch sinkt der Anteil konventioneller Stromerzeugung und steigt der Anteil erneuerbarer Stromerzeugung.
 
 **To Do: fig-alt**  
@@ -2814,20 +2817,25 @@ restlast.clip(lower = 0).sum() / verbrauch['Gesamt (Netzlast) [MWh]'].sum()
 
 print(f"Summe positive Restlast [MWh]: {restlast.clip(lower = 0).sum()}\n"
       f"Summe Netzlast: {verbrauch['Gesamt (Netzlast) [MWh]'].sum()}\n"
-      f"Quotient positive Restlast / Netzlast: {restlast.clip(lower = 0).sum() / verbrauch['Gesamt (Netzlast) [MWh]'].sum():.2f}\n"
-      f"Anteil erneuerbarer Erzeugung: { ( anteil_ee := 1 - (restlast.clip(lower = 0).sum() / verbrauch['Gesamt (Netzlast) [MWh]'].sum()) ) :.2f}\n\n"
+      f"Quotient positive Restlast / Netzlast: {restlast.clip(lower = 0).sum() / verbrauch['Gesamt (Netzlast) [MWh]'].sum():,.2f}\n"
+      f"Anteil erneuerbarer Erzeugung: { ( anteil_ee := 1 - (restlast.clip(lower = 0).sum() / verbrauch['Gesamt (Netzlast) [MWh]'].sum()) ) :,.2f}\n\n"
 
       f"Summe Erzeugung: {erzeugung.sum(numeric_only = True).sum()}\n"
-      f"Quotient positive Restlast / Erzeugung: {restlast.clip(lower = 0).sum() / erzeugung.sum(numeric_only = True).sum():.2f}\n"
-      f"Anteil erneuerbarer Erzeugung: {1 - (restlast.clip(lower = 0).sum() / erzeugung.sum(numeric_only = True).sum()):.2f}")
+      f"Quotient positive Restlast / Erzeugung: {restlast.clip(lower = 0).sum() / erzeugung.sum(numeric_only = True).sum():,.2f}\n"
+      f"Anteil erneuerbarer Erzeugung: {1 - (restlast.clip(lower = 0).sum() / erzeugung.sum(numeric_only = True).sum()):,.2f}")
 ```
 
-Die Netzlast aus dem Datensatz verbrauch weicht mit 458 TWh geringfügig von der summierten Stromerzeugung aus dem Datensatz erzeugung in Höhe von 448 TWh ab. Dadurch weichen die berechneten Teile geringfügig voneinander ab.
+Die Netzlast aus dem Datensatz verbrauch weicht mit 458 TWh geringfügig von der summierten Stromerzeugung aus dem Datensatz erzeugung in Höhe von 448 TWh ab. Dadurch unterscheiden sich die berechneten Anteile geringfügig voneinander.
 
 #### Berechnung
-**To Do: Erklären, was hier gerechnet wird.**
-für die gleitende Differenzberechnung muss dem Jahresgang in Jahr 1 eine Null vorangestellt werden, dem Jahresgang in Jahr 2 der letzte Wert aus Jahr 1
-jahresgang_speicher_jahr1.diff().clip(lower = 0).sum() macht die Reihe um eins kürzer
+Grundlage für die Berechnung des Anteils erneuerbarer Stromerzeugung nach Ausspeicherung erneuerbarer Überschussproduktion ist der Jahresgang des Speichers. Die Ausspeicherung von Strom bedeutet eine Verminderung des Ladestands zwischen zwei Zeitpunkten. Der ausgespeicherte Strom vermindert die positive Restlast zu diesem Zeitpunkt. Dadurch nimmt der Quotient aus der positiven Restlast und der Netzlast ab und der Anteil erneuerbarer Stromerzeugung steigt. Dies ist in der folgenden Funktion umgesetzt.
+
+  - Eingabe: Der Funktion wird eine Restlastdatenreihe übergeben. Optional kann zusätzlich eine Netzlastdatenreihe übergeben werden. Ebenso kann optional eine Liste reduzierter Speichergrößen, ausgedrückt als relative Bruchteile von 1, übergeben werden. Wird keine Liste übergeben, erfolgt die Berechnung für die relativen Speichergrößen [0.9, 0.8, 0.7, 0.6, 0.5]
+
+  - Verarbeitung: Durch Aufruf der Funktion jahresgang_speicher_berechnen() werden für die Restlastdatenreihe die Jahresgänge des Stromspeichers mit relativer Größe 1 berechnet. Mit den Jahresgängen wird die ausgespeicherte Strommenge im Jahresgang mit der Methode `pd.Series.diff().clip(upper = 0)` bestimmt. Auch für diese gleitende Differenzberechnung wird dem Jahresgang in Jahr 1 eine Null vorangestellt, dem Jahresgang in Jahr 2 der letzte Wert aus Jahr 1. Der erste Wert im Jahresgang der ausgespeicherten Strommenge ist NaN, weshalb dieser Wert entfällt und der Index zurückgesetzt wird. Der vollständige Befehl lautet: `pd.Series.diff().clip(upper = 0)[1: ].reset_index(drop = True)`. Die Jahresgang der ausgespeicherten Strommenge wird von der Restlastkurve abgezogen und so die Restlastkurve nach Ausspeicherung bestimmt. Da die Ausspeicherung im Jahresgang durch negative Werte angezeigt wird, erfolgt die Differenzbildung durch Addition.  
+  Wenn eine Netzlastdatenreihe übergeben wurde, wird auf der Grundlage der Restlastkurve nach Ausspeicherung der realisierte Anteil erneuerbarer Erzeugung berechnet: 1 - (Summe positive Restlast / Summe Netzlast). Die Berechnungen werden für kleiner dimensionerte Speicher wiederholt.
+
+  - Ausgabe: Wenn `output = False`, werden die Restlastkurven nach Ausspeicherung als DataFrame zurückgeben. Der DataFrame besteht aus je einer Spalte für die relative Speichergröße 1 sowie für alle übergebenen relativ reduzierten Speichergrößen. Die Restlastkurven in Jahr 1 und Jahr 2 sind in Zeile 0 bzw. 1 gespeichert. Wenn `output = True`, werden die summierte Netzlast, die summierte positive & negative Restlast, der Anteil erneuerbarer Erzeugung ohne Speicher sowie der realisierter Anteil erneuerbarer Erzeugung mit der Speichergröße im Basisjahr und für alle übergebenen Speichergrößen jeweils für Jahr 1 und Jahr2 mittels print() ausgegeben.
 
 ::: {.panel-tabset}
 ## ohne Wirkungsgrad
@@ -2839,7 +2847,7 @@ jahresgang_speicher_jahr1.diff().clip(lower = 0).sum() macht die Reihe um eins k
 ## Verarbeitung: Aufruf der Funktion jahresgang_speicher_berechnen(data) zur Bestimmung von Speichergröße und Jahrsgang des Speichers in Jahr 1 und Jahr 2
 ## Verarbeitung: Im Jahresgang des Stromspeichers wird die ausgespeicherte Strommenge bestimmt, diese wird von der Restlast abgezogen --> neue Restlastkurve nach Ausspeicherung
 ## Verarbeitung: Wenn netzlast = pd.Series(netzlast, dtype = 'float') übergeben wurde, wird anhand der Restlastkurve nach Ausspeicherung der Anteil erneuerbarer Energie bestimmt
-## Verarbeitung: Die Berechnungen werden für einen kleiner dimensionerten Speicher wiederholt, default = [0.9, 0.8, 0.7, 0.6, 0.5]
+## Verarbeitung: Die Berechnungen werden für kleiner dimensionerte Speicher wiederholt, default = [0.9, 0.8, 0.7, 0.6, 0.5]
 ## Ausgabe: output = False Restlastkurve wird zurückgeben
 ## Ausgabe: output = True, Ausgabe Summe Netzlast, positive / negative Restlast, Anteil EE ohne Speicher sowie realisierter Anteil EE für Speichergröße Basisjahr und neue_speichergrößen jeweils für Jahr 1 und Jahr2 mittels print()
 
@@ -2927,7 +2935,7 @@ def anteil_ee_berechnen(data, netzlast = -1, neue_speichergrößen = [0.9, 0.8, 
                           
   if output: # Anteil EE ausgeben
 
-    print(f"Summe Netzlast: {netzlast.sum()}\nSumme positive Restlast: {data.clip(lower = 0).sum()}\tSumme negative Restlast: {data.clip(upper = 0).sum()}\nSpeichergröße: {speichergröße0:.2f}\tAnteil EE ohne Speicher: {1 - ( data.clip(lower = 0).sum() / netzlast.sum() ) if len(netzlast) > 1 else '--':.2f}\n")
+    print(f"Summe Netzlast: {netzlast.sum():,.2f}\nSumme positive Restlast: {data.clip(lower = 0).sum():,.2f}\tSumme negative Restlast: {data.clip(upper = 0).sum():,.2f}\nSpeichergröße: {speichergröße0:,.2f}\tAnteil EE ohne Speicher: {1 - ( data.clip(lower = 0).sum() / netzlast.sum() ) if len(netzlast) > 1 else '--':,.2f}\n")
     print(dataframe_anteil_ee)
     
   else: # Restlastkurven zurückgeben
@@ -2944,7 +2952,7 @@ anteil_ee_berechnen(restlast, netzlast = verbrauch['Gesamt (Netzlast) [MWh]'], n
 ## Verarbeitung: Aufruf der Funktion jahresgang_speicher_berechnen(data) zur Bestimmung von Speichergröße und Jahrsgang des Speichers in Jahr 1 und Jahr 2
 ## Verarbeitung: Im Jahresgang des Stromspeichers wird die ausgespeicherte Strommenge bestimmt, diese wird von der Restlast abgezogen --> neue Restlastkurve nach Ausspeicherung
 ## Verarbeitung: Wenn netzlast = pd.Series(netzlast, dtype = 'float') übergeben wurde, wird anhand der Restlastkurve nach Ausspeicherung der Anteil erneuerbarer Energie bestimmt
-## Verarbeitung: Die Berechnungen werden für einen kleiner dimensionerten Speicher wiederholt, default = [0.9, 0.8, 0.7, 0.6, 0.5]
+## Verarbeitung: Die Berechnungen werden für kleiner dimensionerte Speicher wiederholt, default = [0.9, 0.8, 0.7, 0.6, 0.5]
 ## Ausgabe: output = False Restlastkurve wird zurückgeben
 ## Ausgabe: output = True, Ausgabe Summe Netzlast, positive / negative Restlast, Anteil EE ohne Speicher sowie realisierter Anteil EE für Speichergröße Basisjahr und neue_speichergrößen jeweils für Jahr 1 und Jahr2 mittels print()
 
@@ -3032,7 +3040,7 @@ def anteil_ee_berechnen(data, netzlast = -1, einspeicherwirkungsgrad = 1, ausspe
                           
   if output: # Anteil EE ausgeben
 
-    print(f"Summe Netzlast: {netzlast.sum()}\nSumme positive Restlast: {data.clip(lower = 0).sum()}\tSumme negative Restlast: {data.clip(upper = 0).sum()}\nSpeichergröße: {speichergröße0:.2f}\tAnteil EE ohne Speicher: {1 - ( data.clip(lower = 0).sum() / netzlast.sum() ) if len(netzlast) > 1 else '--':.2f}\n")
+    print(f"Summe Netzlast: {netzlast.sum():,.2f}\nSumme positive Restlast: {data.clip(lower = 0).sum():,.2f}\tSumme negative Restlast: {data.clip(upper = 0).sum():,.2f}\nSpeichergröße: {speichergröße0:,.2f}\tAnteil EE ohne Speicher: {1 - ( data.clip(lower = 0).sum() / netzlast.sum() ) if len(netzlast) > 1 else '--':,.2f}\n")
     print(dataframe_anteil_ee)
     
   else: # Restlastkurven zurückgeben
@@ -3044,18 +3052,134 @@ anteil_ee_berechnen(restlast, netzlast = verbrauch['Gesamt (Netzlast) [MWh]'], e
 
 :::
 
-**Das ist ein unspektakuläres Ergebnis.**  
-Das liegt daran, dass die einzuspeichernde Restlast mit 1.002.976 MWh, also rund 1 TWh, erheblich kleiner als die zu deckende positive Restlast mit 207.842.228, also rund 208 TWh, ist. Die durch Einspeicherung maximal verschiebbare erneuerbare Überschussproduktion entspricht weniger als einem halben Prozent der zu deckenden Restlast.
+Für das Jahr 2023 ergäbe sich durch die Netzintegration eines Stromspeichers zur (teilweisen) Deckung der Restlast aus erneuerbarer Überschussproduktion eine nur unmerkliche Erhöhung des Anteils erneuerbarer Energien am Strommix. Das liegt daran, dass die einzuspeichernden erneuerbaren Überschüsse mit 1.002.976 MWh, also rund 1 TWh, erheblich kleiner als die zu deckende positive Restlast mit 207.842.228 MWh, also rund 208 TWh, sind. Die durch den Stromspeicher verschiebbare erneuerbare Überschussproduktion entspricht weniger als einem halben Prozent der zu deckenden Restlast.  
+**Hinweis?!: Abregelung erneuerbarer Erzeugung ist im Datensatz nicht erfasst, das waren im ersten Quartal 2023 immerhin 5,29 Prozent der erneuerbaren Erzeugung. <https://dserver.bundestag.de/btd/20/090/2009016.pdf> S. 2**
 
-Anschließend Ausbauziele durchrechnen: welcher Anteil EE wird erreicht. *Querverweis auf die Ausbaufaktoren*  
-Hinweis: Der künftige Stromverbrauch entspricht nicht dem aus dem Jahr 2023, die Berechnungen dienen der Veranschaulichung. Das kann durchaus eine Aufgabe werden:  
-**Rechnen Sie die Anteile auf der Grundlage der Stromverbrauchprojektion 2030 aus.**  
+Mit steigendem Anteil erneuerbarer Erzeugung wird die Speicherung überschüssiger Stromerzeugung jedoch immer relevanter werden. Die Dimension der erforderlichen Stromspeicher können mit den entwickelten Funktionen für den Ausbaupfad erneuerbarer Energien abgeschätzt werden.
+
+## Aufgabe analytische Datenanalyse
+
+**Berechnen Sie entsprechend des von der Bundesregierung vorgegebenen Ausbaupfads den Anteil erneuerbarer Stromerzeugung für das Jahr 2030 und für das Jahr 2035 (siehe [@lst-zubaufaktoren]).**
+
+  - Wie groß ist der maximal benötigte Speicher?
+  
+  - Welcher Anteil erneuerbarer Stromerzeugung wird erreicht, wenn der Speicher halb so groß dimensioniert wird?
+  
+  - Als Netzlast verwenden Sie die Netzlast des Jahres 2023 (siehe untenstehenden Hinweis).
+
+  - Für den Wirkungsgrad können die bestehenden Pumpspeicherkraftwerke als Orientierung dienen. Der Gesamtwirkungsgrad wurde mit 79.10 Prozent berechnet. Diesem Wirkungsgrad entspricht näherungsweise eine Aufteilung von Einspeicherwirkungsgrad = 0.9, Ausspeicherwirkungsgrad = 0.88.
+
+::: {.callout-note}
+## Projektionen des Stromverbrauchs
+
+Der künftige Stromverbrauch wird wahrscheinlich nicht dem des Jahres 2023 entsprechen. Projektionen lassen einen Stromverbrauch von 658 TWh (Quelle 1) für das Jahr 2030 und von 670,4 TWh im Jahr 2034 (Quelle 2) erwarten. Die Steigerung des Stromverbrauchs gegenüber 2023 kann leicht berechnet werden:
+
+``` {python}
+
+lastfaktor_2030_MWh = (658 * 1000 * 1000) / verbrauch["Gesamt (Netzlast) [MWh]"].sum()
+lastfaktor_2035_MWh = (670.4 * 1000 * 1000) / verbrauch["Gesamt (Netzlast) [MWh]"].sum()
+
+print(f"Steigerung des Stromverbrauchs 2030 gegenüber 2023 Faktor: {lastfaktor_2030_MWh:,.2f}\n"
+      f"Steigerung des Stromverbrauchs 2035 gegenüber 2023 Faktor: {lastfaktor_2035_MWh:,.2f}")
+```
+
+**To Do: Quellennachweise**
 Stromverbrauchprojektion 2030: <https://www.bmwk.de/Redaktion/DE/Downloads/E/prognos-bruttostromverbrauch-2018-2030.pdf?__blob=publicationFile&amp;v=2> S. 4 = 658 TWh
 Stromverbrauchprojektion 2035: <https://www.netzausbau.de/SharedDocs/Downloads/DE/Bedarfsermittlung/2035/SR/Szenariorahmen_2035_Entwurf.pdf?__blob=publicationFile> S. 54 670,4 TWh (Szenario B)
+:::
+
+Das Bild kann das Titelbild für die Aufgabe werden :-) 
+
+::: {.panel-tabset}
+
+## 2030
+``` {python}
+
+meine_speichergrößen = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.08, 0.06, 0.04, 0.02, 0.01]
+mein_einspeicherwirkungsgrad = 0.9
+mein_ausspeicherwirkungsgrad = 0.88
+
+# Datensatz 2030 erzeugen
+## zubaufaktor_windonshore_2030
+## zubaufaktor_windoffshore_2030
+## zubaufaktor_solar_2030
+
+erzeugung_2030 = erzeugung.copy()
+erzeugung_2030['Wind Onshore [MWh]'] *= zubaufaktor_windonshore_2030
+erzeugung_2030['Wind Offshore [MWh]'] *= zubaufaktor_windoffshore_2030
+erzeugung_2030['Photovoltaik [MWh]'] *= zubaufaktor_solar_2030
+
+erneuerbare_2030 = pd.Series()
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]',
+'Sonstige Erneuerbare [MWh]']
+erneuerbare_2030 = erzeugung_2030[erneuerbare].sum(axis = "columns").copy()
+
+netzlast_2023 = pd.Series()
+netzlast_2023 = verbrauch["Gesamt (Netzlast) [MWh]"].copy()
+netzlast_2030 = netzlast_2023 * lastfaktor_2030_MWh
+
+restlast_2030 = pd.Series()
+restlast_2030 = netzlast_2023 - erneuerbare_2030
+
+# Ausgabe
+speicher_2030 = berechne_speichergröße(restlast_2030, einspeicherwirkungsgrad = mein_einspeicherwirkungsgrad, ausspeicherwirkungsgrad = mein_ausspeicherwirkungsgrad, output = False)
+print(f"maximal erforderliche Speichergröße 2030: {speicher_2030:,.1f} MWh\nDies entspricht {speicher_2030 / pumpspeicherkapazität_MWh:,.1f} Pumpspeicheräquivalenten.")
+print("\n")
+
+effekt_kappung_berechnen(restlast_2030, einspeicherwirkungsgrad = mein_einspeicherwirkungsgrad, ausspeicherwirkungsgrad = mein_ausspeicherwirkungsgrad, neue_speichergrößen = meine_speichergrößen, output = True)
+print("\n")
+
+anteil_ee_berechnen(restlast_2030, netzlast = netzlast_2030, einspeicherwirkungsgrad = mein_einspeicherwirkungsgrad, ausspeicherwirkungsgrad = mein_ausspeicherwirkungsgrad, neue_speichergrößen = meine_speichergrößen, output = True)
+
+```
+
+## 2035
+``` {python}
+
+# # Datensatz 2035 erzeugen
+# ## zubaufaktor_windonshore_2035
+# ## zubaufaktor_windonshore_2035
+# ## zubaufaktor_solar_2035
+
+erzeugung_2035 = erzeugung.copy()
+erzeugung_2035['Wind Onshore [MWh]'] *= zubaufaktor_windonshore_2035
+erzeugung_2035['Wind Offshore [MWh]'] *= zubaufaktor_windoffshore_2035
+erzeugung_2035['Photovoltaik [MWh]'] *= zubaufaktor_solar_2035
+
+erneuerbare_2035 = pd.Series()
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]',
+'Sonstige Erneuerbare [MWh]']
+erneuerbare_2035 = erzeugung_2035[erneuerbare].sum(axis = "columns").copy()
+
+netzlast_2023 = pd.Series()
+netzlast_2023 = verbrauch["Gesamt (Netzlast) [MWh]"].copy()
+netzlast_2035 = netzlast_2023 * lastfaktor_2035_MWh
+
+restlast_2035 = pd.Series()
+restlast_2035 = netzlast_2023 - erneuerbare_2035
+
+# Ausgabe
+speicher_2035 = berechne_speichergröße(restlast_2035, einspeicherwirkungsgrad = mein_einspeicherwirkungsgrad, ausspeicherwirkungsgrad = mein_ausspeicherwirkungsgrad, output = False)
+print(f"maximal erforderliche Speichergröße 2035: {speicher_2035:,.1f} MWh\nDies entspricht {speicher_2035 / pumpspeicherkapazität_MWh:,.1f} Pumpspeicheräquivalenten.")
+print("\n")
+
+effekt_kappung_berechnen(restlast_2035, einspeicherwirkungsgrad = mein_einspeicherwirkungsgrad, ausspeicherwirkungsgrad = mein_ausspeicherwirkungsgrad, neue_speichergrößen = meine_speichergrößen, output = True)
+print("\n")
+
+anteil_ee_berechnen(restlast_2035, netzlast = netzlast_2035, einspeicherwirkungsgrad = mein_einspeicherwirkungsgrad, ausspeicherwirkungsgrad = mein_ausspeicherwirkungsgrad, neue_speichergrößen = meine_speichergrößen, output = True)
+
+```
 
 
-Die benötigte Kapazität des Speichers sinkt, wenn Ein- und Ausspeicherwirkgungsgrade berücksichtigt werden. Für den Gesamtwirkungsgrad können die bestehenden Pumpspeicherkraftwerke als Orientierung dienen. Der Gesamtwirkungsgrad wurde mit 79.10 Prozent berechnet. Diesem Wirkungsgrad entspricht näherungsweise eine Aufteilung von Einspeicherwirkungsgrad = 0.9, Ausspeicherwirkungsgrad = 0.88.
+:::
 
+Witzig ist, dass hier die 80-20-Regel gilt. Mit 20 Prozent des Aufwands erreicht man 80 Prozent des Weges. Daten für 2035:
+
+  - Anteil EE ohne Speicher: 0.89 --> Weg bis 100 Prozent = 0.11
+
+  - mit relativer Speichergröße 0.20 wird ein EE-Anteil von 0.98 erreicht
+
+  - dies entspricht 55.4 Pumpspeicheräquivalenten bzw. 2073.8 GWh, was 41.5 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe mit 50 GWh/a entspricht. Die Fabrik könne bis zu 250 GWh/a produzieren. Dann reichen 8,3 Jahresproduktionen für die Zielerreichung von 98 Prozent EE bis 2035. (<https://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschlandhttps://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschland>)
 
 ### Sammelsurium
 Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt? --> benötigte Leistung und Kapazität sowie die Zyklenzahl sind interessant. **Anschließend könnte man die Wirtschaftlichkeit ausrechnen mit den Börsenstrompreisen.**
@@ -3259,7 +3383,8 @@ Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überp
 *Befüllung der Pumpspeicher und die Restlast im Jahresgang anzeigen und anschließend nur die Werte zeigen, zu denen der Verbrauch der Pumpspeicher > 0 ist* 
 
 # Übungen
-Errechnen Sie die Volllaststunden für Wind Offshore, Wasserkraft, Sonstige Erneuerbare und Wind Onshore und stellen den Jahresgang und die Jahresdauerlinien für diese Erzeuger dar.
+
+Anteil EE 2030 und 2035 berechnen, wenn Biomasse in den Lastfolgebetrieb geht. **vorher kurz mal den Jahresgang Biomasse plotten.**
 
 <!-- # Resterampe -->
 
