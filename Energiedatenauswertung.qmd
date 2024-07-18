@@ -300,7 +300,7 @@ installierte_leistung = installierte_leistung0.copy()
 ```
 
 # Beschreibende Datenanalyse
-Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und analytischen Datenanalyse vertieft werden.
+Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und schließenden Datenanalyse vertieft werden.
 
 Einen ersten Überblick über die Daten liefert die Methode `pd.DataFrame.describe()`. Durch das Argument `include = [np.number]` kann die Ausgabe auf Spalten mit numerischen Daten beschränkt werden, das heißt, die Spalten mit Datumsinformationen werden ausgeschlossen.
 
@@ -1420,8 +1420,8 @@ Vorgehen:
 Hier könnte man noch einen inhaltlichen Kommentar ergänzen.
 Ausblick: Auch der Bereich der Mittelllast wird mit zunehmendem Ausbau erneuerbarer Energien immer kleiner werden (siehe @tip-verdopplung-EE). (**ggf. ergänzen: für die verbleibende Spitzenlast werden Speicher mit Spitzenlasterzeugern konkurrieren. Im Forum habe ich das bereits schön formuliert. Hieraus könnte man einen längeren interpretativen Abschnitt machen.**)
 
-# Analytische Datenanalyse
-Analytische Datenanalyse bedeutet, auf Grundlage der Daten Rückschlüsse zu ziehen. Die analytische Datenanalyse unterscheidet sich von der beschreibenden und explorativen Datenanalyse dadurch, dass Daten nicht nur betrachtet und zueinander ins Verhältnis gesetzt werden, sondern neue Daten erzeugt werden.
+# Schließende Datenanalyse
+Schließende Datenanalyse bedeutet, auf Grundlage der Daten Rückschlüsse zu ziehen. Die schließende Datenanalyse unterscheidet sich von der beschreibenden und explorativen Datenanalyse dadurch, dass Daten nicht nur betrachtet und zueinander ins Verhältnis gesetzt werden, sondern neue Daten erzeugt werden.
 
 Bei der explorativen Analyse der Erzeugungsdaten konnte festgestellt werden, dass im Jahr 2023 punktuell bereits eine Vollversorgung aus erneuerbaren Energien erreicht wird. Aus der Betrachtung der verdoppelten erneuerbaren Stromerzeugung des Jahres 2023 (siehe @tip-verdopplung-EE) kann geschlussfolgert werden, dass mit zunehmenden Ausbau der erneuerbaren Stromproduktion Phasen erneuerbarer Überproduktion immer häufiger der Fall sein werden. Die Perspektive regelmäßiger erneuerbarer Produktionsüberschüsse begründet einen Bedarf für Stromspeicher, um Strom aus Phasen der Überproduktion in Phasen mit positiver Restlast nutzbar zu machen.
 
@@ -1526,27 +1526,22 @@ Energietechnik. 14 Energiespeicherung. 14.02 Kennzahlen von Henrik te Heesen ist
 :::
 
 ::: {.callout-important}
-# Kenngrößen von Stromspeichern **nicht alle brauchen wir im Baustein**
+# Ausgewählte Kenngrößen von Stromspeichern
+
+:::: {.border}
 
 - Nominale Speicherkapazität: Energiemenge, die dem Stromspeicher entnommen werden kann.
 
--	Nutzbare Speicherkapazität / Entladetiefe: Beschädigungsfrei nutzbarer Anteil der nominalen Speicherkapazität. 
+-	Nutzbare Speicherkapazität: Beschädigungsfrei nutzbarer Anteil der nominalen Speicherkapazität. 
 
-- Entladetiefe (Depth of Discharge, DoD): Differenz zwischen maximal und minimal erlaubten Ladezustand. **redundant, weil entspricht der nominalen Speicherkapazität?!**  
-Auf [Wikipedia](https://en.wikipedia.org/wiki/State_of_charge) ist es etwas anders erklärt.  
-DoD = 1- SoC "State of charge is normally used when discussing the current state of a battery in use, while depth of discharge is most often used to discuss a constant variation of state of charge during repeated cycles." **Simone fragen**
+- Entladetiefe (Depth of Discharge, DoD): Differenz zwischen maximal und minimal erlaubten Ladezustand.
 
 - Ladezustand (State of Charge, SoC): Verhältnis der aktuell gespeicherten Energie zur nominalen Kapazität, i. d. R. in Prozent angegeben.
 
--	Lebenszyklus: Anzahl der Ladezyklen bis die Speicherkapazität auf 80 % der nominalen Speicherkapazität gefallen ist.
-
--	Lebenserwartung: kalendarische Lebenserwartung in Jahren bis 80 % der nominalen Speicherkapazität erreicht wird.
-
 -	Effizienz: Wirkungsgrad bei der Speicherung (Be- und Entladen und Speicherverluste wie Selbstentladung)
 
--	Stromspeicherkosten (Levelized Cost of Storage LCOS): Kosten in Euro einer entnommenen kWh.
+Weitere Kenngrößen werden im folgenden Video vorgestellt:
 
-:::: {.border}
 {{< video https://www.youtube.com/watch?v=0-PRS2naETE >}}
 
 Energietechnik. 14 Energiespeicherung. 14.03 Kenngrößen und Begriffsdefinitionen von Henrik te Heesen ist lizensiert unter [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.de) und abrufbar auf [YouTube](https://www.youtube.com/watch?v=0-PRS2naETE). 2020
@@ -1554,11 +1549,8 @@ Energietechnik. 14 Energiespeicherung. 14.03 Kenngrößen und Begriffsdefinitio
 
 :::
 
-**Was noch fehlt: Zyklenzahl**
-
 ## Speichergröße berechnen
 Im Folgenden werden Grundprinzipien der Speicherauslegung und die entsprechenden Verfahren zu ihrer Berechnung entwickelt. Grundlage aller Überlegungen ist die Restlastkurve. Werte kleiner als Null entsprechen einer erneuerbaren Überschussproduktion, Werte größer als Null einer durch Lastfolgekraftwerke oder Speicher zu bedienenden Netzlast. Die Restlast wird wie folgt bestimmt:  
-**Dazu muss auf eine Listenoperation zurückgegriffen werden. Ich kann bei Bedarf auch die Probleme mit NumPy / Pandas erklären (pd.Series.cumsum.clip(0) maskiert nur die Ausgabe bzw. fehlt pd.Series.cumsum() ein Argument upper_/lower_boundary).**
 
 ```{python}
 erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
@@ -1585,7 +1577,7 @@ Die im Folgenden entwickelten Funktionen bieten in der Regel eine Option zur Aus
 
 Im folgenden Code-Block wird eine Restlastkurve aus zehn zufälligen Werten simuliert. Durch Anpassen der Werte für a und b kann das Ergebnis gesteuert werden. In der Ausgabe ist die Summe der Datenreihe festgehalten. Ein negativer Wert bedeutet, dass über die simulierte Restlastkurve eine Überschussproduktion erneuerbarer Energien herrscht. Ein positiver Wert bedeutet, dass über die simulierte Restlastkurve die positive Restlast größer als die erneuerbare Überschussproduktion ist. 
 
-Im Code-Block wird außerdem eine statische Datenreihe angelegt. Diese dient dazu, Testdaten festzuhalten, die zu Fehlern geführt haben. Dazu wird die Datenreihe random_data in Listenform ausgegeben, sodass diese durch kopieren und einfügen in die statische Datenreihe eingesetzt werden kann.
+Im Code-Block wird außerdem eine statische Datenreihe angelegt. Diese dient dazu, Testdaten festzuhalten, die zu Fehlern geführt haben. Dazu wird die Datenreihe random_data in Listenform ausgegeben, sodass diese durch Kopieren und Einfügen in die statische Datenreihe eingesetzt werden kann.
 
 ``` {python}
 import random as rd
@@ -1605,13 +1597,11 @@ static_data = pd.Series([8, -14, -7, 1, 3, -6, 5, -20, -2, 12], dtype = 'float')
 ### Überschuss oder Defizit erneuerbarer Energien
 Die erforderliche Größe des Stromspeichers ist einerseits abhängig von dem Verhältnis aus der Menge der erneuerbaren Überschussproduktion und der aus dem Speicher zu bedienenden Restlast. Andererseits spielen die Wirkungsgrade des Speichers beim Ein- und Ausspeichern von Strom eine Rolle.
 
-**Man könnte noch eine gestrichelte Linie einzeichnen, die den Gang der Speicherfüllung zeigt. Dafür habe ich auch schon eine Funktion.**  
-**TO DO: fig-alt**
-
 ::: {layout="[40, 60]"}
 
 ```{python}
 #| echo: false
+#| fig-alt: "In zwei Grafiken sind zwei vereinfachte, aus je zwei Balken bestehende Restlastkurven im Jahresgang dargestellt. Auf der x-Achse sind die 365 Tage des Jahres dargestellt, auf der y-Achse die Restlast von minus 1 bis 1. In der oberen Grafik ist der Jahresgang bei einem Defizit erneuerbarer Energieerzeugung dargestellt. In der ersten Jahreshälfte ist die Restlast negativ in Höhe von minus 0.5, in der zweiten Jahreshälfte positiv in Höhe von 1. Dies ist durch jeweils einen Balken in entsprechender Höhe dargestellt. Der erste Balken mit den negativen Werten ist eingefärbt und nach links oben aufsteigend schraffiert. Die Färbung zeigt die erforderliche Speichergröße an, die aufsteigende Schraffierung die Phase der Einspeicherung. Der zweite Balken mit den positiven Werten ist bis zur halben Höhe 0.5 nach rechts unten absteigend schraffiert - dies zeigt die Phase der Ausspeicherung an. Der Bereich von 0.5 bis 1 ist unausgefüllt - dieser entspricht der durch Lastfolgekraftwerke zu bedienenden Restlast. In der unteren Grafik ist der Jahresgang bei einem Überschuss der erneuerbaren Energieerzeugung dargestellt. In der ersten Jahreshälfte ist die Restlast negativ in Höhe von minus 1, in der zweiten Jahreshälfte positiv in Höhe von 0.5. Der erste Balken mit den negativen Werten ist nicht eingefärbt und nur bis zur halben Höhe minus 0.5 zur Kennzeichnung der Einspeicherung aufsteigend schraffiert. Der zweite Balken mit den positiven Werten in Höhe von 0.5 ist zur Kennzeichnung der erforderlichen Speichergröße eingefärbt und zur kennzeichnung der Ausspeicherung absteigend schraffiert."
 
 # plot Parameter setzen
 ## eventuell yticks vorgeben mit (my_yticks = [1, 0.5, 0, -0.5, -1])
@@ -1674,6 +1664,7 @@ Erneuerbare Stromproduktion: Überschuss oder Defizit?
 
 ```{python}
 #| echo: false
+#| fig-alt: "Eine Grafik zeigt mit zwei Balken einen vereinfachten Jahresgang der Restlast mit Ein- und Ausspeicherwirkungsgrad. Auf der x-Achse sind die 365 Tage des Jahres dargestellt, auf der y-Achse die Restlast von minus 1 bis 1. In der ersten Jahreshälfte ist die Restlast negativ in Höhe von minus 1, in der zweiten Jahreshälfte positiv in Höhe von 1. Der erste Balken mit den negativen Werten ist bis zu einer Höhe von minus 0.8 gefärbt und aufsteigend schraffiert, um die Speichergröße und die Phase der Einspeicherung zu kennzeichnen. Der Bereich von minus 0.8 bis minus 1 ist gepunktet, was die Einspeicherverluste bei einem Wirkungsgrad von 0.8 kennzeichnet. Der zweite Balken mit den positiven Werten ist bis zu einer Höhe von 0.64 absteigend schraffiert, um die Phase der Ausspeicherung zu kennzeichnen. Der Bereich von 0.64 bis 0.8 ist großgepunktet, um die Ausspeicherverluste bei einem Wirkungsgrad von 0.8 zu kennzeichnen. Die Fläche von 0.8 bis 1 ist ungekennzeichnet weiß und entspricht, ebenso wie der Bereich der Ausspeicherverluste, der durch Lastfolgekraftwerke zu bedienenden Restlast."
 
 # Ein- und Ausspeicherwirkungsgrad
 ## dummy Daten erzeugen
@@ -1773,15 +1764,14 @@ Wie aus der Grenzstromanalyse im Abschnitt [@sec-Pumpspeicherinhalt] bekannt, he
 
 ### Zyklik
 Im Zeitraum eines Jahres beeinflusst die Reihenfolge von Phasen mit erneuerbaren Überschüssen und mit positiver Restlast, wie groß ein Speicher ausgelegt werden muss.
-**Man könnte noch eine gestrichelte Linie einzeichnen, die den Gang der Speicherfüllung zeigt. Dafür habe ich auch schon eine Funktion.**  
-**TO DO: fig-alt**
 
 ::: {layout="[40, 60]"}
 
 ```{python}
 #| echo: false
+#| fig-alt: "In zwei Grafiken sind zwei vereinfachte, aus je vier Balken bestehende Restlastkurven für zwei aufeinanderfolgende Jahresgänge dargestellt. Auf der x-Achse sind die 730 Tage der zwei aufeinanderfolgenden Jahre dargestellt, auf der y-Achse die Restlast von minus 1 bis 1. In der oberen Grafik ist der Zweijahresgang der Restlast bei einem Defizit an erneuerbarer Überschussproduktion dargestellt. Im ersten Halbjahr beträgt die positive Restlast 1, die noch nicht durch eingespeicherten Strom gedeckt werden kann. Im zweiten Halbjahr beträgt die Restlast minus 0.5. Dieser Balken ist eingefärbt und aufsteigend schraffiert. Die Färbung zeigt die erforderliche Speichergröße an, die aufsteigende Schraffierung die Phase der Einspeicherung. Im zweiten Jahr wiederholt sich der Jahresgang. Im dritten Halbjahr beträgt die positive Restlast somit erneut 1. Der dritte Balken mit den positiven Werten in Höhe von 1 ist bis zur halben Höhe 0.5 nach rechts unten absteigend schraffiert - dies zeigt die Phase der Ausspeicherung an. Der Bereich von 0.5 bis 1 ist unausgefüllt - dieser entspricht der durch Lastfolgekraftwerke zu bedienenden Restlast. Im vierten Halbjahr beträgt die negative Restlast erneut minus 0.5. Der Balken ist aufsteigend schraffiert, um die erneute Einspeicherung in den Speicher anzuzeigen. In der unteren Grafik ist der Zweijahresgang der Restlast bei einem Überschuss an erneuerbarer Überschussproduktion dargestellt. Im ersten Halbjahr beträgt die positive Restlast 0.5, die noch nicht durch eingespeicherten Strom gedeckt werden kann. Im zweiten Halbjahr beträgt die Restlast minus 1. Dieser Balken ist bis zur Höhe minus 0.5 aufsteigend schraffiert, um die Phase der Einspeicherung zu kennzeichnen. Der Bereich von minus 0.5 bis minus 1 ist unmarkiert weiß, dieser entspricht dem ungenutzten erneuerbaren Überschuss. Im zweiten Jahr wiederholt sich der Jahresgang. Im dritten Halbjahr beträgt die positive Restlast erneut 0.5. Der dritte Balken mit den positiven Werten in Höhe von 0.5 ist eingefärbt und nach rechts unten absteigend schraffiert - dies zeigt die benötigte Speichergröße und die Phase der Ausspeicherung an. Im vierten Halbjahr beträgt die Restlast minus 1. Dieser Balken ist bis zur Höhe minus 0.5 aufsteigend schraffiert, um die Phase der Einspeicherung zu kennzeichnen. Der Bereich von minus 0.5 bis minus 1 ist unmarkiert weiß, dieser entspricht dem ungenutzten erneuerbaren Überschuss."
 
-# Reihenfolgerisiko erneuerbare Unterproduktion 1 Jahr
+# Reihenfolgeabhängigkeit erneuerbare Unterproduktion 1 Jahr
 ## dummy Daten erzeugen
 dummy_index = np.linspace(1, 365, 365)
 dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(1, 1, 365 // 2), np.linspace(-0.5, -0.5, 365 // 2 - 1), np.linspace(0, 0, 1)])
@@ -1796,7 +1786,7 @@ dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(1, 1, 365 // 2), 
 # plt.title(label = my_title);
 # # plt.legend()
 
-# # Reihenfolgerisiko erneuerbare Überproduktion 1 Jahr
+# # Reihenfolgeabhängigkeit erneuerbare Überproduktion 1 Jahr
 # ## dummy Daten erzeugen
 # dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(0.5, 0.5, 365 // 2), np.linspace(-1, -1, 365 // 2 - 1),np.linspace(0, 0, 1)])
 
@@ -1810,7 +1800,7 @@ dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(1, 1, 365 // 2), 
 # plt.title(label = my_title);
 # # plt.legend()
 
-# Reihenfolgerisiko erneuerbare Unterproduktion 2 Jahre
+# Reihenfolgeabhängigkeit erneuerbare Unterproduktion 2 Jahre
 ## dummy Daten erzeugen
 dummy_index = np.linspace(1, 365 * 2, 365 * 2)
 dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(1, 1, 365 // 2), np.linspace(-0.5, -0.5, 365 // 2 - 1), np.linspace(0, 0, 1), np.linspace(0, 0, 1), np.linspace(1, 1, 365 // 2), np.linspace(-0.5, -0.5, 365 // 2 - 1), np.linspace(0, 0, 1)])
@@ -1832,7 +1822,7 @@ plt.axhline(y = 0, color = 'black', linestyle = '-')
 plt.title(label = '2 Jahresgänge der Restlast' + ' bei EE-Defizit');
 plt.legend(loc = 'lower center', ncols = 3)
 
-# Reihenfolgerisiko erneuerbare Überproduktion 2 Jahre
+# Reihenfolgeabhängigkeit erneuerbare Überproduktion 2 Jahre
 ## dummy Daten erzeugen
 dummy_data = np.concatenate([np.linspace(0, 0, 1), np.linspace(0.5, 0.5, 365 // 2), np.linspace(-1, -1, 365 // 2 - 1),np.linspace(0, 0, 1), np.linspace(0, 0, 1), np.linspace(0.5, 0.5, 365 // 2), np.linspace(-1, -1, 365 // 2 - 1),np.linspace(0, 0, 1)])
 
@@ -1863,6 +1853,7 @@ Reihenfolgeabhängigkeit
 
 ```{python}
 #| echo: false
+#| fig-alt: "In zwei Grafiken sind zwei vereinfachte Jahresgänge der Restlast dargestellt. Auf der x-Achse sind die 365 Tage des Jahres dargestellt, auf der y-Achse die Restlast von minus 1 bis 1. In der oberen Grafik ist der Jahresgang der Restlast für einen Vollzyklus aus kompletter Ladung und Entladung mit zwei Balken dargestellt. Im ersten Halbjahr beträgt die Restlast minus 1, der Balken ist eingefärbt und aufsteigend schraffiert. Die Färbung zeigt die erforderliche Speichergröße an, die aufsteigende Schraffierung die Phase der Einspeicherung. Im zweiten Halbjahr beträgt die positive Restlast 1. Dieser Balken ist zur Kennzeichnung der Ausspeicherung nach rechts unten absteigend schraffiert. In der unteren Grafik ist der Jahresgang der Restlast für zwei Vollzyklen mit vier Balken dargestellt. Im ersten Vierteljahr beträgt die Restlast minus 1, der Balken ist eingefärbt und aufsteigend schraffiert. Die Färbung zeigt die erforderliche Speichergröße, die halb so groß wie in der oberen Grafik ist, an, die aufsteigende Schraffierung die Phase der Einspeicherung. Im zweiten Vierteljahr beträgt die positive Restlast 1. Dieser Balken ist zur Kennzeichnung der Ausspeicherung nach rechts unten absteigend schraffiert. Im zweiten Halbjahr wiederholt sich die Abfolge von Ein- und Ausspeicherung in Höhe von 1."
 
 # ein Vollzyklus
 ## dummy Daten erzeugen
@@ -1920,6 +1911,7 @@ Anzahl Vollzyklen
 
 ```{python}
 #| echo: false
+#| #| fig-alt: "In zwei Grafiken sind zwei vereinfachte Jahresgänge der Restlast mit Teilzyklen dargestellt. Auf der x-Achse sind die 365 Tage des Jahres dargestellt, auf der y-Achse die Restlast von minus 1 bis 1. In der oberen Grafik ist der Jahresgang der Restlast bei einem Defizit an erneuerbarer Überschussproduktion mit vier Balken dargestellt. Im ersten Vierteljahr beträgt die negative Restlast minus 0.5, der Balken ist eingefärbt und aufsteigend schraffiert. Die Färbung zeigt die erforderliche Speichergröße an, die aufsteigende Schraffierung die Phase der Einspeicherung. Im zweiten Vierteljahr beträgt die positive Restlast 0.25 - hier beginnt die teilweise Ausspeicherung, weshalb der Balken absteigend schraffiert ist. Im dritten Vierteljahr beträgt die negative Restlast erneut minus 0.5. Der Balken ist schraffiert, um die Phase der Einspeicherung anzuzeigen. Der Bereich von 0 bis minus 0.25 ist nicht gefärbt - hier beginnt die teilweise Einspeicherung, es wird zunächst die zuvor entnommene Strommenge im Speicher wieder aufgefüllt. Der Bereich von minus 0.25 bis minus 0.5 ist gefärbt, diese Strommenge wird zusätzlich in den Speicher gefüllt. Die eingespeicherte Strommenge beträgt nun insgesamt 0.75. Im vierten Vierteljahr beträgt die positive Restlast 1. Der Bereich von 0 bis 0.75 ist absteigend schraffiert, der Speicher wird entleert. Der Bereich von 0.75 bis 1 ist nicht markiert weiß - dies ist die durch Lastfolgekraftwerke zu deckende Restlast. In der unteren Grafik ist der Jahresgang der Restlast bei einem Überschuss an erneuerbarer Überschussproduktion mit vier Balken dargestellt. Im ersten Vierteljahr beträgt die negative Restlast minus 1, der Balken ist aufsteigend schraffiert, um die Phase der Einspeicherung zu markieren. Im zweiten Vierteljahr beträgt die positive Restlast 0.25 - hier beginnt die teilweise Ausspeicherung, weshalb der Balken absteigend schraffiert ist. Im dritten Vierteljahr beträgt die negative Restlast erneut minus 1. Der Balken ist bis zu einer Höhe von minus 0.25 aufsteigend schraffiert, um die Phase der Einspeicherung anzuzeigen - der zuvor dem Speicher entnommene Strom wird wieder aufgefüllt. Der Bereich von minus 0.25 bis minus 1 ist nicht markiert, dieser Überschussstrom wird nicht eingespeichert. Im vierten Vierteljahr beträgt die positive Restlast 1. Dieser Balken ist gefärbt, um die benötigte Speichergröße anzuzeigen, und absteigend schraffiert, um die Phase der Ausspeicherung anzuzeigen."
 
 # Teilzyklen bei erneuerbarer Unterproduktion
 ## dummy Daten erzeugen
@@ -2119,7 +2111,7 @@ print(f"erforderliche Speichergröße 2023: {speicher_2023:,.1f} MWh\nDies entsp
 :::
 
 #### Jahresgang des Speichers
-Nachdem die Speichergröße bestimmt wurde, kann der Jahresgang des Speichers für das erste und das zweite Jahr bestimmt werden. Der Jahresgang des Speichers für das zweite Jahr ist das stabile Gleichgewicht, mit dem eine gegebene Restlastkurve beliebig oft durchlaufen werden kann.
+Nachdem die Speichergröße bestimmt wurde, kann der Jahresgang des Speichers für das erste und das zweite Jahr berechnet werden. Der Jahresgang des Speichers für das zweite Jahr ist das stabile Gleichgewicht, mit dem eine gegebene Restlastkurve beliebig oft durchlaufen werden kann.
 
   - Eingabe: Der folgenden Funktion kann eine Speichergröße übergeben werden, andernfalls wird diese durch Aufruf der Funktion berechne_speichergröße() ermittelt.
 
@@ -2522,13 +2514,13 @@ zyklenzahl_berechnen(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwirkung
 Aufgrund der geringen erneuerbaren Erzeugungsschüsse im Jahr 2023 ist die Zyklenzahl in Jahr 1 und Jahr 2 identisch. Wenn der Wirkungsgrad berücksichtigt wird, steigt die Zyklenzahl, weil der Speicher kleiner dimensioniert ist.
 
 ### Kappung
-**Man könnte noch eine gestrichelte Linie einzeichnen, die den Gang der Speicherfüllung zeigt. Dafür habe ich auch schon eine Funktion.**  
-**TO DO: Grafiken aktualisieren, fig-alt**
+**TO DO: fig-alt**
 
 ::: {layout="[40, 60]"}
 
 ```{python}
 #| echo: false
+#| fig-alt: "In zwei Grafiken sind zwei vereinfachte, aus je vier Balken bestehende Restlastkurven im Jahresgang dargestellt. Auf der x-Achse sind die 365 Tage des Jahres dargestellt, auf der y-Achse die Restlast von minus 1 bis 1. In der oberen Grafik ist der Jahresgang eines Speicher ohne Kappung von Erzeugungsspitzen dargestellt. Im ersten Vierteljahr ist die Restlast negativ in Höhe von minus 1. Der erste Balken ist eingefärbt und nach links oben aufsteigend schraffiert. Die Färbung zeigt die erforderliche Speichergröße an, die aufsteigende Schraffierung die Phase der Einspeicherung. Im zweiten Vierteljahr ist die Restlast positiv in Höhe von 1, die Ausspeicherung ist durch eine absteigende Schraffierung gekennzeichnet. Es folgen im dritten und vierten Vierteljahr Phasen der Ein- bzw. Ausspeicherung in Höhe von minus bzw. plus 0.5, die entsprechend schraffiert sind. Auf diese Weise werden 1,5 Ein- und Ausspeicherzyklen realisiert. In der unteren Grafik ist der gleiche Jahresgang dargestellt, allerdings wird die Speichergröße auf 0.5 begrenzt. Im ersten Vierteljahr mit einer Restlast in Höhe von -1 werden deshalb nur -0.5 eingespeichert. Dies ist durch eine Einfärbung und aufsteigende Schraffierung des Bereichs zwischen 0 und 0.5 dargestellt. Der Bereich von minus 0.5 bis minus 1 ist ungekennzeichnet weiß. Dieser Überschussstrom wird nicht eingespeichert. Ebenso wird im zweiten Vierteljahr die Restlast in Höhe von 1 nur zur Hälfte aus dem Speicher bedient. Die Restlast im Bereich 0.5 bis 1 muss durch Lastfolgekraftwerke gedeckt werden. Die folgenden Phasen der Ein- bzw. Ausspeicherung im dritten und vierten Vierteljahr entsprechen der Restlast in Höhe von minus bzw. plus 0.5. Der auf 0.5 begrenzte Speicher erreicht dadurch 2 Ein- und Ausspeicherzyklen."
 
 # ohne Kappung
 ## dummy Daten erzeugen
@@ -2590,10 +2582,10 @@ Auf Grundlage des Jahresgangs des Speichers kann der Effekt der Kappung von Erze
 
   - Eingabe: Der Funktion ist eine Restlastdatenreihe als pd.Series und optional eine Liste reduzierter Speichergrößen, ausgedrückt als relative Bruchteile von 1, zu übergeben. Wird keine Liste übergeben, erfolgt die Berechnung für die relativen Speichergrößen [0.9, 0.8, 0.7, 0.6, 0.5].
 
-  - Verarbeitung: Für die Restlast werden durch Aufruf der Funktion jahresgang_speicher_berechnen die ungekappte Speichergröße und Jahresgänge in Jahr 1 und in Jahr 2 berechnet. Anschließend wird durch Aufruf der Funktion zyklenzahl_berechnen die erreichte Zyklenzahl bestimmt. Anhand der Jahresgänge wird die eingespeicherte Strommenge berechnet. Dazu wird mit der Methode `pd.Series.diff()` elementweise die Differenz jedes Werts zu seinem Vorgänger gebildet (gleitende Differenz). Wie auch bei der Berechnung der Zyklenzahl wird dazu dem Jahresgang in Jahr 1 eine Null vorangestellt, dem Jahresgang in Jahr 2 der letzte Wert aus Jahr 1. Die eingespeicherte Strommenge ist die Summe alle positiven Werte dieser Reihe. (Negative Werte bedeuten eine Reduzierung des Ladestands zwischen zwei Zeitpunkten, zeigen also Phasen der Ausspeicherung an.) Deshalb werden negative Werte mit der Methode `.clip` Null gesetzt. Die Anweisung lautet: ´pd.Series.diff().clip(lower = 0).sum()`.  
-  Diese Schritte werden für alle übergebenen Elemente in der Variablen neue_speichergrößen wiederholt. Dazu wird die Speichergröße ohne Kappung mit jeweils einer der relativen Speichergrößen multipliziert und die erreichte Zyklenzahl sowie die eingespeicherte Strommenge berechnet. Aus der Differenz der eingespeicherten Strommengen für jede neue Speichergröße zum Basisjahr wird die gekappte Strommenge bestimmt.
+  - Verarbeitung: Für die Restlast werden durch Aufruf der Funktion jahresgang_speicher_berechnen die ungekappte Speichergröße und Jahresgänge in Jahr 1 und in Jahr 2 berechnet. Anschließend wird durch Aufruf der Funktion zyklenzahl_berechnen die erreichte Zyklenzahl bestimmt. Anhand der Jahresgänge wird die eingespeicherte Strommenge berechnet. Dazu wird mit der Methode `pd.Series.diff()` elementweise die Differenz jedes Werts zu seinem Vorgänger gebildet (gleitende Differenz). Wie auch bei der Berechnung der Zyklenzahl wird dazu dem Jahresgang in Jahr 1 eine Null vorangestellt, dem Jahresgang in Jahr 2 der letzte Wert aus Jahr 1. Die eingespeicherte Strommenge ist die Summe aller positiven Werte dieser Reihe. Negative Werte bedeuten eine Reduzierung des Ladestands zwischen zwei Zeitpunkten, zeigen also Phasen der Ausspeicherung an. Deshalb werden negative Werte mit der Methode `.clip` Null gesetzt. Die Anweisung lautet: `pd.Series.diff().clip(lower = 0).sum()`.  
+  Diese Schritte werden für alle übergebenen Elemente in der Variablen neue_speichergrößen wiederholt. Dazu wird die Speichergröße ohne Kappung mit jeweils einer der relativen Speichergrößen multipliziert und die erreichte Zyklenzahl sowie die eingespeicherte Strommenge berechnet. Aus der Differenz der eingespeicherten Strommenge für jede neue Speichergröße zum Basisjahr wird die gekappte Strommenge bestimmt.
 
-  - Ausgabe: Wenn `output = False`, wird ein DataFrame mit drei Spalten zurückgegeben. Die Spalte mit Index 0 enthält die relative Speichergröße, Die Spalten 1 und 2 die gekappten Strommengen in Jahr 1 und Jahr 2. Wenn' output = True' wird dieser DataFrame mit 'print()' ausgegeben. Zusätzlich wird ein fünfspaltiger DataFrame mit den Zwischenergebnissen (inklusive Basisjahr) mit 'print()' ausgegeben. Dieser enthält in der Spalte mit Index 0 die absolute Speichergröße sowie in den folgenden Spalten die eingespeicherte Strommenge in Jahr 1 (Spalte mit Index 1), die Zyklenzahl in Jahr 1 (Spalte mit Index 2), die eingespeicherte Strommenge in Jahr 2 (Spalte mit Index 3), die Zyklenzahl in Jahr 2 (Spalte mit Index 4).
+  - Ausgabe: Wenn `output = False`, wird ein DataFrame mit drei Spalten zurückgegeben. Die Spalte mit Index 0 enthält die relative Speichergröße, Die Spalten 1 und 2 die gekappten Strommengen in Jahr 1 und Jahr 2. Wenn' output = True' wird dieser DataFrame mit `print()` ausgegeben. Zusätzlich wird ein fünfspaltiger DataFrame mit den Zwischenergebnissen (inklusive Basisjahr in Zeile 0) mit `print()` ausgegeben. Dieser enthält in der Spalte mit Index 0 die absolute Speichergröße sowie in den folgenden Spalten die eingespeicherte Strommenge in Jahr 1 (Spalte mit Index 1), die Zyklenzahl in Jahr 1 (Spalte mit Index 2), die eingespeicherte Strommenge in Jahr 2 (Spalte mit Index 3), die Zyklenzahl in Jahr 2 (Spalte mit Index 4).
   
 ::: {.panel-tabset}
 ## ohne Wirkungsgrad
@@ -2773,13 +2765,13 @@ effekt_kappung_berechnen(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwir
 ## Anteil erneuerbarer Stromerzeugung bestimmen
 Durch die Integration eines Stromspeichers in das Stromsystem kann erneuerbare Überschussproduktion in Phasen mit einer positiven Restlast verschoben werden, die andernfalls durch Lastfolgekraftwerke zu decken wäre. Dadurch sinkt der Anteil konventioneller Stromerzeugung und steigt der Anteil erneuerbarer Stromerzeugung.
 
-**To Do: fig-alt**  
-**eigentlich ist die Ausspeicherung falsch dargestellt (je nach Leistung des Speichers)... die muss doppelt so hoch und halb so breit sein. Das trifft dann auch auf die Einspeicherung in anderen Grafiken zu.**
-
 ::: {layout="[40, 60]"}
 
 ```{python}
 #| echo: false
+#| fig-alt: "In zwei Grafiken ist eine vereinfachte, aus zwei Balken bestehende Restlastkurve im Jahresgang bei einem Defizit erneuerbarer Energieerzeugung dargestellt. Auf der x-Achse sind die 365 Tage des Jahres dargestellt, auf der y-Achse die Restlast von minus 1 bis 1. In der ersten Jahreshälfte ist die Restlast negativ in Höhe von minus 0.5, in der zweiten Jahreshälfte positiv in Höhe von 1. Dies ist durch jeweils einen Balken in entsprechender Höhe dargestellt. Der erste Balken mit den negativen Werten ist eingefärbt und nach links oben aufsteigend schraffiert. Die Färbung zeigt die erforderliche Speichergröße an, die aufsteigende Schraffierung die Phase der Einspeicherung. Der zweite Balken mit den positiven Werten ist bis zur halben Höhe 0.5 nach rechts unten absteigend schraffiert - dies zeigt die Phase der Ausspeicherung an. Der Bereich von 0.5 bis 1 ist unausgefüllt - dieser entspricht der durch Lastfolgekraftwerke zu bedienenden Restlast."
+
+
 
 ## dummy Daten erzeugen
 dummy_index = np.linspace(1, 365, 365)
@@ -2803,13 +2795,13 @@ plt.legend()
 ```
 
 Anteil erneuerbarer Stromproduktion bestimmen
-: Die Ausspeicherung von Strom vermindert die positive Restlast. 
-: Der Anteil konventionell zu deckender Last entspricht dem Quotienten aus der summierten positiven Restlast und der summierten Netzlast bzw. aus der summierten positiven Restlast und der summierten Stromerzeugung.
-: Der Anteil erneuerbarer Stromproduktion entspricht 100 Prozent - konventioneller Anteil.
+: Die Ausspeicherung von Strom vermindert die positive Restlast 
+: Wird der ausgespeicherte Strom von der positiven Restlast abgezogen (in Summe oder im Jahresgang), entspricht der Anteil konventionell zu deckender Last dem Quotienten aus der summierten positiven Restlast und der summierten Netzlast bzw. aus der summierten positiven Restlast und der summierten Stromerzeugung.
+: Der Anteil erneuerbarer Stromproduktion entspricht 1 - Anteil konventionell zu deckender Last.
 
 :::
 
-Der Anteil erneuerbarer Stromproduktion wird deshalb wie folgt berechnet:
+Der Anteil erneuerbarer Stromproduktion kann deshalb wie folgt berechnet werden:
 
 ``` {python}
 
@@ -2825,12 +2817,12 @@ print(f"Summe positive Restlast [MWh]: {restlast.clip(lower = 0).sum()}\n"
       f"Anteil erneuerbarer Erzeugung: {1 - (restlast.clip(lower = 0).sum() / erzeugung.sum(numeric_only = True).sum()):,.2f}")
 ```
 
-Die Netzlast aus dem Datensatz verbrauch weicht mit 458 TWh geringfügig von der summierten Stromerzeugung aus dem Datensatz erzeugung in Höhe von 448 TWh ab. Dadurch unterscheiden sich die berechneten Anteile geringfügig voneinander.
+Die Netzlast aus dem Datensatz verbrauch weicht mit 458 TWh geringfügig von der summierten Stromerzeugung aus dem Datensatz erzeugung in Höhe von 448 TWh ab. Dadurch unterscheiden sich die berechneten Anteile leicht.
 
 #### Berechnung
 Grundlage für die Berechnung des Anteils erneuerbarer Stromerzeugung nach Ausspeicherung erneuerbarer Überschussproduktion ist der Jahresgang des Speichers. Die Ausspeicherung von Strom bedeutet eine Verminderung des Ladestands zwischen zwei Zeitpunkten. Der ausgespeicherte Strom vermindert die positive Restlast zu diesem Zeitpunkt. Dadurch nimmt der Quotient aus der positiven Restlast und der Netzlast ab und der Anteil erneuerbarer Stromerzeugung steigt. Dies ist in der folgenden Funktion umgesetzt.
 
-  - Eingabe: Der Funktion wird eine Restlastdatenreihe übergeben. Optional kann zusätzlich eine Netzlastdatenreihe übergeben werden. Ebenso kann optional eine Liste reduzierter Speichergrößen, ausgedrückt als relative Bruchteile von 1, übergeben werden. Wird keine Liste übergeben, erfolgt die Berechnung für die relativen Speichergrößen [0.9, 0.8, 0.7, 0.6, 0.5]
+  - Eingabe: Der Funktion wird eine Restlastdatenreihe übergeben. Optional kann zusätzlich eine Netzlastdatenreihe übergeben werden. Ebenso kann optional eine Liste reduzierter Speichergrößen, ausgedrückt als relative Bruchteile von 1, übergeben werden. Wird keine Liste übergeben, erfolgt die Berechnung für die relativen Speichergrößen [0.9, 0.8, 0.7, 0.6, 0.5].
 
   - Verarbeitung: Durch Aufruf der Funktion jahresgang_speicher_berechnen() werden für die Restlastdatenreihe die Jahresgänge des Stromspeichers mit relativer Größe 1 berechnet. Mit den Jahresgängen wird die ausgespeicherte Strommenge im Jahresgang mit der Methode `pd.Series.diff().clip(upper = 0)` bestimmt. Auch für diese gleitende Differenzberechnung wird dem Jahresgang in Jahr 1 eine Null vorangestellt, dem Jahresgang in Jahr 2 der letzte Wert aus Jahr 1. Der erste Wert im Jahresgang der ausgespeicherten Strommenge ist NaN, weshalb dieser Wert entfällt und der Index zurückgesetzt wird. Der vollständige Befehl lautet: `pd.Series.diff().clip(upper = 0)[1: ].reset_index(drop = True)`. Die Jahresgang der ausgespeicherten Strommenge wird von der Restlastkurve abgezogen und so die Restlastkurve nach Ausspeicherung bestimmt. Da die Ausspeicherung im Jahresgang durch negative Werte angezeigt wird, erfolgt die Differenzbildung durch Addition.  
   Wenn eine Netzlastdatenreihe übergeben wurde, wird auf der Grundlage der Restlastkurve nach Ausspeicherung der realisierte Anteil erneuerbarer Erzeugung berechnet: 1 - (Summe positive Restlast / Summe Netzlast). Die Berechnungen werden für kleiner dimensionerte Speicher wiederholt.
@@ -2935,7 +2927,7 @@ def anteil_ee_berechnen(data, netzlast = -1, neue_speichergrößen = [0.9, 0.8, 
                           
   if output: # Anteil EE ausgeben
 
-    print(f"Summe Netzlast: {netzlast.sum():,.2f}\nSumme positive Restlast: {data.clip(lower = 0).sum():,.2f}\tSumme negative Restlast: {data.clip(upper = 0).sum():,.2f}\nSpeichergröße: {speichergröße0:,.2f}\tAnteil EE ohne Speicher: {1 - ( data.clip(lower = 0).sum() / netzlast.sum() ) if len(netzlast) > 1 else '--':,.2f}\n")
+    print(f"Summe Netzlast: {netzlast.sum():,.2f}\nSumme positive Restlast: {data.clip(lower = 0).sum():,.2f}\tSumme negative Restlast: {data.clip(upper = 0).sum():,.2f}\nSpeichergröße 1: {speichergröße0:,.2f}\tAnteil EE ohne Speicher: {1 - ( data.clip(lower = 0).sum() / netzlast.sum() ) if len(netzlast) > 1 else '--':,.2f}\n")
     print(dataframe_anteil_ee)
     
   else: # Restlastkurven zurückgeben
@@ -3040,7 +3032,7 @@ def anteil_ee_berechnen(data, netzlast = -1, einspeicherwirkungsgrad = 1, ausspe
                           
   if output: # Anteil EE ausgeben
 
-    print(f"Summe Netzlast: {netzlast.sum():,.2f}\nSumme positive Restlast: {data.clip(lower = 0).sum():,.2f}\tSumme negative Restlast: {data.clip(upper = 0).sum():,.2f}\nSpeichergröße: {speichergröße0:,.2f}\tAnteil EE ohne Speicher: {1 - ( data.clip(lower = 0).sum() / netzlast.sum() ) if len(netzlast) > 1 else '--':,.2f}\n")
+    print(f"Summe Netzlast: {netzlast.sum():,.2f}\nSumme positive Restlast: {data.clip(lower = 0).sum():,.2f}\tSumme negative Restlast: {data.clip(upper = 0).sum():,.2f}\nSpeichergröße 1: {speichergröße0:,.2f}\tAnteil EE ohne Speicher: {1 - ( data.clip(lower = 0).sum() / netzlast.sum() ) if len(netzlast) > 1 else '--':,.2f}\n")
     print(dataframe_anteil_ee)
     
   else: # Restlastkurven zurückgeben
@@ -3057,15 +3049,15 @@ Für das Jahr 2023 ergäbe sich durch die Netzintegration eines Stromspeichers z
 
 Mit steigendem Anteil erneuerbarer Erzeugung wird die Speicherung überschüssiger Stromerzeugung jedoch immer relevanter werden. Die Dimension der erforderlichen Stromspeicher können mit den entwickelten Funktionen für den Ausbaupfad erneuerbarer Energien abgeschätzt werden.
 
-## Aufgabe analytische Datenanalyse
+## Aufgabe schließende Datenanalyse
 
 **Berechnen Sie entsprechend des von der Bundesregierung vorgegebenen Ausbaupfads den Anteil erneuerbarer Stromerzeugung für das Jahr 2030 und für das Jahr 2035 (siehe [@lst-zubaufaktoren]).**
 
   - Wie groß ist der maximal benötigte Speicher?
   
-  - Welcher Anteil erneuerbarer Stromerzeugung wird erreicht, wenn der Speicher halb so groß dimensioniert wird?
+  - Welcher Anteil erneuerbarer Stromerzeugung wird erreicht, wenn der Speicher halb so groß, ein Zehntel so groß oder ein Hundertstel so groß dimensioniert wird?
   
-  - Als Netzlast verwenden Sie die Netzlast des Jahres 2023 (siehe untenstehenden Hinweis).
+  - Als Netzlast verwenden Sie die Projektionen des Stromverbrauchs für das Jahr 2030 und 2035.
 
   - Für den Wirkungsgrad können die bestehenden Pumpspeicherkraftwerke als Orientierung dienen. Der Gesamtwirkungsgrad wurde mit 79.10 Prozent berechnet. Diesem Wirkungsgrad entspricht näherungsweise eine Aufteilung von Einspeicherwirkungsgrad = 0.9, Ausspeicherwirkungsgrad = 0.88.
 
@@ -3088,7 +3080,10 @@ Stromverbrauchprojektion 2030: <https://www.bmwk.de/Redaktion/DE/Downloads/E/pro
 Stromverbrauchprojektion 2035: <https://www.netzausbau.de/SharedDocs/Downloads/DE/Bedarfsermittlung/2035/SR/Szenariorahmen_2035_Entwurf.pdf?__blob=publicationFile> S. 54 670,4 TWh (Szenario B)
 :::
 
-Das Bild kann das Titelbild für die Aufgabe werden :-) 
+**Marc kann eine Musterlösung für die in der Aufgabe gestellten Werte erstellen.**
+
+:::: {#tip-aufgabe-schließende-datenanalyse .callout-tip title="Musterlösung Aufgabe schließende Datenanalyse" collapse="true"}
+Die folgende Lösung dient zur Orientierung, da mit anderen als in der Aufgabe gestellten Speichergrößen gerechnet wird.
 
 ::: {.panel-tabset}
 
@@ -3170,10 +3165,370 @@ anteil_ee_berechnen(restlast_2035, netzlast = netzlast_2035, einspeicherwirkungs
 
 ```
 
+:::
+
+::::
+
+Ein grafische Ausgabe könnte wie folgt aussehen.
+
+### das könnten wir doch einfach mal für verschiedene Prozent Cmax darstellen
+**To Do: fig-alt, fig-cap**
+
+::: {.panel-tabset}
+
+## 80 % 2030
+``` {python}
+#| echo: false
+
+# Daten generieren
+## Speichergröße bestimmen und 80 Prozent berechnen
+speichergröße_2030_80 = berechne_speichergröße(restlast_2030, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False) * 0.8
+
+## Jahresgang des Speichers bestimmen
+speicher_2030_80_wirkungsgrad_90_88 = jahresgang_speicher_berechnen(restlast_2030, speichergröße = speichergröße_2030_80, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+
+jahresgang_speicher_jahr1 = speicher_2030_80_wirkungsgrad_90_88[1]
+jahresgang_speicher_jahr2 = speicher_2030_80_wirkungsgrad_90_88[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2030 und Jahresgang eines Speichers mit\n C$_{max}$ = 0.8, η$_{ein}$ = 0.9 und η$_{aus}$ = 0.88')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.2))
+
+## plot restlast
+ax1.plot(restlast_2030, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+
+# Zyklenzahl berechnen, Übergabe von Tupel = Wirkungsgrade werden nicht benötigt
+zyklenzahl_berechnen(speicher_2030_80_wirkungsgrad_90_88, output = True)
+
+# Anteil EE berechnen
+anteil_ee_berechnen(restlast_2030, netzlast = netzlast_2030, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, neue_speichergrößen = [0.8], output = True)
+
+```
+
+## 80 % 2035
+
+``` {python}
+#| echo: false
+
+# Daten generieren
+## Speichergröße bestimmen und 80 Prozent berechnen
+speichergröße_2035_80 = berechne_speichergröße(restlast_2035, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False) * 0.8
+
+## Jahresgang des Speichers bestimmen
+speicher_2035_80_wirkungsgrad_90_88 = jahresgang_speicher_berechnen(restlast_2035, speichergröße = speichergröße_2035_80, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+
+jahresgang_speicher_jahr1 = speicher_2035_80_wirkungsgrad_90_88[1]
+jahresgang_speicher_jahr2 = speicher_2035_80_wirkungsgrad_90_88[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2035 und Jahresgang eines Speichers mit\n C$_{max}$ = 0.8, η$_{ein}$ = 0.9 und η$_{aus}$ = 0.88')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.2))
+
+## plot restlast
+ax1.plot(restlast_2035, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+
+# Zyklenzahl berechnen, Übergabe von Tupel = Wirkungsgrade werden nicht benötigt
+zyklenzahl_berechnen(speicher_2035_80_wirkungsgrad_90_88, output = True)
+
+# Anteil EE berechnen
+anteil_ee_berechnen(restlast_2035, netzlast = netzlast_2035, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, neue_speichergrößen = [0.8], output = True)
+
+```
+
+## 20 % 2030
+``` {python}
+#| echo: false
+
+# Daten generieren
+## Speichergröße bestimmen und 20 Prozent berechnen
+speichergröße_2030_20 = berechne_speichergröße(restlast_2030, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False) * 0.2
+
+## Jahresgang des Speichers bestimmen
+speicher_2030_20_wirkungsgrad_90_88 = jahresgang_speicher_berechnen(restlast_2030, speichergröße = speichergröße_2030_20, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+
+jahresgang_speicher_jahr1 = speicher_2030_20_wirkungsgrad_90_88[1]
+jahresgang_speicher_jahr2 = speicher_2030_20_wirkungsgrad_90_88[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2030 und Jahresgang eines Speichers mit\n C$_{max}$ = 0.2, η$_{ein}$ = 0.9 und η$_{aus}$ = 0.88')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.2))
+
+## plot restlast
+ax1.plot(restlast_2030, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+
+# Zyklenzahl berechnen, Übergabe von Tupel = Wirkungsgrade werden nicht benötigt
+zyklenzahl_berechnen(speicher_2030_20_wirkungsgrad_90_88, output = True)
+
+# Anteil EE berechnen
+anteil_ee_berechnen(restlast_2030, netzlast = netzlast_2030, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, neue_speichergrößen = [0.2], output = True)
+
+```
+
+## 20 % 2035
+
+``` {python}
+#| echo: false
+
+# Daten generieren
+## Speichergröße bestimmen und 20 Prozent berechnen
+speichergröße_2035_20 = berechne_speichergröße(restlast_2035, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False) * 0.2
+
+## Jahresgang des Speichers bestimmen
+speicher_2035_20_wirkungsgrad_90_88 = jahresgang_speicher_berechnen(restlast_2035, speichergröße = speichergröße_2035_20, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+
+jahresgang_speicher_jahr1 = speicher_2035_20_wirkungsgrad_90_88[1]
+jahresgang_speicher_jahr2 = speicher_2035_20_wirkungsgrad_90_88[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2035 und Jahresgang eines Speichers mit\n C$_{max}$ = 0.2, η$_{ein}$ = 0.9 und η$_{aus}$ = 0.88')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.2))
+
+## plot restlast
+ax1.plot(restlast_2035, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+
+# Zyklenzahl berechnen, Übergabe von Tupel = Wirkungsgrade werden nicht benötigt
+zyklenzahl_berechnen(speicher_2035_20_wirkungsgrad_90_88, output = True)
+
+# Anteil EE berechnen
+anteil_ee_berechnen(restlast_2035, netzlast = netzlast_2035, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, neue_speichergrößen = [0.2], output = True)
+
+```
+
+## 4 % 2030
+``` {python}
+#| echo: false
+
+# Daten generieren
+## Speichergröße bestimmen und 4 Prozent berechnen
+speichergröße_2030_04 = berechne_speichergröße(restlast_2030, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False) * 0.04
+
+## Jahresgang des Speichers bestimmen
+speicher_2030_04_wirkungsgrad_90_88 = jahresgang_speicher_berechnen(restlast_2030, speichergröße = speichergröße_2030_04, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+
+jahresgang_speicher_jahr1 = speicher_2030_04_wirkungsgrad_90_88[1]
+jahresgang_speicher_jahr2 = speicher_2030_04_wirkungsgrad_90_88[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2030 und Jahresgang eines Speichers mit\n C$_{max}$ = 0.04, η$_{ein}$ = 0.9 und η$_{aus}$ = 0.88')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.2))
+
+## plot restlast
+ax1.plot(restlast_2030, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+
+# Zyklenzahl berechnen, Übergabe von Tupel = Wirkungsgrade werden nicht benötigt
+zyklenzahl_berechnen(speicher_2030_04_wirkungsgrad_90_88, output = True)
+
+# Anteil EE berechnen
+anteil_ee_berechnen(restlast_2030, netzlast = netzlast_2030, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, neue_speichergrößen = [0.04], output = True)
+
+```
+
+## 4 % 2035
+
+``` {python}
+#| echo: false
+
+# Daten generieren
+## Speichergröße bestimmen und 4 Prozent berechnen
+speichergröße_2035_04 = berechne_speichergröße(restlast_2035, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False) * 0.04
+
+## Jahresgang des Speichers bestimmen
+speicher_2035_04_wirkungsgrad_90_88 = jahresgang_speicher_berechnen(restlast_2035, speichergröße = speichergröße_2035_04, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+
+jahresgang_speicher_jahr1 = speicher_2035_04_wirkungsgrad_90_88[1]
+jahresgang_speicher_jahr2 = speicher_2035_04_wirkungsgrad_90_88[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2035 und Jahresgang eines Speichers mit\n C$_{max}$ = 0.04, η$_{ein}$ = 0.9 und η$_{aus}$ = 0.88')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.2))
+
+## plot restlast
+ax1.plot(restlast_2035, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+
+# Zyklenzahl berechnen, Übergabe von Tupel = Wirkungsgrade werden nicht benötigt
+zyklenzahl_berechnen(speicher_2035_04_wirkungsgrad_90_88, output = True)
+
+# Anteil EE berechnen
+anteil_ee_berechnen(restlast_2035, netzlast = netzlast_2035, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, neue_speichergrößen = [0.04], output = True)
+
+```
 
 :::
 
-Witzig ist, dass hier die 80-20-Regel gilt. Mit 20 Prozent des Aufwands erreicht man 80 Prozent des Weges. Daten für 2035:
+
+## Zusammenfassung
+Zusammenfassung: Datenanalyse macht Spaß ... (so etwas in der Richtung)
+
+  - Interessante Fragen ergeben sich fast von alleine, wenn man einen Datensatz gründlich untersucht (beschreiben, erkunden, auswerten)
+
+  - komplexe Arbeitsschritte sollten in überschaubare Teilschritte unterteilt werden
+
+  - Funktionen sollten mit überschaubaren Testdaten entwickelt und überprüft werden
+
+  - Je mehr erneuerbare Überschusserzeugung zur Verfügung steht, desto kleiner kann ein Speicher dimensioniert werden. Dennoch ist eine 100-prozentige Versorung auf der Grundlage volatiler Erzeugung und Speicherung kaum zu realisieren, da die erforderliche Speichergröße für das Erreichen von 95 %, 98 %, 99 % bis 100 % erneuerbaren Anteils exponentiell steigt. Entsprechend dimensionierte Stromspeicher können mit einstelligen Vollzyklenzahlen im Jahr nicht wirtschaftlich betrieben werden (siehe Jahresgang der Pumpspeicherkraftwerke). Dies gilt jedoch nur in einem System, in dem erneuerbare Energien Einspeisevorrang genießen und keinen Anreiz haben, in Lastfolge zu arbeiten. **Querverweis auf Kapitel Übungen einfügen**
+
+Für 80 Prozent:  
+2030: Der Speicher weist die meiste Zeit des Jahrs Ladestände im Bereich der Ladekapzität auf. Eine hohe Entladetiefe wird nur von Ende November bis Ende März erreicht. 
+
+2035: Der Speicher ist die meiste Zeit des Jahres voll. Eine größere Entladung findet von Anfang Dezember bis Ende Februar statt.
+
+Witzig ist, dass hier die 80-20-Regel ([Paretoprinzip](https://de.wikipedia.org/wiki/Paretoprinzip)) gilt. Mit 20 Prozent des Aufwands erreicht man 80 Prozent des Weges. Daten für 2035:
 
   - Anteil EE ohne Speicher: 0.89 --> Weg bis 100 Prozent = 0.11
 
@@ -3181,148 +3536,17 @@ Witzig ist, dass hier die 80-20-Regel gilt. Mit 20 Prozent des Aufwands erreicht
 
   - dies entspricht 55.4 Pumpspeicheräquivalenten bzw. 2073.8 GWh, was 41.5 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe mit 50 GWh/a entspricht. Die Fabrik könne bis zu 250 GWh/a produzieren. Dann reichen 8,3 Jahresproduktionen für die Zielerreichung von 98 Prozent EE bis 2035. (<https://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschlandhttps://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschland>)
 
-### Sammelsurium
-Frage: Analytische Statistik: Wie groß müsste der Speicher sein, wenn EE bei 60, 80, 100 Prozent liegt? --> benötigte Leistung und Kapazität sowie die Zyklenzahl sind interessant. **Anschließend könnte man die Wirtschaftlichkeit ausrechnen mit den Börsenstrompreisen.**
-= Minimumabschätzung im „Kupferplattenmodell“ also ohne technische Verluste
+  - mit einer relativen Speichergröße von 0.04 (20 Prozent von 0.20) wird ein EE-Anteil von 0.95 erreicht
 
-### Zyklenzahl berechnen (mit Teilzyklen)
-**Den Jahresgang des Speichers habe ich bereits... hier braucht man nur die elementweise Differenz aufsummieren, durch 2 teilen und man hat die Zyklenzahl. Als Vergleich kann man die Zyklenzahl der deutschen Pumpspeicher nehmen: Das sollten etwa 297 sein (Ausspeicherung von 11,1 TWh / 37,4 GWh Kapazität).**
+  - Dies entspricht 11,1 Pumpspeicheräquivalenten bzw. 415 GWh, was 8,3 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe bzw. 1,7 Jahresprdouktionen im Vollausbau entspricht. 
 
-**Wie berechnet man nun die Zyklenzahl?. Ein Zyklus sei eine vollständige Ladung und Entladung. Wir müssen also die Zeitpunkte bestimmen, in denen der Speicher geladen und entladen wird. Dafür müssen wir die Speichergröße kennen, die Zyklenzahl wird also nach deren Bestimmung berechnet. Dafür braucht man die cumsum-Funktion, die nie unter (über) Null fällt, nur dass zusätzlich zur Bedingung nie unter Null, zusätzlich nie über Speichergröße eingesetzt wird. Das Vorzeichen der Restlast wird invertiert (=Einspeicherung mit positiven Vorzeichen) und die cumsumfunktion mit oberer und unterer Schranke laufen gelassen. Werte über der Speichergrenze oder unter Null werden Null gesetzt (Kappung bzw. Speicher leer). Die so modifizierte Restlastlinie wird absolut gesetzt und summiert: Das ist die Summe der Stromein- und ausflüsse. Man teile durch zwei und die Speicherkapazität und man erhält die Vollzyklenzahl.**
-**Nicht ganz exakt ist es, Werte die über die Speichergrenze gehen bzw. unter Null gehen würden komplett zu verwerfen. Wenn das passiert, dann kann man die Verwerfen und den Speicherstand auf Null bzw. Voll setzen.**
+### Mögliche Hinweise
 
-### Erzeugung kappen
-**Wie kappt man Erzeugungsspitzen sinnvoll?**
+  - Minimumabschätzung im „Kupferplattenmodell“ also ohne technische Verluste (Datengrundlage sind aber tatsächlich realisierte Stromflüsse im deutschen Stromsystem)
 
-Man könnte das aber auch aus dem Jahresgang des Ladestands abgreifen. Der Speicher wird geladen... man sucht elementweise die positive Differenz (der Speicher wird voller) und summiert die. Dann gleicht man das ab mit dem gekappten Speicher -- da müsste die Summe kleiner sein und die Differenz beider Summen ist der nicht eingespeicherte Strom.
-Man muss das für Jahr 1 und Jahr 2 berechnen (Jahr 2 ist relevanter)
+  - Abregelung unberücksichtigt
 
-dem Jahresgang muss eine Null vorangestellt werden, falls es in der ersten Periode zu einer Einspeicherung kommt
-data.diff().clip(lower = 0).sum()
-
-dann für originale und verschiedene Speichergrößen vergleichen
-
-Es wird ja schon jetzt gekappt, wenn EE-Überschuss herrscht. Das kann man bei EE-Überschuss in der Formel selbst abgreifen und zwar hier:
-
-```
-    else: # i <= 0 EE-Überschuss
-      
-      # wenn der Speicher voll ist, muss Überschuss verworfen werden.
-      if freie_speicherkapazität + i * einspeicherwirkungsgrad < 0: 
-        freie_speicherkapazität = 0
-```
-
-man muss die Differenz aus i und freie_speicherkapazität bilden - das ist der "Überhang" der gekappt wird
-    else: # i <= 0 EE-Überschuss
-      
-      # wenn der Speicher voll ist, muss Überschuss verworfen werden.
-      if freie_speicherkapazität + i * einspeicherwirkungsgrad < 0:
-        gekappte_einspeisung = i - freie_speicherkapazität 
-        freie_speicherkapazität = 0
-
-Man könnte das aber auch aus dem Jahresgang des Ladestands abgreifen. Der Speicher wird geladen... man sucht elementweise die positive Differenz (der Speicher wird voller) und summiert die. Dann gleicht man das ab mit dem gekappten Speicher -- da müsste die Summe kleiner sein und die Differenz beider Summen ist der nicht eingespeicherte Strom.
-Man muss das in Jahr 2 abgreifen
-
-**Vorüberlegungen**
-: **Variante 1: naives kappen der größten Überschüsse.** Hier müsste man in der .cumsum() (niemals über/unter 0) einfach das Minimum suchen und um den gewünschten Prozentwert reduzieren. Problem 1: Einzelne Spitzen müssen nicht notwendigerweise die Phasen sein, die die Speichergröße bestimmen - das können auch aufeinanderfolgende kleinere Überschüsse sein. Problem 2: Die Kappung führt nicht zwangsläufig zu einer höheren Zyklenzahl (bspw. [8, 16, 8, -12, -16, 10, 13, 10]) - hier wird immer ein Zyklus gefahren, egal wie groß der Speicher ist. Eine anteilige Begrenzung der Einspeicherung bewirkt lediglich eine anteilige Reduktion der Speichergröße. --> man muss das vom Jahresgang des Speichers / eventl. auch der Zyklenzahl abhängig machen.
-: **Wie reduziert man prozentual Erzeugungsspitzen? Man sortiert die Restlast aufsteigend (große negative Werte zuerst), schneidet alle Werte größer gleich Null ab, setzt den Betrag absolut, lässt cumsum() darüber laufen und setzt mit der sum() ins Verhältnis. Dann legt man einen Anteilswert fest, z. B. 0.05 und bestimmt dessen Indexposition (man schreibe eine Funktion find_nearest(array, value = 0.05).**
-**def find_nearest(a, a0): # gibt den Wert zurück, man kann aber auch den .index zurückgeben
-    "Element in nd array `a` closest to the scalar value `a0`"
-    idx = np.abs(a - a0).argmin()
-    return a.flat[idx]** https://stackoverflow.com/a/10465997
-**Jetzt muss man noch kappen... wie kommt man auf genau 5 Prozent?**
-Fall 1: Der Wert entspricht genau dem value 0.05, dann setzt man alle Restlastwerte links davon auf den returnierten Wert
-Fall 2: Der Wert ist kleiner als der value 0.05. Dann setzt dann setzt man alle Restlastwerte links davon auf den returnierten Wert und muss noch die Differenz bereinigen. Das geht in dem man die alle Wert links bis zur Indexposition von value mit 1 - (Kriterium - returnierter Wert) multipliziert.
-Fall 3: Der Wert ist größer als der value 0.05, dann setzt man alle Restlastwerte links vavon auf den returnierten Wert und muss noch die Differenz bereinigen. Das geht in dem man die alle Wert links bis zur Indexposition von value mit 1 - (Kriterium - returnierter Wert) multipliziert.
-Das Vorgehen kann für alle drei Fälle angewendet werden. Mit der so modifizierten Restlastkurve kann dann die cumsum-niemals über / unter 0 Funktion angewendet werden.
-: **Variante 2**: kappen nach Jahresgang des Speichers. Mit der Methode not duplicated können wir die Anzahl der Phasen bestimmen, in denen der Speicher voll ist (freie Kapazität = 0) - Problem: voll - kleine Entnahme - voll - kleine Entnahme - voll. Beim Speicher sind gar nicht die Lade-Entladespitzen das Problem, sondern ein Sockel, der praktisch immer geladen (oder immer leer) ist und nur einmal im Jahr wieder entladen wird. --> eigentlich muss man sich den Jahresgang des Speichers angucken und die Anzahl Vollzyklen berechnen. Die Vollzyklen steigert man, indem der Sockel reduziert wird. Der Sockel ist je nach Szenario (EE-Überschuss, EE-Unterproduktion) fast immer voll / fast immer leer. Hier könnte folgende Grafik helfen: Auf der x-Achse ist die auf 1 (also geteilt durch die Speichergröße) normierte Jahresdauerlinie des Speichers aufgetragen. Links ist Null, rechts ist 1. Auf der bei 1 beginnenden y-Achse die erreichte Zyklenzahl. **Die Berechnung sei trivial ;-)**
-: **Variante 3** Ein kurzer Blick in Zerrahn et al. 2018, Kapitel 4.1 (S. 265) diskutiert leistungsorientiertes Kappen. Überschüsse oberhalb der Einspeicherleistung werden gekappt. Die Autoren nutzen eine Schwelle von 44.1 Gigawatt. Das wird aber in Kapitel 4.2 (S. 267) wieder verworfen, weil nicht einzelne Erzeugungsspitzen sondern längere Perioden von Erzeugungsüberschüssen die Speichergröße bestimmen (siehe Variante 1 naives kappen). In Kapitel 4.2 wird energieorientiertes Kappen vorgeschlagen. Gekappt wird nur, wenn der Speicher voll ist (siehe Diskussion Variante 1). Die Veränderung der Speichergröße durch Kappung scheinen die Autoren durch Ausprobieren zu bestimmen: "we iterate through minimum renewable requirements and maximum renewable curtailment constraints to explore the solution space and endogenously determine minimum storage capacities."  
-**Mit dem Vorgehen braucht man nicht an der Kappung rumrechnen, sondern kann umgekehrt den Anteil "weggeworfener" EE bestimmmen, wenn der Speicher x-Prozent kleiner ist.
-
-
-
-I) Hans-Werner Sinns Weihnachtsvorlesung 2022 nachrechnen. Sinn argumentiert auf der Datenbasis 2019.
-
-Schritt 1: Erzeugung des deutschen Wind- und Sonnenstroms auf Stundenbasis darstellen. Netzlast in das Diagramm einzeichnen.
-
-  a) ohne Abregelung EE nach Sinn
-
-  b) mit x % Abregelung EE nach https://www.sciencedirect.com/science/article/pii/S0014292118301107
-
-II) Szenario Biomasse als Lastfolge
-
-Sinn hat glaube ich ausgerechnet, wie groß ein Speicher sein müsste, um überschießende Spitzen erneuerbarer Produktion zu speichern.
-Das Problem ist: Wir wollen ja keinen immer voller laufenden Speicher haben, sondern die maximale Größe kann beschränkt, wenn alle nachfolgenden Phasen der Unterdeckung aus dem Speicher bedient werden können. Ab Mitte April beginnt eine Phase, in der in jeder Periode mehr eingespeichert als entnommen wird.
-
-```
-Erst mal muss man prüfen, ob man mit einem Speicher * Wirkungsgrad eine Vollversorgung erreicht. Wirkungsgrad der Pumpspeicher passt ganz gut, damit sind auch Übertragungsverluste näherungsweise abgedeckt.
-
-- Restlast.sum()
-  --> wenn 0 oder positiv, bleibt über das Jahr eine Unterdeckung bzw. man muss sich über eine Überspeicherung keine Sorgen machen
-  --> wenn negativ, bleibt über das Jahr ein Überschuss (das ist der kompliziertere Fall)
-    
-    - Dann guckt man einfach umgekehrt, indem man die Phasen der Unterdeckung rollierend summiert
-
-einfacher Fall:
-Periode 0: Der Speicher ist leer. speicherstart = 0
-
-Solange Datum bis != 31.12.2023 00:00 TUE
-1. Perioden aus Ein- und Ausspeicherung bestimmen
-Init Periodensuche index = 0 
-erste Periode mit Restlast < 0 suchen # hier beginnt das Einspeichern
-  index bestimmen = index_beginn_einspeicherung_periode
-  ab index_beginn_einspeicherung_periode (df = df[df['A'].gt(0).idxmax():]) Vorwärtssuche: restlast.gt(0).idxmax() - 1 = Ende Einspeicherung Periode
-nächste Periode mit Restlast > 0 suchen
-  ab index_beginn_einspeicherung_periode Vorwärtssuche: restlast.gt(0).idxmax() = index_beginn_ausspeicherung_periode
-  ab index_beginn_ausspeicherung_periode Vorwärtssuche: restlast.lt(0).idxmax() - 1 = index_ende_ausspeicherung_periode
-
-Das Periodenende kann man auch mit cumsum finden --> immer dann, wenn die cumsum 0 ist (oder von positiv auf negativ übergeht), ist der Speicher leer.
-
-
-2. Periode beginnt bei ab index_beginn_ausspeicherung_periode Vorwärtssuche: restlast.lt(0).idxmax()
-
---> Damit lässt sich eine Anzahl an pd.Series aus Index und Restlast erstellen
---> kontrollieren muss man irgendwie, wann man den 31.12.2023 00:00 erreicht hat.
-
-Problem: Methode idxmax ist nicht zuverlässig
-data = pd.Series([0, 1, 2, 3])
-data.eq(5).idxmax()
-0 ... das ist komisch und das selbe Ergebnis wie für den Aufruf data.eq(0).idxmax() = nicht gut
-
-Lösung:
-data[min(data[data.gt(0)].index)]
-1
-
-data[min(data[data.gt(5)].index)]
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-ValueError: min() iterable argument is empty
-
-try:
-...   data[min(data[data.gt(5)].index)]
-... except:
-...   print("There are no Values meeting the criteria")
-...
-There are no Values meeting the criteria
-https://www.w3schools.com/python/python_try_except.asp
-
-You can use the else keyword to define a block of code to be executed if no errors were raised.
-The finally block, if specified, will be executed regardless if the try block raises an error or not.
->>>
-
-Kann man lösen: len(data.eq(5)) ist 0, wenn es keinen Treffer gibt.
-
-
- !# bis hier bemisst sich der notwendige Speicherhub aus Der Differenz von speicherende = cumsum(Restlast) und speicherstart
- !# hier beginnt das Ausspeichern solange, bis der Speicher leer ist oder die nächste Periode beginnt speicherstart = speicherende
- 
- eventl. eine Variable periodenüberschuss anlegen. Wenn der periodenüberschuss > 0 ist, kann geprüft werden, ob die nächste Periode aus dem Überschuss plus Einspeicherung bei konstanter Speichergröße bedient werden kann. Falls ja, können die Perioden zusammengelegt werden. Wiederholen für die nächste Periode... Wenn man damit bis Jahresende kommt, reicht die Speichergröße aus der ersten Periode für das ganze Jahr. Falls nicht, muss man die Folgeperioden abschreiten und schauen, ob 
-
-Das Ende der ersten vollen Periode, ist der Beginn der zweiten Periode.
-
-Klingt kompliziert, eventuell ist es einfacher, den Speichergang zu simulieren.
-Angefangen bei Speichergröße = 1 MWh und dann immer inkrementieren...
-```
+  - Stromhandel zum Ausland unberücksichtigt (Differenz Netzlast und Stromerzeugung)
 
 # Informationen zu Speichern
 Viele Zahlen in diesem Artikel: https://www.msn.com/de-de/finanzen/top-stories/energiewende-das-riesige-potenzial-der-e-autos-f%C3%BCr-die-energiewende/ar-BB1mErcB?ocid=entnewsntp&pc=U531&cvid=3d61906f85914af89a3255239a2138f0&ei=23
@@ -3384,7 +3608,9 @@ Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überp
 
 # Übungen
 
-Anteil EE 2030 und 2035 berechnen, wenn Biomasse in den Lastfolgebetrieb geht. **vorher kurz mal den Jahresgang Biomasse plotten.**
+Wir haben gesehen, dass durch die Kappung von Erzeugungsspitzen in einem von erneuerbarer Überschussproduktion geprägtem Stromsystem der erforderliche Stromspeicher um Größenordnungen kleiner dimensioniert werden kann. Allerdings verbleiben dann wenige Prozent der Jahresstromnachfrage, die nicht erneuerbar aus der laufenden Produktion oder durch Ausspeicherung gedeckt werden können. Eine Option bestünde darin, die Biomassekraftwerke in Lastfolge zu betreiben.
+
+Berechnen Sie die erforderliche Speichergröße, wenn der Anteil erneuerbarer Energien 2030 und 2035 100 Prozent betragen soll und Biomassekraftwerke in Lastfolge betrieben werden. Der Einspeicherwirkungsgrad betrage 0.9, der Ausspeicherwirkungsgrad = 0.88.  **vorher kurz mal den Jahresgang Biomasse plotten.**
 
 <!-- # Resterampe -->
 
