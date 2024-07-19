@@ -2,7 +2,7 @@
 .DS_Store
 
 # Ignore Jupyter Cache
-.jupyter_cache
+.jupyter_cache/
 
 # Ignore quarto build data
 /.quarto/
