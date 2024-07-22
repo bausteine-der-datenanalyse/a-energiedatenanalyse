@@ -1,7 +1,7 @@
 # Voraussetzungen
 Die Bearbeitungszeit dieses Bausteins beträgt circa **Platzhalter**. Für die Bearbeitung dieses Bausteins werden folgende Bausteine vorausgesetzt und die genannten Bibliotheken verwendet:
 
-- Werkzeugbaustein Python **4 Links, 4 verschiedene Quellen**
+- Werkzeugbaustein Python
 
   - Modul [random](https://docs.python.org/3/library/random.html)
   

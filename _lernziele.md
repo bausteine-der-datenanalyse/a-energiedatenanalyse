@@ -1,6 +1,4 @@
 # Lernziele
-**TO DO: ergänzen**
-
 In diesen Baustein lernen Sie Methoden und Werkzeuge für die Energiedatenanalyse kennen. Dabei bilden Prinzipien und Verfahren zur Auslegung eines Stromspeichers einen inhaltlichen Schwerpunkt.
 
 Die behandelten Methoden umfassen:

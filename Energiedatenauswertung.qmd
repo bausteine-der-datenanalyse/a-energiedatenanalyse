@@ -79,9 +79,6 @@ BibTeX-Vorlage
 
 {{< include _lernziele.md >}}
 
-**Simones Skript als Quelle benennen und zitieren - ist Lukas auch Autor?**  
-[@Arnold-2023-Strommarktdatenanalyse]
-
 # Hintergrund
 Elektrischer Strom wird in Kraftwerken erzeugt und über das Stromnetz zu den Stromverbrauchern transportiert. Stromerzeugung und -verbrauch müssen dabei immer ausgeglichen sein. Der Anteil wetterabhängiger erneuerbarer Einspeisung steigt, Strom kann bislang aber nicht (kostengünstig) großtechnisch gespeichert werden. 2023 speisten die Pumpspeicherkraftwerke in Deutschland bei einer Kapazität von 37,4 GWh [@Heimerl-Kohler-2017-Pumpspeicher-in-Deutschland, S. 77] 11,1 TWh Strom ein, was 2,4 Prozent des deutschen Stromverbrauchs von 458,3 TWh entsprach [@energy-charts-strom]. Die Kraftwerkseinsatzplanung und Speicherauslegung auf Basis von Erzeugungs- und Verbrauchsdaten ist deshalb ein relevantes Anwendungsfeld für die Datenanalyse.  
 Die Bundesnetzagentur veröffentlicht auf [https://www.smard.de/](https://www.smard.de/home/downloadcenter/download-marktdaten/) unter anderem Daten zu Stromerzeugung, -verbrauch und Großhandelspreisen. (Hinweis: Kraftwerksdaten liegen für Erzeugungseinheiten mit einer installierten Erzeugungsleistung von mindestens 100 MW vor.)
@@ -153,42 +150,6 @@ Sehen Sie sich die Zeichenkette zur Spezifikation des Datumsformats an: `"%d.%m.
 
 <textarea id=“date-format” name=“date-format” rows="4" cols="80">Hier können Sie Ihre Antwort eingeben. Die Lösung finden Sie im Aufklapper.</textarea>
 
-**Aufgabe eher für m-Baustein Einlesen strukturierter Datensätze geeignet. Als Folgeaufgabe könnte man mit Hilfe der Dokumentation die englische Datei 'Actual_generation_202301010000_202401010000_Quarterhour' einlesen lassen.**
-
-::: {.callout-note collapse="true"}
-## english version
-
-english version
-```{python}
-#| include: true
-#| results: hold # process code first, then print output
-
-import pandas as pd
-
-erzeugung0_en = pd.read_csv(filepath_or_buffer = \
-"skript/01-daten/english/Actual_generation_202301010000_202401010000_Quarterhour.csv", \
-sep = ";", thousands = ",", decimal = ".", \
-parse_dates =  [0, 1], date_format = "%b %d, %Y %I:%M %p") # leading zero is optional for formats %d, %m, %H, %I, %M, %S, %j, %U, %W, and %V
-
-pd.concat([erzeugung0_en.head(2), erzeugung0_en.tail(2)])
-```
-
-:::: {#tip-date-format .callout-tip title="Solution date format" collapse="true"}
-
-| Directive | Meaning |
-|---|---|
-| %b | Month as locale’s abbreviated name (Jan, Feb, ...) with delimiter " " |
-| %d | Day with delimiter ",&nbsp;" |
-| %Y | Year as four digit decimal with delimiter " " |
-| %I:| Hour as two digit decimal (leading zero is optional) with delimiter ":" |
-| %M | Minute as two digit decimal with delimiter " " |
-| %p | AM or PM |
-
-**Solution:** Apr 14, 2023 2:00 PM
-
-::::
-:::
-
 ::: {#tip-datumsformat .callout-tip title="Lösung Datumsformat" collapse="true"}
 
 <!-- Das Format ist in den englischen Dateien unterschiedlich! -->
@@ -204,6 +165,7 @@ pd.concat([erzeugung0_en.head(2), erzeugung0_en.tail(2)])
 **Lösung**: 14.04.2023 14:15
 
 :::
+
 
 # Daten organisieren
 Vor der Datenanalyse sollte überprüft werden, ob die Daten korrekt eingelesen wurden. Dies bedeutet zum einen, zu kontrollieren, ob der Datentyp aller Spalten richtig erkannt wurde. Ob die Spaltentypen einer Datei korrekt eingelesen wurden, können Sie in Python mit dem Befehl `df.dtypes` überprüfen. Hier der Output des Befehls für den DataFrame `erzeugung0`.
@@ -312,14 +274,11 @@ print(f"Der DataFrame erzeugung hat {erzeugung.shape[0]} Zeilen und {erzeugung.s
 erzeugung.describe(include = [np.number])
 ```
 
-**To Do: value.counts**
-
 &nbsp;
 
-Aus der beschreibenden Statistik der Daten kann beispielsweise entnommen werden, dass Onshore Wind den größten Beitrag zur Stromerzeugung lieferte. Ebenfalls ist auffällig, dass weder Onshore Wind noch Photovoltaik eine minimale Erzeugung von 0 aufweisen, was jedoch für Wind Offshore und Kernenergie der Fall ist.  
-**Warum ist das bei Photovoltaik so? -- Simone fragt nach. In Österreich ist das nicht der Fall!** 
+Aus der beschreibenden Statistik der Daten kann beispielsweise entnommen werden, dass Onshore Wind den größten Beitrag zur Stromerzeugung lieferte. Ebenfalls ist auffällig, dass weder Onshore Wind noch Photovoltaik eine minimale Erzeugung von 0 aufweisen, was jedoch für Wind Offshore und Kernenergie der Fall ist.
 
-## Ablesen ist pfui, visualisieren ist hui (Arbeitstitel)
+## Visualisieren
 Die Auswertung der beschreibenden Statistik für 12 verschiedene Erzeugungsformen erfordert jedoch Konzentration. Komplexe Informationen sollten deshalb grafisch aufbereitet werden.
 
 Einen schnellen Überblick beispielsweise über die Verteilung der Gesamterzeugungsleistung nach Erzeugungsart verschafft ein Kreis- bzw. Ringdiagramm. Allerdings hat dieser Diagrammtyp, wie im **Methodenbaustein Grundlagen der Statistik (Kapitel 2 einzelne Merkmale)** erläutert, den Nachteil, dass dieser mit steigender Anzahl von Merkmalsausprägungen (bzw. hier darzustellenden Merkmalen) schnell unübersichtlich wird und Winkel kaum exakt abgelesen werden können.
@@ -359,7 +318,6 @@ plotting_data.columns = plotting_data.columns.str.replace(pat = " [MWh]", repl =
 ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = False, autopct='%1.1f%%', pctdistance = 0.6, textprops = dict(size = 7, color = 'black'), wedgeprops = {"linewidth": 0.5, "edgecolor": "white"})
 
 # make a donut
-my_axis = plt.gca() # plt.gca = get current axis
 circle = plt.Circle((0, 0), radius = 0.7, color = "white")
 ax.add_patch(circle)
 ```
@@ -386,17 +344,16 @@ plotting_data.columns = plotting_data.columns.str.replace(pat = " [MWh]", repl =
 ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = False, autopct='%1.1f%%', pctdistance = 0.6, textprops = dict(size = 7, color = 'black'), wedgeprops = {"linewidth": 0.5, "edgecolor": "white"})
 
 # make a donut
-my_axis = plt.gca() # plt.gca = get current axis
 circle = plt.Circle((0, 0), radius = 0.7, color = "white")
 ax.add_patch(circle)
 ```
 
 :::
 
-**wird `my_axis = plt.gca()` überhaupt benötigt?** 
 ### Daten aggregieren
 
-Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visuellen Beschreibung der Erzeugungsleistung nicht unbedingt ein prägnanter Befund. Eine Möglichkeit, um Daten besser zu verstehen, besteht darin, ähnliche Merkmale zusammenzufassen. Im Folgenden werden erneuerbare und konventionelle (mit fossilen Brennstoffen betriebene) Erzeugungsarten für die Darstellung der Anteilswerte in einem Ringdiagramm zusammengefasst. Beide Gruppen werden zusätzlich in einem Balkendiagramm dargestellt. Für die Darstellung wird das Modul `matplotlib.pyplot` verwendet. Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen. **Marc fragen, ob er Erläuterungen zum Plot wünscht.**
+Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visuellen Beschreibung der Erzeugungsleistung nicht unbedingt ein prägnanter Befund. Eine Möglichkeit, um Daten besser zu verstehen, besteht darin, ähnliche Merkmale zusammenzufassen. Im Folgenden werden erneuerbare und konventionelle (mit fossilen Brennstoffen betriebene) Erzeugungsarten für die Darstellung der Anteilswerte in einem Ringdiagramm zusammengefasst. Beide Gruppen werden zusätzlich in einem Balkendiagramm dargestellt. Für die Darstellung wird das Modul `matplotlib.pyplot` verwendet. Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen.  
+**Marc fragen, ob er Erläuterungen zum Plot wünscht.**
 
 ::: {.panel-tabset}
 
@@ -453,7 +410,6 @@ ax = plt.subplot(nrows, ncols, (3, 6))
 plt.pie(x = plotting_data.sum(), colors = my_colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.5, textprops = dict(size = font_size + 1), wedgeprops = {"linewidth": 0.5, "edgecolor": "white"})
 
 # make a donut
-my_axis = plt.gca() # plt.gca = get current axis
 circle = plt.Circle((0, 0), radius = 0.65, color = "white")
 ax.add_patch(circle)
 
@@ -521,7 +477,6 @@ ax = plt.subplot(nrows, ncols, (3, 6))
 plt.pie(x = plotting_data.sum(), colors = my_colors, startangle = 350, labels = list(plotting_data.columns), autopct='%1.1f%%', pctdistance = 0.5, textprops = dict(size = font_size + 1), wedgeprops = {"linewidth": 0.5, "edgecolor": "white"})
 
 # make a donut
-my_axis = plt.gca() # plt.gca = get current axis
 circle = plt.Circle((0, 0), radius = 0.65, color = "white")
 ax.add_patch(circle)
 
@@ -553,8 +508,7 @@ Tipp: Stellen Sie sich vor, Sie würden die Grafik spontan einem:einer Freund:in
 :::
 
 ### Erzeugung, Speicherung, Einspeisung
-Pumpspeicherkraftwerke sind Energiespeicher, die keine Primärenergie erzeugen, sondern den von anderen Erzeugern produzierten Strom speichern und bei Bedarf wieder ins Netz einspeisen. Die realisierte Netzeinspeisung von Pumpspeicherkraftwerken entspricht somit der um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung) verminderten Energieerzeugung anderer Stromerzeuger. Der Wirkungsgrad der Pumpspeicherkraftwerke kann mit den vorliegenden Daten für das Jahr 2023 berechnet werden. **Wie hoch war der Wirkungsgrad der Pumpspeicherkraftwerke 2023?**  
-Welche Erzeuger Strom zum Befüllen der Pumpspeicher lieferten, wird in [@sec-explorative-datenanalyse] untersucht.
+Pumpspeicherkraftwerke sind Energiespeicher, die keine Primärenergie erzeugen, sondern den von anderen Erzeugern produzierten Strom speichern und bei Bedarf wieder ins Netz einspeisen. Welche Erzeuger Strom zum Befüllen der Pumpspeicher lieferten, wird in [@sec-explorative-datenanalyse] untersucht. Die realisierte Netzeinspeisung von Pumpspeicherkraftwerken entspricht der um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung) verminderten Energieerzeugung anderer Stromerzeuger. Der Wirkungsgrad der Pumpspeicherkraftwerke kann mit den vorliegenden Daten für das Jahr 2023 berechnet werden. **Wie hoch war der Wirkungsgrad der Pumpspeicherkraftwerke 2023?**  
 
 ::: {#tip-wirkungsgrad-pumpspeicher .callout-tip title="Lösung Wirkungsgrad Pumpspeicher" collapse="true"}
 
@@ -643,15 +597,11 @@ Alle negativen Werte = Einspeichern (entspricht Verbrauchsdaten der Bundesnetzag
 
 Alle positiven Werte = Einspeisung (entspricht Erzeugungsdaten der Bundesnetzagentur)
 
+Außerdem ist die Erzeugung von Solar in Deutschland nie 0, in Österreich schon. 
+
 (**Hinweis: Ich habe bislang nur kurz in den Datensatz reingeschaut.**)
 ::::
 :::
-
-### Optionen für Abschnitt beschreibende Statistik
-
-  * gestapeltes Histogramm (das ist schwer, wenn man es nicht manuell macht) für die Erzeugung in einem Monat oder in einer Woche - eine Woche im Winter, eine Woche im Sommer
-
-**Eigentlich müsste man die Datensätze umstrukturieren, wenn man weiter damit arbeiten möchte, um Erzeugung von Speicherung zu trennen.**
 
 # Explorative Datenanalyse {#sec-explorative-datenanalyse}
 Explorative Datenanalyse bedeutet, Fragen an die vorliegenden Daten zu stellen und diese mittels datenanalytischer Methoden zu beantworten. Die so gewonnenen Erkenntnisse können helfen, die Fragen zu verfeinern oder neue Fragen zu generieren. Es handelt sich also um einen iterativen Prozess. Dadurch soll vor allem ein tieferes Verständnis der Daten gewonnen werden. [@R-for-Data-Science, Kapitel 10  Exploratory data analysis]
@@ -857,7 +807,8 @@ Für die Frage nach der Herkunft des in den Pumpspeicherkraftwerken gespeicherte
 
 Der Jahresgang der Restlast gleicht dem Erzeugungsverlauf der volatilen erneuerbaren Energien. Dies stellt für die konventionellen Kraftwerke eine Herausforderung dar. Dieser Aspekt wird im nächsten Abschnitt vertieft. 
 
-Zunächst aber eine kleine Aufgabe: **Wie würde sich eine Verdopplung der erneuerbaren Erzeugung auf die Restlast auswirken? Stellen Sie den Effekt auf vergleichbare Weise grafisch dar (z. B. durch eine zusätzliche Spalte 'Netzlast - 2x EE').**
+Zunächst aber eine kleine Aufgabe:  
+**Wie würde sich eine Verdopplung der erneuerbaren Erzeugung auf die Restlast auswirken? Stellen Sie den Effekt auf vergleichbare Weise grafisch dar (z. B. durch eine zusätzliche Spalte 'Netzlast - 2x EE').**
 
 ::: {#tip-verdopplung-EE .callout-tip title="Musterlösung Verdopplung EE" collapse="true"}
 
@@ -1244,7 +1195,8 @@ plt.show()
 
 Beim Vergleich der erzielten Jahresvolllaststunden konnte festgestellt werden, dass die Auslastung der Steinkohle eher der des Spitzenlasterzeugers Erdgas als des Mittellasterzeugers Braunkohle entspricht. In der grafischen Darstellung der sortierten Jahresdauerlinien wird darüber hinaus deutlich, dass das Erzeugungsprofil der Steinkohle dem der Braunkohle sogar weniger ähnelt als dem von Erdgas.
 
-Bisher wurde ausschließlich die Erzeugung durch konventionelle Kraftwerke betrachtet. Biomasse und Braunkohle erreichen vergleichbare Jahresvolllaststunden, sodass ein Vergleich beider Erzeuger interessant sein könnte. **Stellen Sie den Jahresgang und die Jahresdauerlinien für Biomasse und Braunkohle dar.**
+Bisher wurde ausschließlich die Erzeugung durch konventionelle Kraftwerke betrachtet. Biomasse und Braunkohle erreichen vergleichbare Jahresvolllaststunden, sodass ein Vergleich beider Erzeuger interessant sein könnte.  
+**Stellen Sie den Jahresgang und die Jahresdauerlinien für Biomasse und Braunkohle dar.**
 
 **Die Musterlösung könnte Marc machen.**
 
@@ -1335,7 +1287,7 @@ plt.legend()
 
 ::: 
 
-Die Grafik spiegelt die bei der Bestimmung der Residual- und Restlast gewonnene Erkenntnis wider, dass mit dem im Jahr 2023 realisierten Strommix zusätzliche Stromnachfrage vorwiegend konventionell bedient wird.
+Die Grafik spiegelt die bei der Bestimmung der Residual- und Restlast gewonnene Erkenntnis wider, dass mit dem im Jahr 2023 realisierten Strommix zusätzliche Stromnachfrage vorwiegend konventionell bedient wird.  
 **Wie sähe die Grafik aus, wenn die Einspeisung aus erneuerbaren Energien doppelt so hoch ausgefallen wäre?**
 
 **Marc fragen, ob die Aufgabe an der Stelle zu simpel ist.**
@@ -1589,7 +1541,7 @@ static_data = pd.Series([8, -14, -7, 1, 3, -6, 5, -20, -2, 12], dtype = 'float')
 :::
 
 ### Überschuss oder Defizit erneuerbarer Energien
-Die erforderliche Größe des Stromspeichers ist einerseits abhängig von dem Verhältnis aus der Menge der erneuerbaren Überschussproduktion und der aus dem Speicher zu bedienenden Restlast. Andererseits spielen die Wirkungsgrade des Speichers beim Ein- und Ausspeichern von Strom eine Rolle.
+Die erforderliche Größe des Stromspeichers ist einerseits abhängig von dem Verhältnis aus der Menge der erneuerbaren Überschussproduktion und der aus dem Speicher zu bedienenden Restlast. Andererseits spielt der Wirkungsgrad η (griechischer Buchstabe Eta) des Speichers beim Ein- und Ausspeichern von Strom eine Rolle.
 
 ::: {layout="[40, 60]"}
 
@@ -3160,7 +3112,7 @@ anteil_ee_berechnen(restlast_2035, netzlast = netzlast_2035, einspeicherwirkungs
 
 ::::
 
-Eine grafische Darstellung des Jahresgangs des Speichers kann für verschiedene Auslegungen relativ zur maximal benötigten Speichergröße mit Hilfe der Funktion `jahresgang_speicher_berechnen(output = False)` erzeugt werden.
+Eine grafische Darstellung des Jahresgangs des Speichers kann für verschiedene Auslegungen relativ zur maximal benötigten Speichergröße (C$_{max}$) mit Hilfe der Funktion `jahresgang_speicher_berechnen(output = False)` erzeugt werden.
 
 ::: {.panel-tabset}
 
@@ -3230,7 +3182,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2030_80_wirkungsgrad_90_88[0]:,
 
 ``` {python}
 #| echo: false
-#| "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese ist überwiegend negativ, und trotz starker und vor allem sehr häufiger Schwankungen nur selten positiv. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 80 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser nach wenigen Tagen voll ist. Von Mitte bis Ende Januar entleert sich der Speicher stark bis zur vollständigen Entladung. Von Anfang Februar bis Anfang Dezember ist der Speicher nahezu vollständig geladen. In der ersten Dezemberhälfte entleert sich der Speicher stark, ist aber nur kurz leer. Ende Dezember wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese ist überwiegend negativ, und trotz starker und vor allem sehr häufiger Schwankungen nur selten positiv. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 80 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser nach wenigen Tagen voll ist. Von Mitte bis Ende Januar entleert sich der Speicher stark bis zur vollständigen Entladung. Von Anfang Februar bis Anfang Dezember ist der Speicher nahezu vollständig geladen. In der ersten Dezemberhälfte entleert sich der Speicher stark, ist aber nur kurz leer. Ende Dezember wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
 
 # Daten generieren
 ## Speichergröße bestimmen und 80 Prozent berechnen
@@ -3290,7 +3242,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2035_80_wirkungsgrad_90_88[0]:,
 ## 20 % 2030
 ``` {python}
 #| echo: false
-#| "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 20 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser nach wenigen Tagen voll ist. Von Mitte Januar bis Mitte März entleert sich der Speicher 4 mal stark bis zur vollständigen Entladung. Von Mitte März bis Mitte August ist der Speicher nahezu vollständig geladen. Anschließend folgt eine einmonatige Phase der starken und kurzzeitig vollständigen Entladung. Von Mitte September bis Anfang Dezember sind ausgeprägte Lade- und Entladezyklen zu beobachten. Anfang Dezember ist der Speicher für mehrere Tage leer, erreicht danach kurzzeitig einen hohen Ladestand, um sich erneut vollständig zu entleeren. In der zweiten Dezemberhälfte wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 20 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser nach wenigen Tagen voll ist. Von Mitte Januar bis Mitte März entleert sich der Speicher 4 mal stark bis zur vollständigen Entladung. Von Mitte März bis Mitte August ist der Speicher nahezu vollständig geladen. Anschließend folgt eine einmonatige Phase der starken und kurzzeitig vollständigen Entladung. Von Mitte September bis Anfang Dezember sind ausgeprägte Lade- und Entladezyklen zu beobachten. Anfang Dezember ist der Speicher für mehrere Tage leer, erreicht danach kurzzeitig einen hohen Ladestand, um sich erneut vollständig zu entleeren. In der zweiten Dezemberhälfte wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
 
 # Daten generieren
 ## Speichergröße bestimmen und 20 Prozent berechnen
@@ -3351,7 +3303,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2030_20_wirkungsgrad_90_88[0]:,
 
 ``` {python}
 #| echo: false
-#| "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 20 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Die Jahresgänge gleichen denen im Jahr 2030. Allerdings sind die Phasen der starken Entleerung zu Beginn des Jahres deutlich verkürzt, der Speicher erreicht zumeist nach kurzer Zeit wieder den vollen Ladestand. Die starke Entladung Ende August erfolgt nicht, der Speicher sinkt hier nur auf etwa den halben Ladestand. Auch die starke Ausspeicherung Anfang Dezember ist weniger drastisch, erfolgt dennoch mehrfach vollständig."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 20 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Die Jahresgänge gleichen denen im Jahr 2030. Allerdings sind die Phasen der starken Entleerung zu Beginn des Jahres deutlich verkürzt, der Speicher erreicht zumeist nach kurzer Zeit wieder den vollen Ladestand. Die starke Entladung Ende August erfolgt nicht, der Speicher sinkt hier nur auf etwa den halben Ladestand. Auch die starke Ausspeicherung Anfang Dezember ist weniger drastisch, erfolgt dennoch mehrfach vollständig."
 
 # Daten generieren
 ## Speichergröße bestimmen und 20 Prozent berechnen
@@ -3411,7 +3363,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2035_20_wirkungsgrad_90_88[0]:,
 ## 4 % 2030
 ``` {python}
 #| echo: false
-#| "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 4 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Über das gesamte Jahr finden kurz aufeinanderfolgende Zyklen der vollständigen Ladung und Entladung statt. Nur Anfang Januar und Ende Dezember ist der Speicher für je ca. 2 Wochen voll."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 4 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Über das gesamte Jahr finden kurz aufeinanderfolgende Zyklen der vollständigen Ladung und Entladung statt. Nur Anfang Januar und Ende Dezember ist der Speicher für je ca. 2 Wochen voll."
 
 # Daten generieren
 ## Speichergröße bestimmen und 4 Prozent berechnen
@@ -3472,7 +3424,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2030_04_wirkungsgrad_90_88[0]:,
 
 ``` {python}
 #| echo: false
-#| "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 4 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Über das gesamte Jahr finden kurz aufeinanderfolgende Zyklen der vollständigen Ladung und Entladung statt. Nur Anfang Januar und Ende Dezember ist der Speicher für je ca. 2 Wochen voll. Während des Sommers ist die Zyklendichte noch höher als im Jahr 2030."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 4 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Über das gesamte Jahr finden kurz aufeinanderfolgende Zyklen der vollständigen Ladung und Entladung statt. Nur Anfang Januar und Ende Dezember ist der Speicher für je ca. 2 Wochen voll. Während des Sommers ist die Zyklendichte noch höher als im Jahr 2030."
 
 # Daten generieren
 ## Speichergröße bestimmen und 4 Prozent berechnen
@@ -3531,126 +3483,100 @@ print(f"\nDie Speichergröße beträgt {speicher_2035_04_wirkungsgrad_90_88[0]:,
 
 :::
 
-Mit einer 80-prozentigen Auslegung der Speichergröße wirkt der Speicher überdimensioniert. Im Jahr 2030 ist der Speicher über die Sommermonate voll geladen und während des Winters findet auf niedrigem Ladestand eine verleichsweise geringe Ein- und Ausspeicherung statt. Es gibt nur wenige Vollyzklen. Im Jahr 2035 ist der Speicher fast ganzjährig voll geladen. Die 2030 erforderliche Speicherkapazität von 8.295 GWh enspricht dem 222-Fachen der bestehenden Pumpspeicherkraftwerke oder 166 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe mit 50 GWh/a [Wikipedia](https://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschlandhttps://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschland).
+Mit einer 80-prozentigen Auslegung der Speichergröße wirkt der Speicher überdimensioniert. Im Jahr 2030 ist der Speicher über die Sommermonate voll geladen und während des Winters findet auf niedrigem Ladestand eine verleichsweise geringe Ein- und Ausspeicherung statt. Der Speicher erreicht nur wenige Vollyzklen. Im Jahr 2035 ist der Speicher fast ganzjährig voll geladen. Die 2030 erforderliche Speicherkapazität von 8.295 GWh enspricht dem 222-Fachen der bestehenden Pumpspeicherkraftwerke oder 166 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe mit 50 GWh/a ([Wikipedia](https://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschlandhttps://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschland)).
 
 Mit einer 20-prozentigen Auslegung werden mehr Vollzyklen und umfangreichere Teilzyklen erreicht. Dennoch sind von April bis Ende August bzw. im Jahr 2035 von März bis Dezember konstant hohe Ladestände zu beobachten. 2030 würden 2.073 GWh Speicherkapazität benötigt, 2035 1.259 GWh. 1.259 GWh entsprechen dem 34-Fachen der bestehenden Pumpspeicherkapazität oder 25 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe.
 
 Die 4-Prozentige Auslegung zeigt ein ständiges Auf und Ab. In dieser Dimension könnte ein Stromspeicher wirtschaftlich zu betreiben sein. Dafür würden 2030 415 GWh und 2035 252 GWh Speicherkapazität benötigt. 252 GWh entsprechen dem 6,7-Fachen der bestehenden Pumpspeicherkapazität oder 5 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe.
 
-In allen Szenarien ist auffällig, dass die Zyklenzahl in Jahr 1 und Jahr 2 fast identisch ist. Ein halber Zyklus unterschied bedeutet, dass im ersten Jahr der Speicher im Januar vollgeladen wird, was je nach Szenario innerhalb von 2 Wochen (Speichergröße 80 %, Jahr 2030), innerhalb weniger Tage (Speichergröße 80 %, Jahr 2035 und Speichergröße 20 %, Jahr 2030) oder nahezu sofort (Speichergröße 20 %, Jahr 2035 und Speichergröße 4 %, Jahre 2030 & 2035) geschieht.
+In allen Szenarien ist auffällig, dass die Zyklenzahl in Jahr 1 und Jahr 2 fast identisch ist. Ein halber Zyklus Unterschied bedeutet, dass im ersten Jahr der Speicher im Januar vollgeladen wird, was je nach Szenario innerhalb von 2 Wochen (Speichergröße 80 %, Jahr 2030), innerhalb weniger Tage (Speichergröße 80 %, Jahr 2035 und Speichergröße 20 %, Jahr 2030) oder nahezu sofort (Speichergröße 20 %, Jahr 2035 und Speichergröße 4 %, Jahre 2030 & 2035) geschieht.
 
 Erkennbar gilt hier die 80-20-Regel ([Paretoprinzip](https://de.wikipedia.org/wiki/Paretoprinzip)): Mit 20 Prozent des Aufwands werden  80 Prozent des Weges erreicht. Beträgt 2035 der Anteil erneuerbarer Energien ohne Speicher 93 Prozent, so sind 7 Prozent durch Speicher (oder anderweitig) zu decken. Für eine 100-prozentige Bedarfsdeckung aus Stromspeichern würden 6,3 TWh Speicherkapzität benötigt. Ein 20 Prozent so großer Speicher erreicht einen Gesamtanteil erneurbarer Energien von 99 Prozent. Ein wiederum nur 20 Prozent so großer Speicher erreicht einen Gesamtanteil von 97 Prozent.
 
-**To Do**
-
-* Das Wichtigste (vielleicht als Video)
-
-* Lernzielkontrolle
-
-  * Kompetenzquiz (ggf. aufklappbarer Callout Block, Textverweis für PDF, polierte Lösungen evntl. via Lumi später entscheiden)
-
-  * Übungsaufgaben (kleine Projekte)
-
-* Prüfungsaufgaben (ohne Lösungen)
-
 # Das Wichtigste
-In diesem Baustein haben Sie zwei allgemeine Schemen zur Analyse von Datensätzen kennengelernt, die auf andere Anwendungsfelder übertragen werden können. Dies ist zum einen das Einlesen, Kontrollieren, Plausiblisieren und Visualisieren von Daten. Zum anderen das kennzahlen- und visuell gestützte beschreiben, organisieren, erkunden und auswerten von Daten. 
+Bei der vergleichenden Analyse der Erzeugungs- und Verbrauchsdaten für Deutschland und Österreich wurde deutlich, dass vergleichbare Datensätze unterschiedlich aufgebaut sein können. Die Intention hinter der Zusammenstellung eines Datensatzes muss nicht notwendigerweise mit den Zielen Ihrer Analyse übereinstimmen, was beispielsweise eine Trennung von Kraftwerken und Stromspeichern rechtfertigen kann. In diesem Baustein haben Sie zwei allgemeine Vorgehensweisen zur Analyse von Datensätzen kennengelernt, die auf andere Anwendungsfelder und andere Datensätze übertragen werden können. Dies ist zum einen das Einlesen, Organisieren, Kontrollieren und Plausiblisieren von Daten. Zum anderen das Beschreiben, Erkunden und Auswerten von Daten mit Hilfe von Kennzahlen und Methoden der Datenvisualisierung.
 
-Datensätze kontrollieren, plausibilisieren und visualisieren --> das meiste erkennt man visuell, die Quantifizierung mit Kennzahlen ist eine wichtige Ergänzung (kann alleine aber irreführen [Beispiel: Abschaltung KKW]) 
---> Am Beispiel der Pumpspeicher hat man gesehen, das Datensätze unerwartet zusammengestellt sein können. (Berücksichtigung von Einspeisung aus Pumpspeicherkraftwerken im Datensatz Stromerzeugung.)
---> deskritive und explorative Statistik sowie Visualisierungstechniken sind wichtige Instrumente, um Datensätze "zu verstehen" und ggf. Fehler oder Eigenheiten zu bereinigen.
+Kennzahlenbasierte und visuelle Methoden der Datenanalyse ergänzen einander und helfen, einen Datensatz zu verstehen. Beispielsweise könnte mit einer rein kennzahlbasierten Vorgehensweise die Abschaltung der deutschen Kernkraftwerke leicht übersehen werden, während diese in der grafischen Darstellung des Jahresgangs deutlich erkennbar ist. Demgegenüber könnten bei der reinen Visualisierung des Erzeugungsanteils verschiedener Kraftwerkstypen in Österreich die Ein- und Ausspeicherung unbedacht aufsummiert werden.
 
---> Erzeugung und Verbrauch durch Pumpspeicher müssten für eine weitergehende Erzeugungsanalyse bereinigt werden: Realisierte Einspeisung ist anderen Energieträgern zuzuschreiben; Verbrauch = Realisierter Verbrauch - Realisierte Einspeisung. 
+Mit den vorgestellten Werkzeugen stehen Ihnen Hilfsmittel zur Verfügung, um datenbasiert Entscheidungen zu treffen und am klima- und energiewirtschaftspolitischen Diskurs teilzunehmen. Dabei sollten Sie jedoch immer bedenken, dass die Analyse von Aggregatdaten Zusammenhänge vereinfacht und das Risiko ökologischer Fehlschlüsse besteht. Zu einer umfassenden Datenanalyse gehört deshalb auch, die blinden Flecken im eigenen Vorgehen zu reflektieren und transparent zu machen.
 
-**Die Grundlast ist tot.**
-Berechnung der Jahresvolllaststunden und Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten. 
+# Kompetenzquiz
+<!-- (ggf. aufklappbarer Callout Block, Textverweis für PDF, polierte Lösungen evntl. via Lumi später entscheiden) -->
 
-**Steinkohle ist das neue Erdgas.**
+(@) Wie lautet der vollständige Befehl, um mit dem Python Modul Pandas folgenden String in ein Objekt vom Typ datetime umzuwandeln?
 
-Resterrampe von der Planung:
-Grenzstrom: 2 (3) Regime (EE-Überschuss, fossile Lastfolgebetrieb.)
+```{raw}
 
-    - Vorbereitung 1: Restlast bestimmen
+datum = ‘2008-Oct-29’
+datum_pd = pd.to_datetime(datum, format = " ... ")
 
-      - Herkunft Pumpspeicherenergie grob abschätzen: in wie vielen Intervallen war die Restlast negativ
+```
 
-      - Herkunft Pumpspeicherenergie genauer bestimmen: Abgleich Null oder negative Restlast mit Verbrauch der Pumpspeicher (Befüllen)
+&nbsp;
 
-        - Wenn Restlast 0 oder negativ = Befüllung mit EE, wenn Restlast > 0 = Befüllung mit Lastfolgeerzeugern
+(@) Mit welcher Methode können die Datenreihen a, b und c verkettet werden?
 
-    - Vorbereitung 2: Welche Erzeuger laufen in Grundlast, welche in Lastfolgebetrieb? **Grundlast ist tot.**
+    a) pandas.concat(a, b, c)
 
-      - Quantifizierung mit Jahresvolllaststunden
+    b) pandas.append(a, b, ,c)
 
-      - Erzeugung im Jahresverlauf plotten --> Abschaltung der AKW erkennen.
-      
-      - die Erzeuger werden in drei Gruppen eingeteilt (Grundlast, Lastfolge, EE)
-    
-Welche Erzeuger die Einspeicherung geleistet haben, lässt sich empirisch überprüfen.
-*Befüllung der Pumpspeicher und die Restlast im Jahresgang anzeigen und anschließend nur die Werte zeigen, zu denen der Verbrauch der Pumpspeicher > 0 ist* 
+    c) pandas.concatenate[a, b, c]
+
+    d) pandas.concat([a , b , c])
+
+&nbsp;
+
+(@) Was ist der Zweck der beschreibenden Datenanalyse?
+
+
+    a) Fehler im Datensatz identifizieren
+
+    b) Benötigte Module laden
+
+    c) Vorbereitung der explorativen und schließenden Datenanalyse
+
+    d) Überblick über den Datensatz gewinnen
+
+&nbsp;
+
+(@) Welche Aussagen sind wahr?
+
+    a) Explorative Datenanalyse ist ein iterativer Prozess, um einen Datensatz zu erkunden und mit den gewonnenen Erkenntnissen neue Fragen an den Datensatz zu stellen.
+
+    b) Die Methoden der explorativen Datenanalyse sind fest vorgegeben.
+
+    c) Die explorative Datenanalyse erfolgt rein kennzahlenbasiert.
+
+    d) Die explorative Datenanalyse bereitet die schließende Datenanalyse vor.
+
+&nbsp;
+
+(@) Die Auslegung der Größe eines Stromspeichers ist abhängig von:
+
+    a)	Der Zyklik der Einspeicherung
+
+    b)	Dem Verhältnis der einspeicherbaren, überschüssigen Stromerzeugung und der durch den Speicher zu bedienenden Last
+
+    c)	Der Kappung von Erzeugungsspitzen
+
+    d)	Dem Wirkungsgrad des Speichers
+
+::: {#tip-Kompetenzquiz .callout-tip title="Lösungen" collapse="true"}
+
+Lösung 1: datum_pd = pd.to_datetime(datum, format = "%Y-%b-%d")
+
+Lösung 2: pandas.concat([a , b , c])
+
+Lösung 3: a, c, d
+
+Lösung 4: a, d
+
+Lösung 5: a, b, c, d
+
+:::
 
 # Übungen
 
-Wir haben gesehen, dass durch die Kappung von Erzeugungsspitzen in einem von erneuerbarer Überschussproduktion geprägtem Stromsystem der erforderliche Stromspeicher um Größenordnungen kleiner dimensioniert werden kann. Allerdings verbleiben dann wenige Prozent der Jahresstromnachfrage, die nicht erneuerbar aus der laufenden Produktion oder durch Ausspeicherung gedeckt werden können. Eine Option bestünde darin, die Biomassekraftwerke in Lastfolge zu betreiben.
+Im Rahmen der schließenden Datenanalyse wurde festgestellt, dass durch die Kappung von Erzeugungsspitzen in einem von erneuerbarer Überschussproduktion geprägtem Stromsystem der erforderliche Stromspeicher um Größenordnungen kleiner dimensioniert werden kann. Allerdings verbleiben dann wenige Prozent der Jahresstromnachfrage, die nicht erneuerbar aus der laufenden Produktion oder durch Ausspeicherung gedeckt werden können. Eine Option bestünde darin, die Biomassekraftwerke in Lastfolge zu betreiben.
 
-Berechnen Sie die erforderliche Speichergröße, wenn der Anteil erneuerbarer Energien 2030 und 2035 100 Prozent betragen soll und Biomassekraftwerke in Lastfolge betrieben werden. Der Einspeicherwirkungsgrad betrage 0.9, der Ausspeicherwirkungsgrad = 0.88.  **vorher kurz mal den Jahresgang Biomasse plotten.**
-
-<!-- # Resterampe -->
-
-
-```{python}
-#| include: false
-# Spielwiese für die Speichergrafiken
-
-plt.figure(figsize = (7.5, 7.5))
-
-plt.subplot(2, 2, 1)
-dummy_index = np.linspace(1, 365, 365)
-dummy_data = np.concatenate([np.linspace(-1, -1, 365 // 2), np.linspace(1, 1, 365 // 2), np.linspace(0, 0, 1)])
-plt.plot(dummy_index, dummy_data)
-plt.ylim(bottom = -1, top = 1)
-plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-1, -1, 365 // 2), label = 'erforderliche Speichergröße = 1')
-plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = 'schlechtester Fall: Zyklenzahl = 1');
-plt.legend()
-
-plt.subplot(2, 2, 2)
-dummy_data = np.concatenate([np.linspace(-1, -1, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(-1, -1, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(0, 0, 1)])
-plt.plot(dummy_index, dummy_data)
-plt.ylim(bottom = -1, top = 1)
-plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-1, -1, 365 // 4), label = 'erforderliche Speichergröße = \u00BD')
-plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = 'schon besser: Zyklenzahl = 2');
-plt.legend()
-
-plt.subplot(2, 2, 3)
-dummy_data = np.concatenate([np.linspace(-0.5, -0.5, 365 // 2), np.linspace(1, 1, 365 // 2), np.linspace(0, 0, 1)])
-plt.plot(dummy_index, dummy_data)
-plt.ylim(bottom = -1, top = 1)
-plt.fill_between(x = np.linspace(1, 365 // 2, 365 // 2), y1 = np.linspace(-0.5, -0.5, 365 // 2), label = 'erforderliche Speichergröße')
-plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = 'bei Zykluszahl = 1 & Restlast.sum() > 0\n = max. Überschussproduktion');
-plt.legend()
-
-plt.subplot(2, 2, 4)
-dummy_data = np.concatenate([np.linspace(-0.5, -0.5, 365 // 4), np.linspace(0.25, 0.25, 365 // 4), np.linspace(-0.5, -0.5, 365 // 4), np.linspace(1, 1, 365 // 4), np.linspace(0, 0, 1)])
-plt.plot(dummy_index, dummy_data)
-plt.ylim(bottom = -1, top = 1)
-plt.fill_between(x = np.linspace(1, 365 // 4, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), label = 'erforderliche Speichergröße', color = 'C0')
-plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y2 = np.linspace(-0.25, -0.25, 365 // 4), y1 = np.linspace(-0.5, -0.5, 365 // 4), color = 'C0')
-plt.fill_between(x = np.linspace(365 // 2, (365 * 3) // 4, 365 // 4), y2 = np.linspace(-0.25, -0.25, 365 // 4), y1 = np.linspace(0, 0, 365 // 4), color = 'C0', alpha = 0.25)
-plt.axhline(y = 0, color = 'black', linestyle = '-')
-plt.title(label = 'bei Zykluszahl > 1 & Restlast.sum() > 0\n = cumsum Restlast (aber nie kleiner 0)');
-
-# add explanation
-plt.axhline(xmin = 0 + 0.05 , xmax = (1 / 4) + 0.05, y = -0.25, color = 'white', linestyle = 'dotted', lw = 3)
-
-plt.legend()
-
-
-
-plt.tight_layout()
-
-# Kurve unterlegen: plt.fill_between bietet einen praktischen Parameter where
-# plt.fill_between(x = verbrauch['Pumpspeicher [MWh]'].index[::schritt], y1 = verbrauch['Pumpspeicher [MWh]'][::schritt], label = 'konventionelle Einspeicherung') # , where = restlast[::schritt] > 0 führt zu weißen Stellen
-```
+Berechnen Sie die erforderliche Speichergröße, wenn der Anteil erneuerbarer Energien 2030 und 2035 100 Prozent betragen soll und Biomassekraftwerke in Lastfolge betrieben werden. Der Einspeicherwirkungsgrad betrage 0.9, der Ausspeicherwirkungsgrad = 0.88.
