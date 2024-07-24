@@ -13,19 +13,26 @@ date: today # "2024-03-05" Jahr-Monat-Tag / year-month-day
 
 ## Spracheinstellungen / language settings
 lang: de
-# crossref: 
-  # nte-title: Beispiel -- so nicht :(
-  # nte-prefix: Beispiel -- so nicht :(
+language:
+  de:
+    crossref-imp-title: "Definition"
+    crossref-imp-prefix: "Definition"
+    crossref-lst-title: "Code-Block"
+    crossref-lst-prefix: "Code-Block"
+    crossref-nte-title: "Beispiel"
+    crossref-nte-prefix: "Beispiel"
+    crossref-wrn-title: "Hinweis"
+    crossref-wrn-prefix: "Hinweis"
 
 ## Formatoption / formating options
 format:
   html:
     default-image-extension: svg
     code-copy: true # hover is default
-  pdf:
-    cite-method: biblatex
-    biblio-title: Quellen
-    default-image-extension: pdf # Vektorgrafiken werden als PDF eingebunden / vector grafics are embedded as PDF
+#  pdf:
+#    cite-method: biblatex
+#    biblio-title: Quellen
+#    default-image-extension: pdf # Vektorgrafiken werden als PDF eingebunden / vector grafics are embedded as PDF
 execute:
   cache: true # remove when document is finished as cache: true can cause issues from time to time
 
@@ -126,7 +133,7 @@ Die semikolonseparierten Dateien werden als DataFrame mit dem Python Modul Panda
 #| results: hold # process code first, then print output
 
 import pandas as pd
-pd.set_option("display.precision", 2) # places after decimal for floats
+pd.set_option("display.precision", 2) # Anzahl Nachkommastellen
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -264,7 +271,7 @@ installierte_leistung = installierte_leistung0.copy()
 # Beschreibende Datenanalyse
 Mit Methoden der beschreibenden Statistik kann ein Überblick über die Datensätze und die Daten gewonnen werden. Dieser Schritt dient insbesondere auch dazu, mögliche Fehler und Auffälligkeiten im Datensatz zu identifizieren. Hierbei gewonnene Befunde können im der folgenden explorativen und schließenden Datenanalyse vertieft werden.
 
-Einen ersten Überblick über die Daten liefert die Methode `pd.DataFrame.describe()`. Durch das Argument `include = [np.number]` kann die Ausgabe auf Spalten mit numerischen Daten beschränkt werden, das heißt, die Spalten mit Datumsinformationen werden ausgeschlossen.
+Einen ersten Überblick über die Daten liefert die Methode `pd.DataFrame.describe()`, die die Verteilung der Daten beschreibt. Durch das Argument `include = [np.number]` kann die Ausgabe auf Spalten mit numerischen Daten beschränkt werden, das heißt, die Spalten mit Datumsinformationen werden ausgeschlossen.
 
 ```{python}
 #| output: true
@@ -320,6 +327,8 @@ ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Blues", startan
 # make a donut
 circle = plt.Circle((0, 0), radius = 0.7, color = "white")
 ax.add_patch(circle)
+
+plt.show()
 ```
 
 ## Code für Pandas
@@ -327,7 +336,7 @@ ax.add_patch(circle)
 #| output: false
 #| results: hold # process code first, then print output
 
-# plot the pie first try - Sonstige Erneuerbare [MWh] overlaps wih Kernenergie [MWh] and Pumpsicher [MWh]
+# plot the pie first try - Sonstige Erneuerbare [MWh] overlaps with Kernenergie [MWh] and Pumpspeicher [MWh]
 # erzeugung.sum(numeric_only = True).plot.pie(colormap = "Blues", startangle = 90, rotatelabels = True, explode = explosion)
 
 # rearrange columns, remove " [MWh]"
@@ -346,6 +355,8 @@ ax = plotting_data.sum(numeric_only = True).plot.pie(colormap = "Blues", startan
 # make a donut
 circle = plt.Circle((0, 0), radius = 0.7, color = "white")
 ax.add_patch(circle)
+
+plt.show()
 ```
 
 :::
@@ -525,7 +536,7 @@ print(f"Summe Erzeugung Pumpspeicher: {erzeugung["Pumpspeicher [MWh]"].sum():,.2
 
 :::
 
-Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzagentur veröffentlichte kumulierte Stromerzeugung der Pumpspeicherkraftwerke zuzüglich der Speicherverluste. Die Bundesnetzagentur führt diesen Wert im Datensatz Stromverbrauch. Im folgenden Programmcode wird der "Walross"-Operator `:=` benutzt, der Objektzuweisungen innerhalb von Anweisungen erlaubt. Mit dem Walross-Operator durchgeführte Zuweisungen müssen in runde Klammern eingefasst werden:
+Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzagentur veröffentlichte kumulierte Stromerzeugung der Pumpspeicherkraftwerke zuzüglich der Speicherverluste. Die Bundesnetzagentur führt diesen Wert im Datensatz Stromverbrauch. Im folgenden Programmcode wird der "Walross"-Operator `:=` benutzt, der Objektzuweisungen innerhalb von Anweisungen (hier die Anweisung print()) erlaubt. Dadurch Code knapper gefasst werden (die Lesbarkeit nimmt aber ab). Mit dem Walross-Operator durchgeführte Zuweisungen müssen in runde Klammern eingefasst werden:
 
 ```{python}
 #| output: true
@@ -533,21 +544,13 @@ Die tatsächlich realisierte Stromerzeugung ist deshalb die von der Bundesnetzag
 
 print(f"Speicherverluste:\t\t\t{ (speicherverluste := ( verbrauch["Pumpspeicher [MWh]"].sum() - erzeugung["Pumpspeicher [MWh]"].sum() ) / (1000 * 1000) ):>6.2f} TWh\n"
       f"kumulierte Stromerzeugung:\t{ ( kumulierte_erzeugung := erzeugung.sum(numeric_only = True).sum() // (1000 * 1000) ):,.2f} TWh\n"
-      f"Summe:\t\t\t\t\t\t{speicherverluste + kumulierte_erzeugung:,.2f} TWh\n\n"
+      f"Summe:\t\t\t\t\t\t{speicherverluste + kumulierte_erzeugung:,.2f} TWh\n\n")
 
-      f"Erzeugung durch Pumpspeicher:\t\t\t\t{erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000):,.2f} TWh\n"
-      f"Erzeugung Pumpspeicher + Speicherverluste:\t{(erzeugung["Pumpspeicher [MWh]"].sum() / (1000 * 1000)) + speicherverluste:,.2f} TWh\n"
-      f"Verbrauch Pumpspeicherkraftwerke:\t\t\t{verbrauch["Pumpspeicher [MWh]"].sum() / (1000 * 1000):,.2f} TWh")
-      
 ```
 
-**Braucht es hier einen Hinweis, dass hier keine Erkenntnis produziert wird, sondern nur zur Veranschauung hin- und hergerechnet wird?**
-&nbsp;
-
-Die Differenz zwischen tatsächlich realisierter und von der Bundesnetzagentur veröffentlichter Stromerzeugung beträgt knapp 3 TWh, also weniger als 1 Prozent der Gesamtstromerzeugung. In anderen Netzen ist die korrekte Zuordnung der Daten auch betragsmäßig relevant. 
+Die Differenz zwischen tatsächlich realisierter und von der Bundesnetzagentur veröffentlichter Stromerzeugung beträgt knapp 3 TWh, also weniger als 1 Prozent der Gesamtstromerzeugung. In anderen Ländern ist die korrekte Zuordnung der Daten auch betragsmäßig relevant. In Österreich spielen Pumpspeicherkraftwerke eine bedeutende Rolle im Strommix. 
 
 ## Aufgabe beschreibende Datenanalyse {#sec-aufgabe-beschreibende-Datenanalyse}
-In Österreich spielen Pumpspeicherkraftwere eine bedeutende Rolle im Strommix. 
 
 ::: {.border}
 
@@ -587,19 +590,27 @@ Das Datumsformat der Dateien ist abhängig von der auf der Internetseite eingest
 
 &nbsp;
 
-:::{#tip-Austria .callout-tip collapse="true" title="Musterlösung Strommarktdaten Österreich"}
-Ich bin gemein und will noch nichts verraten. 
+:::{#tip-Austria .callout-tip collapse="true"}
 
-::::{.callout-tip collapse="true"}
-Der Datensatz ist anders zusammengestellt. Pumpspeicher weisen teils negative Werte auf... die müssen natürlich bereinigt werden, um mit den Daten der Bundesnetzagentur verglichen zu werden.
+Der österreichische Datensatz unterscheidet sich zum einen dadurch, dass die Leistung statt der erzeugten Energie angegeben wird. (Das ist für die Visualisierung der Erzeugungsanteile unerheblich.) Der Datensatz unterscheidet sich aber noch in einer anderen Hinsicht. Tipp: Wenn Ihnen in der Ausgabe der Methode `.describe()` nicht alle Spalten angezeigt werden, versuchen Sie, den DataFrame in zwei oder mehr Teilen auszugeben. Beispielsweise:  
 
-Alle negativen Werte = Einspeichern (entspricht Verbrauchsdaten der Bundesnetzagentur)
+```{python}
+#| eval: false
 
-Alle positiven Werte = Einspeisung (entspricht Erzeugungsdaten der Bundesnetzagentur)
+print(df.iloc[ :, 0:5].describe(include = np.number))
+print(df.iloc[ :, 5:10].describe(include = np.number))
+print(df.iloc[ :, 10:15].describe(include = np.number))
 
-Außerdem ist die Erzeugung von Solar in Deutschland nie 0, in Österreich schon. 
+```
 
-(**Hinweis: Ich habe bislang nur kurz in den Datensatz reingeschaut.**)
+::::{.callout-tip title="Musterlösung Strommarktdaten Österreich" collapse="true"}
+
+::::: {.border}
+**Musterlösung Marc**
+
+Musterlösung von Marc Sönnecken
+
+:::::
 ::::
 :::
 
@@ -609,8 +620,8 @@ Explorative Datenanalyse bedeutet, Fragen an die vorliegenden Daten zu stellen u
 ## Hintergrund: Grenzstromanalyse
 Im vorliegenden Fall wird die explorative Auseinandersetzung mit dem Datensatz von der Frage strukturiert, welche Erzeuger Strom lieferten, um *zusätzlich* zur Netzlast die Pumpspeicher zu befüllen. Es soll also bestimmt werden, welche Stromerzeuger an den Zeitpunkten, an denen die Pumpspeicher befüllt wurden, in der Lage waren, zusätzliche Leistung bereitzustellen. Dieser zusätzliche Strom kann kurz als Grenzstrom bezeichnet werden. 
 
-::: {.callout-important}
-# Definition Grenzstrom
+::: {#imp-Grenzstrom .callout-important}
+# Grenzstrom
 Grenzbetrachtungen untersuchen die Bedingungen, die bei der Produktion oder dem Verbrauch einer zusätzlichen Einheit herrschen. Eine Grenzbetrachtung unterscheidet sich dadurch von einer Durchschnittsbetrachtung, die den Effekt einer Mengenänderung auf alle Einheiten untersucht. Der Grenzstrom bezeichnet eine zusätzliche Einheit Strom.
 
 Beispielsweise bestehe die momentane Stromerzeugung in Höhe von 100 Einheiten aus 60 Einheiten Solarstrom und, weil die solare Produktion nicht ausreicht, zusätzlich aus 40 Einheiten Kohlestrom. In diesem Fall enthält jede Einheit Strom durchschnittlich 0,4 Anteile Kohlestrom. Werden nun weitere 20 Einheiten Strom nachgefragt, so müssen diese durch eine zusätzliche Kohleverstromung bedient werden. In der Durchschnittsbetrachtung beträgt der Strommix nun aus 60 Einheiten Solarstrom und 40 + 20 = 60 Einheiten Kohlestrom. Dadurch verändert sich der durchschnittliche Anteil der Kohle an der Stromproduktion von 0,4 auf 0,5. 
@@ -671,8 +682,8 @@ Die Bundesnetzagentur veröffentlicht im Datensatz zum realisierten Stromverbrau
 print(verbrauch.sum(numeric_only = True))
 ```
 
-::: {.callout-important}
-## Definition Residuallast
+::: {#imp-Residuallast .callout-important}
+## Residuallast
 
 Die Residuallast [...] entspricht dem
 gesamten Realisierten Stromverbrauch, abzüglich der Einspeisung von Photovoltaik-, Wind Onshore- und Wind Offshore-Anlagen. [SMARD.de Benutzerhandbuch (S. 53)](https://www.smard.de/resource/blob/212924/61a75e052eddb43a8d3cc4c6e1653fa3/smard-benutzerhandbuch-02-2024-data.pdf)
@@ -852,8 +863,8 @@ Die Netzlast abzüglich der verdoppelten erneuerbaren Stromerzeugung nähert sic
 ## Hintergrund: Grund-, Mittel und Spitzenlast
 Nicht alle Erzeuer sind aus technischen oder aus wirtschaftlichen Gründen gleichermaßen für den Lastfolgebetrieb geeignet. Beispielsweise sind Kohlekraftwerke weniger flexibel regelbar als Gaskraftwerke. Kernkraftwerke werden aufgrund ihrer hohen Fix- und geringen variablen Kosten bevorzugt im Grundlastbetrieb betrieben. Im Stromnetz werden drei Einsatzprofile für Kraftwerke unterschieden: Grundlast, Mittellast und Spitzenlast.
 
-::: {.callout-important}
-## Definition Grund-, Mittel- und Spitzenlast
+::: {#imp-Grund-Mittel-Spitzenlast .callout-important}
+## Grund-, Mittel- und Spitzenlast
 
 :::: {.border}
   * Grundlast: Die im Jahresgang dauerhaft nachgefragte Leistung.  
@@ -878,8 +889,8 @@ Somit können durch die Unterscheidung von in Grundlast und von in Mittel- bzw. 
 
 Die Auslastung eines Kraftwerks (bzw. einer Gruppe von Kraftwerken) kann mittels seiner Jahresvolllaststunden quantifiziert werden.
 
-::: {.callout-important}
-## Definition Jahresvolllaststunden
+::: {#imp-Jahresvolllaststunden .callout-important}
+## Jahresvolllaststunden
 
 Die Jahresvolllaststunden geben an, wie viel der 8.760 Stunden eines Jahres ein Kraftwerk bei maximaler Leistung laufen müsste, um seine Jahresproduktion zu erzeugen. [statista](https://de.statista.com/statistik/daten/studie/37610/umfrage/jahresvolllaststunden-deutscher-kraftwerke-im-jahr-2009/)
 
@@ -1088,8 +1099,8 @@ print(f"erzeugung['Datum bis'].iloc[position].strftime('%d. %B %Y um %H:%M Uhr')
 
 Die Berechnung der Jahresvolllaststunden und die Visualisierung der Jahresgänge zeigen, dass es durch den hohen Anteil volatiler erneuerbarer Stromerzeugung im deutschen Stromsystem keine Grundlast mehr gibt, die von konventionellen Erzeugern bedient werden kann. Dies bedeutet, dass alle nicht erneuerbaren Erzeuger im Lastfolgebetrieb arbeiten. Dies kann am Beispiel der Steinkohle verdeutlicht werden, deren erzielte Jahresvolllaststunden näher an der klassischen Spitzenlasterzeugung aus Erdgas als an der Mittellasterzeugung durch Braunkohle liegt. Die Auslastung eines Stromerzeugers kann mit einer sortierten Jahresdauerlinie dargestellt werden.
 
-::: {.callout-important}
-## Definition sortierte Jahresdauerlinie
+::: {#imp-Jahresdauerlinie .callout-important}
+## sortierte Jahresdauerlinie
 
 Die sortierte Jahresdauerlinie ist ein Diagramm der absteigend sortierten Daten.
 
@@ -1461,6 +1472,15 @@ print(f"\n\nWind an Land 2035:\t{( zubaufaktor_windonshore_2035 := 157 / (instal
 
 Bis 2030 soll die Produktion durch Windkraftanlagen an Land verdoppelt sowie durch Windkraftanlagen auf See und durch Photovoltaik verdreieinhalbfacht werden. Bis 2035 soll Windkraft an Land fast verdreifacht, Wind auf See und Photovoltaik verfünffacht werden. Biomasse soll nicht weiter ausgebaut werden. Die Zubaufaktoren werden jeweils in einem Objekt gespeichert.
 
+
+:::{.callout-warning appearance="simple"}
+## Netzentwicklungsplan Strom
+
+Neben der Erzeugungsleistung soll auch das Stromübertragungsnetz ausgebaut werden. Die Planungen werden im Netzentwicklungsplan Strom festgehalten, der alle zwei Jahre von den vier Übertragungsnetzbetreibern in Abstimmung mit der Bundesnetzagentur aktualisiert wird.
+
+Der aktuelle und die bisherigen Netzentwicklungspläne können unter <https://www.netzentwicklungsplan.de/> abgerufen werden.
+:::
+
 ## Hintergrund: Stromspeicher
 Stromspeicher speichern die Stromerzeugung in Überschussphasen, um die Energie in Phasen der Unterdeckung wieder abzugeben. Verschiedene Arten von Stromspeichern und ihre Einsatzgebiete werden im folgenden Video vorgestellt. Die Speichertypen unterscheiden sich grundlegend hinsichtlich ihrer Kapazität sowie der Lade- bzw. Entladeleistung.
 
@@ -1471,7 +1491,7 @@ Energietechnik. 14 Energiespeicherung. 14.02 Kennzahlen von Henrik te Heesen ist
 
 :::
 
-::: {.callout-important}
+::: {#imp-Kenngrößen-Stromspeicher .callout-important}
 # Ausgewählte Kenngrößen von Stromspeichern
 
 :::: {.border}

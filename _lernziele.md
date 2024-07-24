@@ -13,7 +13,7 @@ Die behandelten Methoden umfassen:
 
 Zu den vorgestellten Werkzeugen gehören:
 
-- Berechnung und Visualisierung einer sortierten Jahresdauerlinie
+- Visualisierung einer sortierten Jahresdauerlinie
 
 - Berechnung der Residual- und Restlast
 
