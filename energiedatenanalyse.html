@@ -285,7 +285,6 @@ window.Quarto = {
 <h1 data-number="3"><span class="header-section-number">3</span> Hintergrund</h1>
 <p>Elektrischer Strom wird in Kraftwerken erzeugt und über das Stromnetz zu den Stromverbrauchern transportiert. Stromerzeugung und -verbrauch müssen dabei immer ausgeglichen sein. Der Anteil wetterabhängiger erneuerbarer Einspeisung steigt, Strom kann bislang aber nicht (kostengünstig) großtechnisch gespeichert werden. 2023 speisten die Pumpspeicherkraftwerke in Deutschland bei einer Kapazität von 37,4 GWh <span class="citation" data-cites="Heimerl-Kohler-2017-Pumpspeicher-in-Deutschland">(<a href="#ref-Heimerl-Kohler-2017-Pumpspeicher-in-Deutschland" role="doc-biblioref">Heimerl und Kohler 2017, 77</a>)</span> 11,1 TWh Strom ein, was 2,4 Prozent des deutschen Stromverbrauchs von 458,3 TWh entsprach <span class="citation" data-cites="energy-charts-strom">(<a href="#ref-energy-charts-strom" role="doc-biblioref">Fraunhofer Institut für Solare Energiesysteme ISE o.&nbsp;J.</a>)</span>. Die Kraftwerkseinsatzplanung und Speicherauslegung auf Basis von Erzeugungs- und Verbrauchsdaten ist deshalb ein relevantes Anwendungsfeld für die Datenanalyse.<br>
 Die Bundesnetzagentur veröffentlicht auf <a href="https://www.smard.de/home/downloadcenter/download-marktdaten/">https://www.smard.de/</a> unter anderem Daten zu Stromerzeugung, -verbrauch und Großhandelspreisen. (Hinweis: Kraftwerksdaten liegen für Erzeugungseinheiten mit einer installierten Erzeugungsleistung von mindestens 100 MW vor.)</p>
-<p><strong>idealerweise werden die Konzepte anhand der Daten der FH gezeigt, und mit den SMARD-Daten beübt</strong></p>
 </section>
 <section id="daten-einlesen" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Daten einlesen</h1>
@@ -976,7 +975,8 @@ Stromerzeugung in Millionen MWh 448.0</code></pre>
 <h2 data-number="6.1" class="anchored" data-anchor-id="visualisieren"><span class="header-section-number">6.1</span> Visualisieren</h2>
 <p>Die Auswertung der beschreibenden Statistik für 12 verschiedene Erzeugungsformen erfordert jedoch Konzentration. Komplexe Informationen sollten deshalb grafisch aufbereitet werden.</p>
 <p>Einen schnellen Überblick beispielsweise über die Verteilung der Gesamterzeugungsleistung nach Erzeugungsart verschafft ein Kreis- bzw. Ringdiagramm. Allerdings hat dieser Diagrammtyp, wie im <strong>Methodenbaustein Grundlagen der Statistik (Kapitel 2 einzelne Merkmale)</strong> erläutert, den Nachteil, dass dieser mit steigender Anzahl von Merkmalsausprägungen (bzw. hier darzustellenden Merkmalen) schnell unübersichtlich wird und Winkel kaum exakt abgelesen werden können.</p>
-<p>Im folgenden, mit der Methode <code>pd.DataFrame.plot.pie()</code> erstellten Ringdiagramm wurde deshalb zum einen die automatische Annotation der Anteilswerte mit dem entsprechenden Formatierungsstring <code>autopct='%1.1f%%'</code> aktiviert. Zum anderen wurde die Reihenfolge der Spalten im DataFrame getauscht, da sich die Prozentangaben und Beschriftungen kleiner Kreissegmente andernfalls überlappen. Außerdem wurde für die Beschriftung der Segmente die Zeichkette ” [MWh]” aus den Spaltennamen gekürzt. Dies verbessert zwar die Lesbarkeit des Diagramms. Das ist aber nicht der Grund, weshalb die Zeichenkette entfernt wurde. <strong>Was denken Sie, was der Grund dafür ist?</strong></p>
+<p>Im folgenden, mit der Methode <code>pd.DataFrame.plot.pie()</code> erstellten Ringdiagramm wurde deshalb zum einen die automatische Annotation der Anteilswerte mit dem entsprechenden Formatierungsstring <code>autopct='%1.1f%%'</code> aktiviert. Zum anderen wurde die Reihenfolge der Spalten im DataFrame getauscht, da sich die Prozentangaben und Beschriftungen kleiner Kreissegmente andernfalls überlappen. Außerdem wurde für die Beschriftung der Segmente die Zeichkette ” [MWh]” aus den Spaltennamen gekürzt. Dies verbessert zwar die Lesbarkeit des Diagramms. Das ist aber nicht der Grund, weshalb die Zeichenkette entfernt wurde.<br>
+<strong>Was denken Sie, was der Grund dafür ist?</strong></p>
 <div id="tip-Ringdiagramm" class="callout callout-style-default callout-tip callout-titled" title="Lösung Kreisdiagramm">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -1038,8 +1038,7 @@ Tip&nbsp;2: Lösung Kreisdiagramm
 </div>
 <section id="daten-aggregieren" class="level3">
 <h3 class="anchored" data-anchor-id="daten-aggregieren">Daten aggregieren</h3>
-<p>Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visuellen Beschreibung der Erzeugungsleistung nicht unbedingt ein prägnanter Befund. Eine Möglichkeit, um Daten besser zu verstehen, besteht darin, ähnliche Merkmale zusammenzufassen. Im Folgenden werden erneuerbare und konventionelle (mit fossilen Brennstoffen betriebene) Erzeugungsarten für die Darstellung der Anteilswerte in einem Ringdiagramm zusammengefasst. Beide Gruppen werden zusätzlich in einem Balkendiagramm dargestellt. Für die Darstellung wird das Modul <code>matplotlib.pyplot</code> verwendet. Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen.<br>
-<strong>Marc fragen, ob er Erläuterungen zum Plot wünscht.</strong></p>
+<p>Aufgrund der zahlreichen Merkmale erschließt sich aus der deskriptiven und visuellen Beschreibung der Erzeugungsleistung nicht unbedingt ein prägnanter Befund. Eine Möglichkeit, um Daten besser zu verstehen, besteht darin, ähnliche Merkmale zusammenzufassen. Im Folgenden werden erneuerbare und konventionelle (mit fossilen Brennstoffen betriebene) Erzeugungsarten für die Darstellung der Anteilswerte in einem Ringdiagramm zusammengefasst. Beide Gruppen werden zusätzlich in einem Balkendiagramm dargestellt. Für die Darstellung wird das Modul <code>matplotlib.pyplot</code> verwendet. Die Details der Ploterstellung können Sie dem zweiten Reiter entnehmen.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Plotten mit matplotlib</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Code für matplotlib</a></li></ul>
 <div class="tab-content">
@@ -1139,7 +1138,8 @@ Hinweis&nbsp;2: Hinweis
 </section>
 <section id="erzeugung-speicherung-einspeisung" class="level3">
 <h3 class="anchored" data-anchor-id="erzeugung-speicherung-einspeisung">Erzeugung, Speicherung, Einspeisung</h3>
-<p>Pumpspeicherkraftwerke sind Energiespeicher, die keine Primärenergie erzeugen, sondern den von anderen Erzeugern produzierten Strom speichern und bei Bedarf wieder ins Netz einspeisen. Welche Erzeuger Strom zum Befüllen der Pumpspeicher lieferten, wird in <a href="#sec-explorative-datenanalyse" class="quarto-xref">Kapitel&nbsp;7</a> untersucht. Die realisierte Netzeinspeisung von Pumpspeicherkraftwerken entspricht der um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung) verminderten Energieerzeugung anderer Stromerzeuger. Der Wirkungsgrad der Pumpspeicherkraftwerke kann mit den vorliegenden Daten für das Jahr 2023 berechnet werden. <strong>Wie hoch war der Wirkungsgrad der Pumpspeicherkraftwerke 2023?</strong></p>
+<p>Pumpspeicherkraftwerke sind Energiespeicher, die keine Primärenergie erzeugen, sondern den von anderen Erzeugern produzierten Strom speichern und bei Bedarf wieder ins Netz einspeisen. Welche Erzeuger Strom zum Befüllen der Pumpspeicher lieferten, wird in <a href="#sec-explorative-datenanalyse" class="quarto-xref">Kapitel&nbsp;7</a> untersucht. Die realisierte Netzeinspeisung von Pumpspeicherkraftwerken entspricht der um die Verluste beim Ein- und Ausspeichern (sowie ggf. Speicherverluste wie Verdunstung, Versickerung) verminderten Energieerzeugung anderer Stromerzeuger. Der Wirkungsgrad der Pumpspeicherkraftwerke kann mit den vorliegenden Daten für das Jahr 2023 berechnet werden.<br>
+<strong>Wie hoch war der Wirkungsgrad der Pumpspeicherkraftwerke 2023?</strong></p>
 <div id="tip-wirkungsgrad-pumpspeicher" class="callout callout-style-default callout-tip callout-titled" title="Lösung Wirkungsgrad Pumpspeicher">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -1217,8 +1217,8 @@ Summe:                      450.95 TWh
 </tbody>
 </table>
 </div>
+<p>&nbsp;</p>
 <p><strong>Lesen Sie die österreichischen Erzeugungsdaten ein und visualisieren Sie die Anteile der Erzeugungstypen. Was fällt Ihnen im Datensatz auf?</strong></p>
-<p><strong>Hat Marc Lust, eine Musterlösung zu erstellen?</strong></p>
 <div id="wrn-Strommarkt-Austria" class="callout callout-style-simple callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -1249,13 +1249,13 @@ Hinweis&nbsp;3: Markttranzparenzdaten Österreich herunterladen
 </div>
 </div>
 <p>&nbsp;</p>
-<div id="tip-Austria" class="callout callout-style-default callout-tip callout-titled">
+<div id="tip-Austria" class="callout callout-style-default callout-tip callout-titled" title="Tipp Erzeugungsdaten">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip&nbsp;4
+Tip&nbsp;4: Tipp Erzeugungsdaten
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
