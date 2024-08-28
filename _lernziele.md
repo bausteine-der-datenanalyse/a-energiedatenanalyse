@@ -21,3 +21,5 @@ Zu den vorgestellten Werkzeugen gehören:
 
 - Größenbestimmung eines Stromspeichers unter Berücksichtigung des Wirkungsgrads und der Kappung von Erzeugungsspitzen, Berechnung der realisierten Zyklenzahl, Jahresgänge und des Potenzials auf dem Ausbaupfad erneuerbarer Energien
 
+Schlagworte: vergleichende Analyse von Strommarktdaten, Daten visualisieren, Speicherauslegung
+
