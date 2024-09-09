@@ -590,7 +590,7 @@ Das Datumsformat der Dateien ist abhängig von der auf der Internetseite eingest
 
 &nbsp;
 
-::: {#tip-Austria title="Tipp Erzeugungsdaten" .callout-tip collapse="true"}
+::: {#tip-Austria title="Tipp Erzeugungsdaten und Musterlösung" .callout-tip collapse="true"}
 
 Der österreichische Datensatz unterscheidet sich zum einen dadurch, dass die Leistung statt der erzeugten Energie angegeben wird. (Das ist für die Visualisierung der Erzeugungsanteile unerheblich.) Der Datensatz unterscheidet sich aber noch in einer anderen Hinsicht.
 
@@ -608,9 +608,98 @@ print(df.iloc[ :, 10:15].describe(include = np.number))
 :::: {.callout-tip title="Musterlösung Strommarktdaten Österreich" collapse="true"}
 
 ::::: {.border}
-**Musterlösung Marc**
 
-Musterlösung von Marc Sönnecken
+```{python}
+#| fig-align: center
+#| fig-cap: Anteil an der Stromerzeugung in Österreich
+#| fig-alt: "In einem Ringdiagramm sind die Anteile verschiedener Erzeugungsarten an der Stromerzeugung dargestellt. Die Kreissegmente sind abwechselnd nach Größe sortiert (Größtes, Kleinstes, Zweitgrößtes, Zweitkleinstes usw.)."
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Deklarieren der Anzahl der Nachkommastellen
+pd.set_option("display.precision", 2)
+
+# Datensatz wird eingelesen und in der Variable erzeugung0 gespeichert
+
+# !
+# Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
+# !
+
+erzeugung0_austria_ms = pd.read_csv("aufgaben/01-daten/AGPT_2022-12-31T23_00_00Z_2023-12-31T23_00_00Z_15M_de_2024-06-10T09_32_38Z.csv", 
+                                     sep = ";", thousands = ".", decimal = ",", parse_dates = [0, 1], date_format = "%d.%m.%Y")
+
+print(erzeugung0_austria_ms.head(10))
+
+print(f"Der DataFrame erzeugung_austria_ms hat {erzeugung0_austria_ms.shape[0]} Zeilen und {erzeugung0_austria_ms.shape[1]} Spalten.")
+
+# Eckdaten des Datensatzes werden kurz "zusammengefasst"
+print(erzeugung0_austria_ms.describe(include = [np.number]))
+# Da der Datensatz relativ viele Spalten besitzt, können möglicherweise (je nach Bildschirmauflösung) nicht alle Spalten im Terminal angezeigt werden
+# und die mittleren werden daher mit "..." abgekürzt.
+# In dem Fall müssen die Spalten passend unterteilt werden, sodass man sich mit der Methode .describe() auch wirklich alle Spalten anschauen und beschreiben lassen kann:
+print(erzeugung0_austria_ms.iloc[:, 0:5].describe(include=[np.number]))
+print(erzeugung0_austria_ms.iloc[:, 5:10].describe(include=[np.number]))
+print(erzeugung0_austria_ms.iloc[:, 10:15].describe(include=[np.number]))
+
+# Kopie des Datensatzes wird angelegt
+erzeugung_austria_ms_c = erzeugung0_austria_ms
+
+# Spalten mit den Uhrzeitdaten werden gelöscht
+erzeugung_austria_ms_c = erzeugung_austria_ms_c.drop(columns=["Zeit von [CET/CEST]","Zeit bis [CET/CEST]"])
+print(erzeugung_austria_ms_c.head(5))
+# Die Zeichenkette "[MW]" wird aus den Spalten entfernt
+erzeugung_austria_ms_c.columns = erzeugung_austria_ms_c.columns.str.replace(pat=" [MW]", repl="")
+print(erzeugung_austria_ms_c.head(5))
+
+# mögliche Plausibilisierung: die .csv Datei in Excel ansehen. Es sollte auffallen, dass sich in der Spalte der Pumpspeicher sowohl
+# Positiv- als auch Negativwerte befinden. Sieht man auch, wenn man genau auf die beschriebenen Werte der .describe() Methode achtet
+# Nun wird geprüft, ob sich negative Werte in den Erzeugungsleistungen befinden:
+check_minus_werte = (erzeugung_austria_ms_c < 0).any().any()
+if check_minus_werte == True:
+    print("FEHLER: Es befinden sich negative Werte unter den Erzeugungswerten.")
+
+# negative Werte in der Spalte "Pumpspeicher" werden auf 0 gesetzt
+erzeugung_austria_ms_c["Pumpspeicher"] = erzeugung_austria_ms_c["Pumpspeicher"].clip(lower=0)
+
+# Spalten mit Summe 0 entfernen
+# Ansatz: Jede Spalte wird darauf geprüft, ob die Summe ihrer Werte Null ist. Falls ja, wird diese Spalte mit der .drop Methode aus dem neuen Dataframe gelöscht
+# dadurch verschwinden 3 Spalten mit der Summe Null. Geothermie wird immer noch als 0,0 % angezeigt, da der Wert sehr klein ist (nicht erkennbar bei einer Nachkommastelle)
+spalten_weg = []
+for i in erzeugung_austria_ms_c.columns:
+    if erzeugung_austria_ms_c[i].sum() == 0:
+        spalten_weg.append(i)
+erzeugung_austria_ms_c = erzeugung_austria_ms_c.drop(columns=spalten_weg)
+print(erzeugung_austria_ms_c.head(10))
+
+# um die Lesbarkeit der sehr kleinen Teilstücke des Kreisdiagramms zu verbessern, werden die Segmente anders angeordnet.
+# Dafür wird die Reihenfolgeder Spalten im Dataframe umsortiert, sodass das größte Segment auf das kleinste Segment der Liste folgt, und so weiter
+sortierte_spalten = erzeugung_austria_ms_c.sum().sort_values().index
+
+neue_reihenfolge = []
+for i in range(len(sortierte_spalten) // 2):
+    neue_reihenfolge.append(sortierte_spalten[i])
+    neue_reihenfolge.append(sortierte_spalten[-(i+1)])
+
+# falls eine ungerade Anzahl an Spalten existiert:
+if len(sortierte_spalten) % 2 != 0:
+    neue_reihenfolge.append(sortierte_spalten[len(sortierte_spalten) // 2])
+
+erzeugung_austria_ms_c = erzeugung_austria_ms_c[neue_reihenfolge]
+
+plt.figure(figsize = (7, 7))
+new_plot = erzeugung_austria_ms_c.sum(numeric_only=True).plot.pie(colormap = "Blues", startangle=90, rotatelabels=False, wedgeprops = {"linewidth":1, "edgecolor":"white"}, autopct='%1.1f%%', pctdistance=0.6, textprops=dict(size=7))
+
+# make a donut
+circle = plt.Circle((0, 0), radius = 0.7, color = "white")
+new_plot.add_patch(circle)
+
+plt.show()
+
+```
+
+Musterlösung von Marc Sönnecken. Für die Kompatibilität mit diesem Skript wurden der Dateipfad und die Objektbezeichnungen angepasst. Für die Barrierefreiheit wurden die Grafikgröße geändert, die Farbpalette geändert, ein weißer Innenkreis ergänzt und die Position der Prozentwerte angepasst.
 
 :::::
 ::::
@@ -931,7 +1020,7 @@ Deshalb wird der Jahresgang ausgewählter konventioneller Erzeuger dargestellt. 
 
 ::: {.panel-tabset}
 
-## Beispielcode Kernenergie
+## Beispiel-Code Kernenergie
 ```{python}
 #| output: false
 #| fig-cap: Jahresgang Kernenergie
@@ -1132,7 +1221,7 @@ Energietechnik. 2 Einführung. 2.13 Sortierte Jahresdauerlinie von Henrik te He
 ```{python}
 #| echo: false
 #| fig-cap: sortierte Jahresdauerlinie ausgewählter konventioneller Erzeuger
-#| fig-alt: "Dargestellt werden die sortierten Jahresdauerlinien für Braunkohle, Steinkohle und Erdgas. Während sich für Braunkohle ein fast liniearer Verlauf ergibt, zeigen Erdgas und insbesondere Steinkohle stark abfallende Verläufe, was bedeutet, dass hohe Produktionsniveaus deutlich seltener erreicht werden, als niedrige. Beispielsweise erreicht Braunkohle das Produktionsmaximum von ca. 4000 MWh an einem Tag. Die Hälfte dieses Werts (oder mehr) wird an 200 Tagen im Jahr erreicht. Demgegenüber erreicht Steinkohle das Produktionsmaximum von ca. 3750 MWh an einem Tag. Die Hälfte dieses Werts (oder mehr) wird aber nur an ca. 60 Tagen im Jahr erreicht."
+#| fig-alt: "Dargestellt werden die sortierten Jahresdauerlinien für Braunkohle, Steinkohle und Erdgas. Während sich für Braunkohle ein fast liniear abfallender Verlauf ergibt, zeigen Erdgas und insbesondere Steinkohle stark abfallende Verläufe, was bedeutet, dass hohe Produktionsniveaus deutlich seltener erreicht werden, als niedrige. Beispielsweise erreicht Braunkohle das Produktionsmaximum von ca. 4000 MWh an einem Tag. Die Hälfte dieses Werts (oder mehr) wird an 200 Tagen im Jahr erreicht. Demgegenüber erreicht Steinkohle das Produktionsmaximum von ca. 3750 MWh an einem Tag. Die Hälfte dieses Werts (oder mehr) wird aber nur an ca. 60 Tagen im Jahr erreicht."
 
 # Daten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren.
 braunkohle_daily = erzeugung['Braunkohle [MWh]'].groupby(erzeugung["Datum von"].dt.dayofyear).mean()
@@ -1223,10 +1312,400 @@ Beim Vergleich der erzielten Jahresvolllaststunden konnte festgestellt werden, d
 Bisher wurde ausschließlich die Erzeugung durch konventionelle Kraftwerke betrachtet. Biomasse und Braunkohle erreichen vergleichbare Jahresvolllaststunden, sodass ein Vergleich beider Erzeuger interessant sein könnte.  
 **Stellen Sie den Jahresgang und die Jahresdauerlinien für Biomasse und Braunkohle dar.**
 
-**Die Musterlösung könnte Marc machen.**
-
 ::: {#tip-erzeugungsprofile-biomasse-braunkohle .callout-tip title="Musterlösung Erzeugungsprofile von Biomasse und Braunkohle" collapse="true"}
 
+:::: {.border}
+
+::::: {.panel-tabset}
+
+## Code
+
+``` {python}
+#| output: false
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Deklarieren der Anzahl der Nachkommastellen
+pd.set_option("display.precision", 2)
+
+# Datensätze werden eingelesen
+
+# !
+# Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
+# !
+
+erzeugung0_ms = pd.read_csv("skript/01-daten/Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv", \
+sep = ";", thousands = ".", decimal = ",", parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+
+# Zeichenkette " Originalauflösungen" entfernen
+erzeugung0_ms.columns = erzeugung0_ms.columns.str.replace(pat = " Originalauflösungen", repl = "")
+
+print(erzeugung0_ms.head(10))
+
+# Daten der zu betrachtenden Erzeugungsarten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren
+braunkohle_daily_ms = erzeugung0_ms['Braunkohle [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+biomasse_daily_ms = erzeugung0_ms['Biomasse [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+
+# Liniendiagramm plotten
+linienstärke = 5
+plt.figure(figsize = (8, 4))
+
+braunkohle_daily_ms = braunkohle_daily_ms.sort_values(ascending = False, ignore_index = True)
+braunkohle_daily_ms.index += 1
+braunkohle_daily_ms.plot.line(lw = linienstärke, color = 'brown', alpha = 0.5, label = 'Braunkohle')
+
+biomasse_daily_ms = biomasse_daily_ms.sort_values(ascending = False, ignore_index = True)
+biomasse_daily_ms.index += 1
+biomasse_daily_ms.plot.line(lw = linienstärke, color = 'greenyellow', alpha = 0.5, label = 'Biomasse')
+
+plt.title(label = "sortierte Jahresdauerlinie für ausgewählte Erzeuger")
+plt.grid()
+plt.legend()
+plt.ylabel('durchschnittliche Stromerzeugung in MWh\n(auf Viertelstundenbasis)')
+plt.xlabel('Anzahl Tage pro Jahr')
+
+plt.margins(x = 0.02)
+
+# Lastgang: Hier den Erzeugungstyp auswählen, je nachdem, welcher Lastgang geplottet werden soll. Der andere wird auskommentiert
+erzeuger = "Biomasse"
+#erzeuger = "Braunkohle"
+
+fig = plt.figure(figsize = (8, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+for i in range(1, 13):
+  plotting_data_monthly = erzeugung0_ms[erzeugung0_ms['Datum von'].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MWh")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+plt.show()
+
+```
+
+## Text-Output
+
+``` {python}
+#| echo: false
+
+# import pandas as pd
+# import matplotlib.pyplot as plt
+
+# # Deklarieren der Anzahl der Nachkommastellen
+# pd.set_option("display.precision", 2)
+
+# Datensätze werden eingelesen
+
+# !
+# Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
+# !
+
+# erzeugung0_ms = pd.read_csv("skript/01-daten/Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv", \
+# sep = ";", thousands = ".", decimal = ",", parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+
+# # Zeichenkette " Originalauflösungen" entfernen
+# erzeugung0_ms.columns = erzeugung0_ms.columns.str.replace(pat = " Originalauflösungen", repl = "")
+
+print(erzeugung0_ms.head(10))
+
+# # Daten der zu betrachtenden Erzeugungsarten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren
+# braunkohle_daily_ms = erzeugung0_ms['Braunkohle [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+# biomasse_daily_ms = erzeugung0_ms['Biomasse [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+
+# # Liniendiagramm plotten
+# linienstärke = 5
+# plt.figure(figsize = (8, 4))
+
+# braunkohle_daily_ms = braunkohle_daily_ms.sort_values(ascending = False, ignore_index = True)
+# braunkohle_daily_ms.index += 1
+# braunkohle_daily_ms.plot.line(lw = linienstärke, color = 'brown', alpha = 0.5, label = 'Braunkohle')
+
+# biomasse_daily_ms = biomasse_daily_ms.sort_values(ascending = False, ignore_index = True)
+# biomasse_daily_ms.index += 1
+# biomasse_daily_ms.plot.line(lw = linienstärke, color = 'greenyellow', alpha = 0.5, label = 'Biomasse')
+
+# plt.title(label = "sortierte Jahresdauerlinie für ausgewählte Erzeuger")
+# plt.grid()
+# plt.legend()
+# plt.ylabel('durchschnittliche Stromerzeugung in MWh\n(auf Viertelstundenbasis)')
+# plt.xlabel('Anzahl Tage pro Jahr')
+
+# plt.margins(x = 0.02)
+
+# # Lastgang: Hier den Erzeugungstyp auswählen, je nachdem, welcher Lastgang geplottet werden soll. Der andere wird auskommentiert
+# erzeuger = "Biomasse"
+# #erzeuger = "Braunkohle"
+
+# fig = plt.figure(figsize = (8, 12))
+# fig.suptitle(erzeuger, fontsize = 12)
+# for i in range(1, 13):
+#   plotting_data_monthly = erzeugung0_ms[erzeugung0_ms['Datum von'].dt.month == i]
+#   ax = fig.add_subplot(12, 1, i)
+#   ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+#   plt.margins(x = 0.01)
+#   ax.set_ylabel(ylabel = "MWh")
+ 
+#   # Titel erzeugen
+#   plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+#   # xticks erzeugen
+#   tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+#   tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+#   plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+# plt.tight_layout()
+# plt.show()
+```
+
+## Jahresgang Biomasse
+
+``` {python}
+#| echo: false
+#| fig-align: center
+#| fig-cap: Jahresgang Biomasse
+#| fig-alt: "Für jeden Monat stellen 12 Teilgrafiken die Stromerzeugung durch Biomasse dar. Die Stromerzeugung ist ganzjährig oberhalb von 900 MWh je Viertelstunde. Oberhalb dieses Niveaus ist ein häufiges Auf- und Ab- der Stromerzeugung zu sehen. Einerseits scheint die Erzeugung dem Tagesgang der Netzlast zu folgen. Andererseits scheint in der hellen Erzeugung die Produktion in den Mittagsstunden vermindert zu werden."
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Deklarieren der Anzahl der Nachkommastellen
+pd.set_option("display.precision", 2)
+
+# Datensätze werden eingelesen
+
+# !
+# Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
+# !
+
+# erzeugung0_ms = pd.read_csv("skript/01-daten/Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv", \
+# sep = ";", thousands = ".", decimal = ",", parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+
+# # Zeichenkette " Originalauflösungen" entfernen
+# erzeugung0_ms.columns = erzeugung0_ms.columns.str.replace(pat = " Originalauflösungen", repl = "")
+
+# print(erzeugung0_ms.head(10))
+
+# # Daten der zu betrachtenden Erzeugungsarten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren
+# braunkohle_daily_ms = erzeugung0_ms['Braunkohle [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+# biomasse_daily_ms = erzeugung0_ms['Biomasse [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+
+# # Liniendiagramm plotten
+# linienstärke = 5
+# plt.figure(figsize = (8, 4))
+
+# braunkohle_daily_ms = braunkohle_daily_ms.sort_values(ascending = False, ignore_index = True)
+# braunkohle_daily_ms.index += 1
+# braunkohle_daily_ms.plot.line(lw = linienstärke, color = 'brown', alpha = 0.5, label = 'Braunkohle')
+
+# biomasse_daily_ms = biomasse_daily_ms.sort_values(ascending = False, ignore_index = True)
+# biomasse_daily_ms.index += 1
+# biomasse_daily_ms.plot.line(lw = linienstärke, color = 'greenyellow', alpha = 0.5, label = 'Biomasse')
+
+# plt.title(label = "sortierte Jahresdauerlinie für ausgewählte Erzeuger")
+# plt.grid()
+# plt.legend()
+# plt.ylabel('durchschnittliche Stromerzeugung in MWh\n(auf Viertelstundenbasis)')
+# plt.xlabel('Anzahl Tage pro Jahr')
+
+# plt.margins(x = 0.02)
+
+# Lastgang: Hier den Erzeugungstyp auswählen, je nachdem, welcher Lastgang geplottet werden soll. Der andere wird auskommentiert
+erzeuger = "Biomasse"
+#erzeuger = "Braunkohle"
+
+fig = plt.figure(figsize = (8, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+for i in range(1, 13):
+  plotting_data_monthly = erzeugung0_ms[erzeugung0_ms['Datum von'].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MWh")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+plt.show()
+
+```
+
+## Jahresgang Braunkohle
+
+``` {python}
+#| echo: false
+#| fig-align: center
+#| fig-cap: Jahresgang Biomasse
+#| fig-alt: "Für jeden Monat stellen 12 Teilgrafiken die Stromerzeugung durch Braunkohle dar. Die Grafik entspricht dem zuvor in diesem Abschnitt gezeigten Jahresgang der Braunkohle."
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Deklarieren der Anzahl der Nachkommastellen
+pd.set_option("display.precision", 2)
+
+# Datensätze werden eingelesen
+
+# !
+# Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
+# !
+
+# erzeugung0_ms = pd.read_csv("skript/01-daten/Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv", \
+# sep = ";", thousands = ".", decimal = ",", parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+
+# # Zeichenkette " Originalauflösungen" entfernen
+# erzeugung0_ms.columns = erzeugung0_ms.columns.str.replace(pat = " Originalauflösungen", repl = "")
+
+# print(erzeugung0_ms.head(10))
+
+# # Daten der zu betrachtenden Erzeugungsarten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren
+# braunkohle_daily_ms = erzeugung0_ms['Braunkohle [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+# biomasse_daily_ms = erzeugung0_ms['Biomasse [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+
+# # Liniendiagramm plotten
+# linienstärke = 5
+# plt.figure(figsize = (8, 4))
+
+# braunkohle_daily_ms = braunkohle_daily_ms.sort_values(ascending = False, ignore_index = True)
+# braunkohle_daily_ms.index += 1
+# braunkohle_daily_ms.plot.line(lw = linienstärke, color = 'brown', alpha = 0.5, label = 'Braunkohle')
+
+# biomasse_daily_ms = biomasse_daily_ms.sort_values(ascending = False, ignore_index = True)
+# biomasse_daily_ms.index += 1
+# biomasse_daily_ms.plot.line(lw = linienstärke, color = 'greenyellow', alpha = 0.5, label = 'Biomasse')
+
+# plt.title(label = "sortierte Jahresdauerlinie für ausgewählte Erzeuger")
+# plt.grid()
+# plt.legend()
+# plt.ylabel('durchschnittliche Stromerzeugung in MWh\n(auf Viertelstundenbasis)')
+# plt.xlabel('Anzahl Tage pro Jahr')
+
+# plt.margins(x = 0.02)
+
+# Lastgang: Hier den Erzeugungstyp auswählen, je nachdem, welcher Lastgang geplottet werden soll. Der andere wird auskommentiert
+#erzeuger = "Biomasse"
+erzeuger = "Braunkohle"
+
+fig = plt.figure(figsize = (8, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+for i in range(1, 13):
+  plotting_data_monthly = erzeugung0_ms[erzeugung0_ms['Datum von'].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MWh")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+plt.show()
+
+```
+
+## Sortierte Jahresdauerlinien
+
+``` {python}
+#| echo: false
+#| fig-align: center
+#| fig-cap: Sortierte Jahresdauerlinien für ausgewählte Erzeuger
+#| fig-alt: "Dargestellt werden die sortierten Jahresdauerlinien für Braunkohle und Biomasse. Die sortierte Jahresdauerlinie der Braunkohle entspricht der in diesem Abschnitt zuvor gezeigten (fast liniear abfallend). Dagegen verläuft die sortierte Jahresdauerlinie der Biomasse fast parallel zur x-Achse, was auf eine konstant hohe Erzeugung hinweist."
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Deklarieren der Anzahl der Nachkommastellen
+pd.set_option("display.precision", 2)
+
+# Datensätze werden eingelesen
+
+# !
+# Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
+# !
+
+# erzeugung0_ms = pd.read_csv("skript/01-daten/Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv", \
+# sep = ";", thousands = ".", decimal = ",", parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+
+# # Zeichenkette " Originalauflösungen" entfernen
+# erzeugung0_ms.columns = erzeugung0_ms.columns.str.replace(pat = " Originalauflösungen", repl = "")
+
+# print(erzeugung0_ms.head(10))
+
+# Daten der zu betrachtenden Erzeugungsarten nach Tag gruppieren und durch Mittelwertbildung auf Tagesbasis aggregieren
+braunkohle_daily_ms = erzeugung0_ms['Braunkohle [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+biomasse_daily_ms = erzeugung0_ms['Biomasse [MWh]'].groupby(erzeugung0_ms["Datum von"].dt.dayofyear).mean()
+
+# Liniendiagramm plotten
+linienstärke = 5
+plt.figure(figsize = (8, 4))
+
+braunkohle_daily_ms = braunkohle_daily_ms.sort_values(ascending = False, ignore_index = True)
+braunkohle_daily_ms.index += 1
+braunkohle_daily_ms.plot.line(lw = linienstärke, color = 'brown', alpha = 0.5, label = 'Braunkohle')
+
+biomasse_daily_ms = biomasse_daily_ms.sort_values(ascending = False, ignore_index = True)
+biomasse_daily_ms.index += 1
+biomasse_daily_ms.plot.line(lw = linienstärke, color = 'greenyellow', alpha = 0.5, label = 'Biomasse')
+
+plt.title(label = "sortierte Jahresdauerlinie für ausgewählte Erzeuger")
+plt.grid()
+plt.legend()
+plt.ylabel('durchschnittliche Stromerzeugung in MWh\n(auf Viertelstundenbasis)')
+plt.xlabel('Anzahl Tage pro Jahr')
+
+plt.margins(x = 0.02)
+
+# # Lastgang: Hier den Erzeugungstyp auswählen, je nachdem, welcher Lastgang geplottet werden soll. Der andere wird auskommentiert
+# erzeuger = "Biomasse"
+# #erzeuger = "Braunkohle"
+
+# fig = plt.figure(figsize = (8, 12))
+# fig.suptitle(erzeuger, fontsize = 12)
+# for i in range(1, 13):
+#   plotting_data_monthly = erzeugung0_ms[erzeugung0_ms['Datum von'].dt.month == i]
+#   ax = fig.add_subplot(12, 1, i)
+#   ax.plot(plotting_data_monthly[erzeuger + " [MWh]"])
+#   plt.margins(x = 0.01)
+#   ax.set_ylabel(ylabel = "MWh")
+ 
+#   # Titel erzeugen
+#   plt.title(label = plotting_data_monthly['Datum von'].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+#   # xticks erzeugen
+#   tage_index = plotting_data_monthly[~plotting_data_monthly["Datum von"].dt.day.duplicated()].index
+#   tagesnamen = plotting_data_monthly["Datum von"].dt.day.unique() 
+#   plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+plt.show()
+
+```
+
+:::::
+
+Musterlösung von Marc Sönnecken. Der Code und die durch Abschnitte des Codes erzeugten Outputs wurden in Reiter aufgeteilt. Für die Kompatibilität mit diesem Skript wurden der Dateipfad und die Objektbezeichnungen angepasst. Für die Barrierefreiheit wurden die verwendeten Farben angepasst. 
+
+::::
 :::
 
 ## Bestimmung des in den Pumpspeichern gespeicherten Stroms {#sec-Pumpspeicherinhalt}
@@ -1317,9 +1796,17 @@ plt.show()
 Die Grafik spiegelt die bei der Bestimmung der Residual- und Restlast gewonnene Erkenntnis wider, dass mit dem im Jahr 2023 realisierten Strommix zusätzliche Stromnachfrage vorwiegend konventionell bedient wird.  
 **Wie sähe die Grafik aus, wenn die Einspeisung aus erneuerbaren Energien doppelt so hoch ausgefallen wäre?**
 
-**Marc fragen, ob die Aufgabe an der Stelle zu simpel ist.**
-
 ::: {#tip-pumpspeicher .callout-tip title="Musterlösung Einspeicherung bei doppelter erneuerbarer Erzeugung" collapse="true"}
+
+Für die Berechnung genügt es, die summierte Stromerzeugung aus erneuerbaren Energien mit 2 zu multiplizieren.
+
+```
+restlast = pd.DataFrame()
+restlast["Netzlast [MWh]"] = verbrauch["Gesamt (Netzlast) [MWh]"].copy() 
+restlast["Erneuerbare [MWh]"] = erzeugung[erneuerbare].sum(axis = "columns").copy()
+restlast["Restlast [MWh]"] = restlast["Netzlast [MWh]"] - 2 * restlast["Erneuerbare [MWh]"]
+restlast = restlast["Restlast [MWh]"]
+```
 
 ```{python}
 #| echo: false
@@ -1371,7 +1858,7 @@ Ober- und Hauptstufe der Kraftwerksgruppe: Mooser- und Wasserfallboden mit Karli
 
 &nbsp;
 
-**Stellen Sie den Jahresgang des Stromverbrauchs durch Pumpspeicher in Österreich 2023 dar.** Hinweise zum Herunterladen der Daten finden Sie in Abschnitt [@sec-aufgabe-beschreibende-Datenanalyse].
+**Stellen Sie den Jahresgang der Pumpspeicher in Österreich 2023 dar.** Hinweise zum Herunterladen der Daten finden Sie in Abschnitt [@sec-aufgabe-beschreibende-Datenanalyse].
 
 ::: {#wrn-Datumsspalte-Austria .callout-warning appearance="simple" collapse="false"}
 ## Zeitumstellung im österreichischen Datensatz
@@ -1386,23 +1873,23 @@ Damit die Datumsspalten korrekt eingelesen werden können, müssen die Einträge
 
 ``` {python}
 
-erzeugung_aut = pd.read_csv(filepath_or_buffer = "skript/01-daten/AGPT_2022-12-31T23_00_00Z_2023-12-31T23_00_00Z_15M_de_2024-06-10T09_32_38Z.csv",
+erzeugung_austria = pd.read_csv(filepath_or_buffer = "skript/01-daten/AGPT_2022-12-31T23_00_00Z_2023-12-31T23_00_00Z_15M_de_2024-06-10T09_32_38Z.csv",
                             sep = ";", decimal = ",", thousands = ".")
 
 # string replace & als Datum einlesen
 ## Spalte Zeit von [CET/CEST]
-erzeugung_aut['Zeit von [CET/CEST]'] = erzeugung_aut['Zeit von [CET/CEST]'].str.replace(pat = '2A', repl = '02')
-erzeugung_aut['Zeit von [CET/CEST]'] = erzeugung_aut['Zeit von [CET/CEST]'].str.replace(pat = '2B', repl = '02')
+erzeugung_austria['Zeit von [CET/CEST]'] = erzeugung_austria['Zeit von [CET/CEST]'].str.replace(pat = '2A', repl = '02')
+erzeugung_austria['Zeit von [CET/CEST]'] = erzeugung_austria['Zeit von [CET/CEST]'].str.replace(pat = '2B', repl = '02')
 
-erzeugung_aut['Zeit von [CET/CEST]'] = pd.to_datetime(erzeugung_aut['Zeit von [CET/CEST]'], format = "%d.%m.%Y %H:%M:%S")
+erzeugung_austria['Zeit von [CET/CEST]'] = pd.to_datetime(erzeugung_austria['Zeit von [CET/CEST]'], format = "%d.%m.%Y %H:%M:%S")
 
 ## Spalte Zeit bis [CET/CEST]
-erzeugung_aut['Zeit bis [CET/CEST]'] = erzeugung_aut['Zeit bis [CET/CEST]'].str.replace(pat = '2A', repl = '02')
-erzeugung_aut['Zeit bis [CET/CEST]'] = erzeugung_aut['Zeit bis [CET/CEST]'].str.replace(pat = '2B', repl = '02')
+erzeugung_austria['Zeit bis [CET/CEST]'] = erzeugung_austria['Zeit bis [CET/CEST]'].str.replace(pat = '2A', repl = '02')
+erzeugung_austria['Zeit bis [CET/CEST]'] = erzeugung_austria['Zeit bis [CET/CEST]'].str.replace(pat = '2B', repl = '02')
 
-erzeugung_aut['Zeit bis [CET/CEST]'] = pd.to_datetime(erzeugung_aut['Zeit bis [CET/CEST]'], format = "%d.%m.%Y %H:%M:%S")
+erzeugung_austria['Zeit bis [CET/CEST]'] = pd.to_datetime(erzeugung_austria['Zeit bis [CET/CEST]'], format = "%d.%m.%Y %H:%M:%S")
 
-print(erzeugung_aut.dtypes)
+print(erzeugung_austria.dtypes)
 
 ```
 
@@ -1410,12 +1897,140 @@ print(erzeugung_aut.dtypes)
 
 :::
 
-**Die Musterlösung kann Marc erstellen**
+**To Do: fig-alt**
 
 ::: {.callout-tip title="Musterlösung Aufgabe explorative Datenanalyse" collapse="true"}
 
-*Platzhalter*
+:::: {.border}
+::::: {.panel-tabset}
 
+## Code
+``` {python}
+#| output: false
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Deklarieren der Anzahl der Nachkommastellen
+pd.set_option("display.precision", 2)
+
+# Datensatz wird eingelesen und in der Variable erzeugung0_austria_ms gespeichert
+
+# !
+# Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
+# !
+erzeugung0_austria_ms = pd.read_csv("aufgaben/01-daten/AGPT_2022-12-31T23_00_00Z_2023-12-31T23_00_00Z_15M_de_2024-06-10T09_32_38Z.csv", 
+                                     sep = ";", thousands = ".", decimal = ",", parse_dates = [0, 1], date_format = "%d.%m.%Y %H:%M")
+                                     
+# string replace & als Datum einlesen
+## Spalte Zeit von [CET/CEST]
+erzeugung0_austria_ms['Zeit von [CET/CEST]'] = erzeugung0_austria_ms['Zeit von [CET/CEST]'].str.replace(pat = '2A', repl = '02')
+erzeugung0_austria_ms['Zeit von [CET/CEST]'] = erzeugung0_austria_ms['Zeit von [CET/CEST]'].str.replace(pat = '2B', repl = '02')
+
+erzeugung0_austria_ms['Zeit von [CET/CEST]'] = pd.to_datetime(erzeugung0_austria_ms['Zeit von [CET/CEST]'], format = "%d.%m.%Y %H:%M:%S")
+
+## Spalte Zeit bis [CET/CEST]
+erzeugung0_austria_ms['Zeit bis [CET/CEST]'] = erzeugung0_austria_ms['Zeit bis [CET/CEST]'].str.replace(pat = '2A', repl = '02')
+erzeugung0_austria_ms['Zeit bis [CET/CEST]'] = erzeugung0_austria_ms['Zeit bis [CET/CEST]'].str.replace(pat = '2B', repl = '02')
+
+erzeugung0_austria_ms['Zeit bis [CET/CEST]'] = pd.to_datetime(erzeugung0_austria_ms['Zeit bis [CET/CEST]'], format = "%d.%m.%Y %H:%M:%S")
+
+print(erzeugung0_austria_ms.dtypes)
+print(erzeugung0_austria_ms.head(10))
+
+# Kopie des Datensatzes wird angelegt
+erzeugung_c_austria_ms = erzeugung0_austria_ms.copy()
+
+plotting_data_ms = erzeugung_c_austria_ms.copy()
+
+erzeuger = "Pumpspeicher"
+
+fig = plt.figure(figsize = (7.5, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+
+for i in range(1, 13):
+  plotting_data_monthly_ms = plotting_data_ms[plotting_data_ms["Zeit von [CET/CEST]"].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly_ms[erzeuger + " [MW]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MW")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly_ms["Zeit von [CET/CEST]"].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly_ms[~plotting_data_monthly_ms["Zeit von [CET/CEST]"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly_ms["Zeit von [CET/CEST]"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+plt.show()
+```
+
+## Plot
+``` {python}
+#| echo: false
+#| fig-align: center
+#| fig-cap: 
+#| fig-alt: ""
+
+# !
+# Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
+# !
+erzeugung0_austria_ms = pd.read_csv("aufgaben/01-daten/AGPT_2022-12-31T23_00_00Z_2023-12-31T23_00_00Z_15M_de_2024-06-10T09_32_38Z.csv", 
+                                     sep = ";", thousands = ".", decimal = ",", parse_dates = [0, 1], date_format = "%d.%m.%Y %H:%M")
+                                     
+# string replace & als Datum einlesen
+## Spalte Zeit von [CET/CEST]
+erzeugung0_austria_ms['Zeit von [CET/CEST]'] = erzeugung0_austria_ms['Zeit von [CET/CEST]'].str.replace(pat = '2A', repl = '02')
+erzeugung0_austria_ms['Zeit von [CET/CEST]'] = erzeugung0_austria_ms['Zeit von [CET/CEST]'].str.replace(pat = '2B', repl = '02')
+
+erzeugung0_austria_ms['Zeit von [CET/CEST]'] = pd.to_datetime(erzeugung0_austria_ms['Zeit von [CET/CEST]'], format = "%d.%m.%Y %H:%M:%S")
+
+## Spalte Zeit bis [CET/CEST]
+erzeugung0_austria_ms['Zeit bis [CET/CEST]'] = erzeugung0_austria_ms['Zeit bis [CET/CEST]'].str.replace(pat = '2A', repl = '02')
+erzeugung0_austria_ms['Zeit bis [CET/CEST]'] = erzeugung0_austria_ms['Zeit bis [CET/CEST]'].str.replace(pat = '2B', repl = '02')
+
+erzeugung0_austria_ms['Zeit bis [CET/CEST]'] = pd.to_datetime(erzeugung0_austria_ms['Zeit bis [CET/CEST]'], format = "%d.%m.%Y %H:%M:%S")
+
+print(erzeugung0_austria_ms.dtypes)
+print(erzeugung0_austria_ms.head(10))
+
+# Kopie des Datensatzes wird angelegt
+erzeugung_c_austria_ms = erzeugung0_austria_ms.copy()
+
+plotting_data_ms = erzeugung_c_austria_ms.copy()
+
+erzeuger = "Pumpspeicher"
+
+fig = plt.figure(figsize = (7.5, 12))
+fig.suptitle(erzeuger, fontsize = 12)
+
+for i in range(1, 13):
+  plotting_data_monthly_ms = plotting_data_ms[plotting_data_ms["Zeit von [CET/CEST]"].dt.month == i]
+  ax = fig.add_subplot(12, 1, i)
+  ax.plot(plotting_data_monthly_ms[erzeuger + " [MW]"])
+  plt.margins(x = 0.01)
+  ax.set_ylabel(ylabel = "MW")
+ 
+  # Titel erzeugen
+  plt.title(label = plotting_data_monthly_ms["Zeit von [CET/CEST]"].head(1).dt.strftime('%B').item(), fontsize = 10)
+  
+  # xticks erzeugen
+  tage_index = plotting_data_monthly_ms[~plotting_data_monthly_ms["Zeit von [CET/CEST]"].dt.day.duplicated()].index
+  tagesnamen = plotting_data_monthly_ms["Zeit von [CET/CEST]"].dt.day.unique() 
+  plt.xticks(tage_index, tagesnamen, fontsize = 8)
+
+plt.tight_layout()
+plt.show()
+
+```
+
+:::::
+
+Musterlösung von Marc Sönnecken. Für die Kompatibilität mit diesem Skript wurden der Dateipfad und die Objektbezeichnungen angepasst sowie die Grafikbreite reduziert.
+
+::::
 :::
 
 # Schließende Datenanalyse
@@ -3083,11 +3698,122 @@ Netzentwicklungsplan Strom 2035, Version 2021. Entwurf der Übertragungsnetzbetr
 
 :::
 
+&nbsp;
+
 :::: {#tip-aufgabe-schließende-datenanalyse .callout-tip title="Musterlösung Aufgabe schließende Datenanalyse" collapse="true"}
 
 ::: {.panel-tabset}
 
-## 2030
+## vollständige Musterlösung
+
+:::: {.boarder}
+``` {python}
+
+import pandas as pd
+
+# Deklarieren der Anzahl der Nachkommastellen
+pd.set_option("display.precision", 2)
+
+# Datensätze werden eingelesen
+# !
+# Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
+# !
+
+installierte_leistung_ms = pd.read_csv("aufgaben/01-daten/Installierte_Erzeugungsleistung_202301010000_202401010000_Jahr.csv", \
+sep = ";", thousands = ".", decimal = ",", parse_dates =  [0, 1], date_format = "%d.%m.%Y")
+
+erzeugung_ms = pd.read_csv("aufgaben/01-daten/Realisierte_Erzeugung_202301010000_202401010000_Viertelstunde.csv", \
+sep = ";", thousands = ".", decimal = ",", parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+
+verbrauch_ms = pd.read_csv("aufgaben/01-daten/Realisierter_Stromverbrauch_202301010000_202401010000_Viertelstunde.csv", \
+sep = ";", thousands = ".", decimal = ",", parse_dates =  [0, 1], date_format = "%d.%m.%Y %H:%M")
+
+# Zeichenkette " Originalauflösungen" entfernen
+erzeugung_ms.columns = erzeugung_ms.columns.str.replace(pat = " Originalauflösungen", repl = "")
+installierte_leistung_ms.columns = installierte_leistung_ms.columns.str.replace(pat = " Originalauflösungen", repl = "")
+verbrauch_ms.columns = verbrauch_ms.columns.str.replace(pat = " Originalauflösungen", repl = "")
+
+# Zusammenfassen der erneuerbaren Erzeugung in einer Liste
+erneuerbare_ms = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
+
+pumpspeicherkapazität_MWh_ms = 37.4 * 1000
+
+# Projizierte Erzeugung und Stromverbrauch 2030 & 2035:
+print(f"Wind an Land 2030:\t{( zubaufaktor_windonshore_2030_ms := 115 / (installierte_leistung_ms['Wind Onshore [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Wind auf See 2030:\t{( zubaufaktor_windoffshore_2030_ms := 30 / (installierte_leistung_ms['Wind Offshore [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Solar 2030:\t\t\t{( zubaufaktor_solar_2030_ms := 215 / (installierte_leistung_ms['Photovoltaik [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Biomasse 2030:\t\t{8.4 / (installierte_leistung_ms['Biomasse [MW]'].sum() / 1000):,.2f}")
+
+print(f"\n\nWind an Land 2035:\t{( zubaufaktor_windonshore_2035_ms := 157 / (installierte_leistung_ms['Wind Onshore [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Wind auf See 2035:\t{( zubaufaktor_windoffshore_2035_ms := 40 / (installierte_leistung_ms['Wind Offshore [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Solar 2035:\t\t\t{( zubaufaktor_solar_2035_ms := 309 / (installierte_leistung_ms['Photovoltaik [MW]'].sum() / 1000) ):,.2f}\n"
+      f"Biomasse 2035:\t\t{8.4 / (installierte_leistung_ms['Biomasse [MW]'].sum() / 1000):,.2f}")
+
+lastfaktor_2030_MWh_ms = (658 * 1000 * 1000) / verbrauch_ms["Gesamt (Netzlast) [MWh]"].sum()
+lastfaktor_2035_MWh_ms = (670.4 * 1000 * 1000) / verbrauch_ms["Gesamt (Netzlast) [MWh]"].sum()
+
+print(f"\nSteigerung des Stromverbrauchs 2030 gegenüber 2023 Faktor: {lastfaktor_2030_MWh_ms:,.2f}\n"
+      f"Steigerung des Stromverbrauchs 2035 gegenüber 2023 Faktor: {lastfaktor_2035_MWh_ms:,.2f}")
+
+# Definieren der Restlast
+restlast_ms = pd.DataFrame()
+restlast_ms["Netzlast [MWh]"] = verbrauch_ms["Gesamt (Netzlast) [MWh]"].copy() 
+restlast_ms["Erneuerbare [MWh]"] = erzeugung_ms[erneuerbare_ms].sum(axis = "columns").copy()
+restlast_ms["Restlast [MWh]"] = restlast_ms["Netzlast [MWh]"] - restlast_ms["Erneuerbare [MWh]"]
+restlast_ms = restlast_ms["Restlast [MWh]"]
+
+
+erzeugung_2030_ms = erzeugung_ms.copy()
+erzeugung_2035_ms = erzeugung_ms.copy()
+
+erzeugung_2030_ms["Wind Onshore [MWh]"] = erzeugung_2030_ms["Wind Onshore [MWh]"] * zubaufaktor_windonshore_2030_ms
+erzeugung_2030_ms["Wind Offshore [MWh]"] = erzeugung_2030_ms["Wind Offshore [MWh]"] * zubaufaktor_windoffshore_2030_ms
+erzeugung_2030_ms["Photovoltaik [MWh]"] = erzeugung_2030_ms["Photovoltaik [MWh]"]* zubaufaktor_solar_2030_ms
+# der Wert für Biomasse muss hier nicht geändert werden, da der Faktor 0,99 (also näherungsweise 1) beträgt
+erzeugung_2035_ms["Wind Onshore [MWh]"] = erzeugung_2035_ms["Wind Onshore [MWh]"] * zubaufaktor_windonshore_2035_ms
+erzeugung_2035_ms["Wind Offshore [MWh]"] = erzeugung_2035_ms["Wind Offshore [MWh]"] * zubaufaktor_windoffshore_2035_ms
+erzeugung_2035_ms["Photovoltaik [MWh]"] = erzeugung_2035_ms["Photovoltaik [MWh]"]* zubaufaktor_solar_2035_ms
+
+verbrauch_2030_ms = verbrauch_ms.copy()
+verbrauch_2030_ms["Gesamt (Netzlast) [MWh]"] = verbrauch_2030_ms["Gesamt (Netzlast) [MWh]"]*lastfaktor_2030_MWh_ms
+verbrauch_2035_ms = verbrauch_ms.copy()
+verbrauch_2035_ms["Gesamt (Netzlast) [MWh]"] = verbrauch_2035_ms["Gesamt (Netzlast) [MWh]"]*lastfaktor_2035_MWh_ms
+
+restlast_2030_ms = pd.DataFrame()
+restlast_2030_ms["Netzlast [MWh]"] = verbrauch_2030_ms["Gesamt (Netzlast) [MWh]"].copy() 
+restlast_2030_ms["Erneuerbare [MWh]"] = erzeugung_2030_ms[erneuerbare_ms].sum(axis = "columns").copy()
+restlast_2030_ms["Restlast [MWh]"] = restlast_2030_ms["Netzlast [MWh]"] - restlast_2030_ms["Erneuerbare [MWh]"]
+restlast_2030_ms = restlast_2030_ms["Restlast [MWh]"]
+
+restlast_2035_ms = pd.DataFrame()
+restlast_2035_ms["Netzlast [MWh]"] = verbrauch_2035_ms["Gesamt (Netzlast) [MWh]"].copy() 
+restlast_2035_ms["Erneuerbare [MWh]"] = erzeugung_2035_ms[erneuerbare_ms].sum(axis = "columns").copy()
+restlast_2035_ms["Restlast [MWh]"] = restlast_2035_ms["Netzlast [MWh]"] - restlast_2035_ms["Erneuerbare [MWh]"]
+restlast_2035_ms = restlast_2035_ms["Restlast [MWh]"]
+
+print("\n2030\n======================\n")
+speicher_2030_ms = berechne_speichergröße(restlast_2030_ms, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+print(f"erforderliche Speichergröße in 2030: {speicher_2030_ms:,.1f} MWh")
+
+anteil_EE_2030_ms = anteil_ee_berechnen(restlast_2030_ms, netzlast = verbrauch_2030_ms['Gesamt (Netzlast) [MWh]'],
+                                     einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, neue_speichergrößen = [0.5, 0.1, 0.01], output = True)
+
+# das ganze nochmal für 2035:
+print("\n2035\n======================\n")
+speicher_2035_ms = berechne_speichergröße(restlast_2035_ms, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+print(f"erforderliche Speichergröße in 2035: {speicher_2035_ms:,.1f} MWh")
+
+anteil_EE_2035_ms = anteil_ee_berechnen(restlast_2035_ms, netzlast = verbrauch_2035_ms['Gesamt (Netzlast) [MWh]'],
+                                     einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, neue_speichergrößen = [0.5, 0.1, 0.01], output = True)
+
+
+```
+
+Musterlösung von Marc Sönnecken. Die Definition der verwendeten Funktionen wurde ausgeschnitten (identisch zu den im Skript gezeigten). Der Code wurde so ergänzt, dass in der Ausgabe einige zusätzliche Leerzeilen und Markierungen für das Jahr 2030 und das Jahr 2035 erscheinen.
+
+::::
+
+## Referenz 2030
 ``` {python}
 
 meine_speichergrößen = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.08, 0.06, 0.04, 0.02, 0.01]
@@ -3114,7 +3840,7 @@ netzlast_2023 = verbrauch["Gesamt (Netzlast) [MWh]"].copy()
 netzlast_2030 = netzlast_2023 * lastfaktor_2030_MWh
 
 restlast_2030 = pd.Series()
-restlast_2030 = netzlast_2023 - erneuerbare_2030
+restlast_2030 = netzlast_2030 - erneuerbare_2030
 
 # Ausgabe
 speicher_2030 = berechne_speichergröße(restlast_2030, einspeicherwirkungsgrad = mein_einspeicherwirkungsgrad, ausspeicherwirkungsgrad = mein_ausspeicherwirkungsgrad, output = False)
@@ -3128,10 +3854,10 @@ anteil_ee_berechnen(restlast_2030, netzlast = netzlast_2030, einspeicherwirkungs
 
 ```
 
-## 2035
+## Referenz 2035
 ``` {python}
 
-# # Datensatz 2035 erzeugen
+# Datensatz 2035 erzeugen
 # ## zubaufaktor_windonshore_2035
 # ## zubaufaktor_windonshore_2035
 # ## zubaufaktor_solar_2035
@@ -3151,7 +3877,7 @@ netzlast_2023 = verbrauch["Gesamt (Netzlast) [MWh]"].copy()
 netzlast_2035 = netzlast_2023 * lastfaktor_2035_MWh
 
 restlast_2035 = pd.Series()
-restlast_2035 = netzlast_2023 - erneuerbare_2035
+restlast_2035 = netzlast_2035 - erneuerbare_2035
 
 # Ausgabe
 speicher_2035 = berechne_speichergröße(restlast_2035, einspeicherwirkungsgrad = mein_einspeicherwirkungsgrad, ausspeicherwirkungsgrad = mein_ausspeicherwirkungsgrad, output = False)
@@ -3169,14 +3895,64 @@ anteil_ee_berechnen(restlast_2035, netzlast = netzlast_2035, einspeicherwirkungs
 
 ::::
 
-Eine grafische Darstellung des Jahresgangs des Speichers kann für verschiedene Auslegungen relativ zur maximal benötigten Speichergröße (C$_{max}$) mit Hilfe der Funktion `jahresgang_speicher_berechnen(output = False)` erzeugt werden.
+### Grafische Darstellung ausgewählter Speicherauslegungen
+Eine grafische Darstellung des Jahresgangs des Speichers kann für verschiedene Auslegungen relativ zur maximal benötigten Speichergröße (C$_{max}$) mit Hilfe der Funktion `jahresgang_speicher_berechnen(output = False)` erzeugt werden. Dazu wird zunächst aus der prognostizierten Netzlast und dem geplanten erneuerbaren Zubau eine Restlastkurve für das Jahr 2030 und das Jahr 2035 berechnet.
+
+``` {python}
+# Restlast 2030 berechnen
+## zubaufaktor_windonshore_2030
+## zubaufaktor_windoffshore_2030
+## zubaufaktor_solar_2030
+
+erzeugung_2030 = erzeugung.copy()
+erzeugung_2030['Wind Onshore [MWh]'] *= zubaufaktor_windonshore_2030
+erzeugung_2030['Wind Offshore [MWh]'] *= zubaufaktor_windoffshore_2030
+erzeugung_2030['Photovoltaik [MWh]'] *= zubaufaktor_solar_2030
+
+erneuerbare_2030 = pd.Series()
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
+erneuerbare_2030 = erzeugung_2030[erneuerbare].sum(axis = "columns").copy()
+
+netzlast_2023 = pd.Series()
+netzlast_2023 = verbrauch["Gesamt (Netzlast) [MWh]"].copy()
+netzlast_2030 = netzlast_2023 * lastfaktor_2030_MWh
+
+restlast_2030 = pd.Series()
+restlast_2030 = netzlast_2030 - erneuerbare_2030
+
+# Restlast 2035 berechnen
+## zubaufaktor_windonshore_2035
+## zubaufaktor_windonshore_2035
+## zubaufaktor_solar_2035
+
+erzeugung_2035 = erzeugung.copy()
+erzeugung_2035['Wind Onshore [MWh]'] *= zubaufaktor_windonshore_2035
+erzeugung_2035['Wind Offshore [MWh]'] *= zubaufaktor_windoffshore_2035
+erzeugung_2035['Photovoltaik [MWh]'] *= zubaufaktor_solar_2035
+
+erneuerbare_2035 = pd.Series()
+erneuerbare = ['Biomasse [MWh]', 'Wasserkraft [MWh]', 'Wind Offshore [MWh]', 'Wind Onshore [MWh]', 'Photovoltaik [MWh]', 'Sonstige Erneuerbare [MWh]']
+erneuerbare_2035 = erzeugung_2035[erneuerbare].sum(axis = "columns").copy()
+
+netzlast_2023 = pd.Series()
+netzlast_2023 = verbrauch["Gesamt (Netzlast) [MWh]"].copy()
+netzlast_2035 = netzlast_2023 * lastfaktor_2035_MWh
+
+restlast_2035 = pd.Series()
+restlast_2035 = netzlast_2035 - erneuerbare_2035
+
+```
+
+&nbsp;
+
+Auf der Grundlage der berechneten Restlastkurven werden eine 80-prozentige, eine 20-prozentige und eine 4-prozentige Auslegung der maximal benötigten Speicherkapazität berechnet und dargestellt.
 
 ::: {.panel-tabset}
 
 ## 80 % 2030
 ``` {python}
 #| echo: false
-#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese ist überwiegend negativ, aber starken und vor allem sehr häufiger Schwankungen unterworfen. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 80 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser Mitte Januar voll ist. Bis Mitte März entleert sich der Speicher häufiger stark bis vollständig. Danach ist der Speicher über den Sommer bis Anfang Dezember  vollständig oder nahezu vollständig geladen. In der ersten Dezemberhälfte entleert sich der Speicher für längere Zeit stark und zwei mal komplett. Ende Dezember wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese ist überwiegend negativ, aber starken und vor allem sehr häufiger Schwankungen unterworfen. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 80 Prozent der maximal benötigten Speicherkapazität, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser Mitte Januar voll ist. Bis Mitte März entleert sich der Speicher häufiger stark bis vollständig. Danach ist der Speicher über den Sommer bis Anfang Dezember  vollständig oder nahezu vollständig geladen. In der ersten Dezemberhälfte entleert sich der Speicher für längere Zeit stark und zwei mal komplett. Ende Dezember wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
 
 # Daten generieren
 ## Speichergröße bestimmen und 80 Prozent berechnen
@@ -3237,7 +4013,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2030_80_wirkungsgrad_90_88[0]:,
 
 ``` {python}
 #| echo: false
-#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese ist überwiegend negativ, und trotz starker und vor allem sehr häufiger Schwankungen nur selten positiv. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 80 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser nach wenigen Tagen voll ist. Von Mitte bis Ende Januar entleert sich der Speicher stark bis zur vollständigen Entladung. Von Anfang Februar bis Anfang Dezember ist der Speicher nahezu vollständig geladen. In der ersten Dezemberhälfte entleert sich der Speicher stark, ist aber nur kurz leer. Ende Dezember wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese ist überwiegend negativ, und trotz starker und vor allem sehr häufiger Schwankungen nur selten positiv. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 80 Prozent der maximal benötigten Speicherkapazität, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser nach wenigen Tagen voll ist. Von Mitte bis Ende Januar entleert sich der Speicher stark bis zur vollständigen Entladung. Von Anfang Februar bis Anfang Dezember ist der Speicher nahezu vollständig geladen. In der ersten Dezemberhälfte entleert sich der Speicher stark, ist aber nur kurz leer. Ende Dezember wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
 
 # Daten generieren
 ## Speichergröße bestimmen und 80 Prozent berechnen
@@ -3297,7 +4073,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2035_80_wirkungsgrad_90_88[0]:,
 ## 20 % 2030
 ``` {python}
 #| echo: false
-#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 20 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser nach wenigen Tagen voll ist. Von Mitte Januar bis Mitte März entleert sich der Speicher 4 mal stark bis zur vollständigen Entladung. Von Mitte März bis Mitte August ist der Speicher nahezu vollständig geladen. Anschließend folgt eine einmonatige Phase der starken und kurzzeitig vollständigen Entladung. Von Mitte September bis Anfang Dezember sind ausgeprägte Lade- und Entladezyklen zu beobachten. Anfang Dezember ist der Speicher für mehrere Tage leer, erreicht danach kurzzeitig einen hohen Ladestand, um sich erneut vollständig zu entleeren. In der zweiten Dezemberhälfte wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 20 Prozent der maximal benötigten Speicherkapazität, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. In Jahr 1 geht der Speicher an das Netz und lädt kontinuierlich, bis dieser nach wenigen Tagen voll ist. Von Mitte Januar bis Mitte März entleert sich der Speicher 4 mal stark bis zur vollständigen Entladung. Von Mitte März bis Mitte August ist der Speicher nahezu vollständig geladen. Anschließend folgt eine einmonatige Phase der starken und kurzzeitig vollständigen Entladung. Von Mitte September bis Anfang Dezember sind ausgeprägte Lade- und Entladezyklen zu beobachten. Anfang Dezember ist der Speicher für mehrere Tage leer, erreicht danach kurzzeitig einen hohen Ladestand, um sich erneut vollständig zu entleeren. In der zweiten Dezemberhälfte wird jedoch wieder die volle Ladung erreicht. Mit dieser geht der Speicher in Jahr 2, das ansonsten dem ersten Jahr gleicht."
 
 # Daten generieren
 ## Speichergröße bestimmen und 20 Prozent berechnen
@@ -3358,7 +4134,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2030_20_wirkungsgrad_90_88[0]:,
 
 ``` {python}
 #| echo: false
-#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 20 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Die Jahresgänge gleichen denen im Jahr 2030. Allerdings sind die Phasen der starken Entleerung zu Beginn des Jahres deutlich verkürzt, der Speicher erreicht zumeist nach kurzer Zeit wieder den vollen Ladestand. Die starke Entladung Ende August erfolgt nicht, der Speicher sinkt hier nur auf etwa den halben Ladestand. Auch die starke Ausspeicherung Anfang Dezember ist weniger drastisch, erfolgt dennoch mehrfach vollständig."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 20 Prozent der maximal benötigten Speicherkapazität, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Die Jahresgänge gleichen denen im Jahr 2030. Allerdings sind die Phasen der starken Entleerung zu Beginn des Jahres deutlich verkürzt, der Speicher erreicht zumeist nach kurzer Zeit wieder den vollen Ladestand. Die starke Entladung Ende August erfolgt nicht, der Speicher sinkt hier nur auf etwa den halben Ladestand. Auch die starke Ausspeicherung Anfang Dezember ist weniger drastisch, erfolgt dennoch mehrfach vollständig."
 
 # Daten generieren
 ## Speichergröße bestimmen und 20 Prozent berechnen
@@ -3418,7 +4194,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2035_20_wirkungsgrad_90_88[0]:,
 ## 4 % 2030
 ``` {python}
 #| echo: false
-#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 4 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Über das gesamte Jahr finden kurz aufeinanderfolgende Zyklen der vollständigen Ladung und Entladung statt. Nur Anfang Januar und Ende Dezember ist der Speicher für je ca. 2 Wochen voll."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2030 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 4 Prozent der maximal benötigten Speicherkapazität, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Über das gesamte Jahr finden kurz aufeinanderfolgende Zyklen der vollständigen Ladung und Entladung statt. Nur Anfang Januar und Ende Dezember ist der Speicher für je ca. 2 Wochen voll."
 
 # Daten generieren
 ## Speichergröße bestimmen und 4 Prozent berechnen
@@ -3479,7 +4255,7 @@ print(f"\nDie Speichergröße beträgt {speicher_2030_04_wirkungsgrad_90_88[0]:,
 
 ``` {python}
 #| echo: false
-#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 4 Prozent eines Speichers zur Erreichung einer 100-prozentigen Versorgung mit erneuerbaren Energien, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Über das gesamte Jahr finden kurz aufeinanderfolgende Zyklen der vollständigen Ladung und Entladung statt. Nur Anfang Januar und Ende Dezember ist der Speicher für je ca. 2 Wochen voll. Während des Sommers ist die Zyklendichte noch höher als im Jahr 2030."
+#| fig-alt: "In der Grafik ist zum einen die Restlast für das Jahr 2035 dargestellt. Diese entspricht dem vorherigen Szenario. Zum anderen sind die Jahresgänge in Jahr 1 und Jahr 2 des Speichers mit einer Kapazität von 4 Prozent der maximal benötigten Speicherkapazität, einem Einspeicherwirkungsgrad von 0.9 und einem Ausspeicherwirkungsgrad von 0.88 dargestellt. Über das gesamte Jahr finden kurz aufeinanderfolgende Zyklen der vollständigen Ladung und Entladung statt. Nur Anfang Januar und Ende Dezember ist der Speicher für je ca. 2 Wochen voll. Während des Sommers ist die Zyklendichte noch höher als im Jahr 2030."
 
 # Daten generieren
 ## Speichergröße bestimmen und 4 Prozent berechnen
@@ -3536,17 +4312,80 @@ print(f"\nDie Speichergröße beträgt {speicher_2035_04_wirkungsgrad_90_88[0]:,
 
 ```
 
+## Code-Beispiel
+
+``` {python}
+#| output: false
+
+# Daten generieren
+## Speichergröße bestimmen und 80 Prozent berechnen
+speichergröße_2030_80 = berechne_speichergröße(restlast_2030, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False) * 0.8
+
+## Jahresgang des Speichers bestimmen
+speicher_2030_80_wirkungsgrad_90_88 = jahresgang_speicher_berechnen(restlast_2030, speichergröße = speichergröße_2030_80, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, output = False)
+
+jahresgang_speicher_jahr1 = speicher_2030_80_wirkungsgrad_90_88[1]
+jahresgang_speicher_jahr2 = speicher_2030_80_wirkungsgrad_90_88[2]
+
+# xticks erzeugen
+monate_index = erzeugung[~erzeugung["Datum von"].dt.month.duplicated()].index
+monatsnamen = erzeugung["Datum von"].iloc[monate_index].dt.strftime("%B") 
+
+# Grafik mit drei subplots erzeugen
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize = (7.5, 6), height_ratios = [2, 1, 1], sharex = True, layout = 'tight')
+plt.suptitle('Restlast 2030 und Jahresgang eines Speichers mit\n C$_{max}$ = 0.8, η$_{ein}$ = 0.9 und η$_{aus}$ = 0.88')
+plt.xticks(monate_index, monatsnamen, rotation = 45);
+plt.minorticks_off()
+plt.setp([ax1, ax2, ax3], xlim = (restlast.index.min() - len(restlast.index) / 100, restlast.index.max() * 1.01))
+plt.setp([ax2, ax3], ylim = (0, max(max(jahresgang_speicher_jahr1), max(jahresgang_speicher_jahr2)) * 1.2))
+
+## plot restlast
+ax1.plot(restlast_2030, label = "Restlast")
+ax1.grid()
+ax1.set_ylabel('MWh')
+ax1.legend()
+
+## plot jahresgang_speicher_jahr1
+ax2.plot(jahresgang_speicher_jahr1, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 1')
+ax2.grid()
+ax2.set_ylabel('MWh')
+ax2.legend()
+
+## plot jahresgang_speicher_jahr2
+ax3.plot(jahresgang_speicher_jahr2, color = 'black', linestyle = '-', label = 'Stromspeicher Jahr 2')
+ax3.tick_params(axis = 'x', rotation = 45)
+ax3.set_ylabel('MWh')
+ax3.grid()
+ax3.legend()
+
+plt.show()
+
+# Zyklenzahl berechnen, Übergabe von Tupel = Wirkungsgrade werden nicht benötigt
+zyklenzahl_berechnen(speicher_2030_80_wirkungsgrad_90_88, output = True)
+
+# Anteil EE berechnen
+anteil_ee_berechnen(restlast_2030, netzlast = netzlast_2030, einspeicherwirkungsgrad = 0.9, ausspeicherwirkungsgrad = 0.88, neue_speichergrößen = [0.8], output = True)
+
+# Speichergröße ausgeben
+print(f"\nDie Speichergröße beträgt {speicher_2030_80_wirkungsgrad_90_88[0]:,.1f} MWh\n"
+      f"Dies entspricht {speicher_2030_80_wirkungsgrad_90_88[0] / pumpspeicherkapazität_MWh:,.1f} Pumpspeicheräquivalenten.")
+
+```
+
 :::
 
-Mit einer 80-prozentigen Auslegung der Speichergröße wirkt der Speicher überdimensioniert. Im Jahr 2030 ist der Speicher über die Sommermonate voll geladen und während des Winters findet auf niedrigem Ladestand eine verleichsweise geringe Ein- und Ausspeicherung statt. Der Speicher erreicht nur wenige Vollyzklen. Im Jahr 2035 ist der Speicher fast ganzjährig voll geladen. Die 2030 erforderliche Speicherkapazität von 8.295 GWh enspricht dem 222-Fachen der bestehenden Pumpspeicherkraftwerke oder 166 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe mit 50 GWh/a ([Wikipedia](https://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschlandhttps://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschland)).
+Mit einer 80-prozentigen Auslegung der Speichergröße wirkt der Speicher überdimensioniert. Im Jahr 2030 kann der Speicher seine Kapazität über das Jahr kaum ausschöpfen. Der Speicher erreicht nur selten Ladestände im Bereich von 50 Prozent. Lediglich über den Jahreswechsel wird die maximale Kapazität in Anspruch genommen. Umgekehrt ist der Speicher im Jahr 2035 überwiegend voll geladen und es findet eine nur geringe Ein- und Ausspeicherung statt. Der Speicher erreicht insbesondere im Jahr 2035 nur wenige Vollyzklen.
 
-Mit einer 20-prozentigen Auslegung werden mehr Vollzyklen und umfangreichere Teilzyklen erreicht. Dennoch sind von April bis Ende August bzw. im Jahr 2035 von März bis Dezember konstant hohe Ladestände zu beobachten. 2030 würden 2.073 GWh Speicherkapazität benötigt, 2035 1.259 GWh. 1.259 GWh entsprechen dem 34-Fachen der bestehenden Pumpspeicherkapazität oder 25 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe.
+Die 2030 erforderliche Speicherkapazität von 4.936 GWh enspricht dem 132-Fachen der bestehenden Pumpspeicherkraftwerke oder 99 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe mit 50 GWh/a ([Wikipedia](https://de.wikipedia.org/wiki/Liste_von_Batteriezellfabriken_in_Deutschland)). Die im Jahr 2035 erforderliche Speicherkapazität von 19.064 GWh entspricht dem 510-Fachen der bestehenden Pumpspeicherkraftwerke oder 381 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg.  
+**Hinweis:** Die Referenz auf die Tesla Gigafactory Berlin-Brandenburg dient lediglich zur Einordnung. Die Fabrik in Grünheide produziert aktuell keine Batteriezellen. Planungen für weitere Batteriefabriken in Deutschland wurden jüngst eingestellt.
 
-Die 4-Prozentige Auslegung zeigt ein ständiges Auf und Ab. In dieser Dimension könnte ein Stromspeicher wirtschaftlich zu betreiben sein. Dafür würden 2030 415 GWh und 2035 252 GWh Speicherkapazität benötigt. 252 GWh entsprechen dem 6,7-Fachen der bestehenden Pumpspeicherkapazität oder 5 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe.
+Mit einer 20-prozentigen Auslegung werden mehr Vollzyklen und umfangreichere Teilzyklen erreicht. Dennoch sind im Jahr 2035 von April bis Ende August konstant hohe Ladestände zu beobachten. 2030 würden 1.234 GWh Speicherkapazität benötigt, 2035 4.766 GWh. Dies entspricht dem 33- bzw. 127-Fachen der bestehenden Pumpspeicherkapazität oder 25 bzw. 95 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe.
 
-In allen Szenarien ist auffällig, dass die Zyklenzahl in Jahr 1 und Jahr 2 fast identisch ist. Ein halber Zyklus Unterschied bedeutet, dass im ersten Jahr der Speicher im Januar vollgeladen wird, was je nach Szenario innerhalb von 2 Wochen (Speichergröße 80 %, Jahr 2030), innerhalb weniger Tage (Speichergröße 80 %, Jahr 2035 und Speichergröße 20 %, Jahr 2030) oder nahezu sofort (Speichergröße 20 %, Jahr 2035 und Speichergröße 4 %, Jahre 2030 & 2035) geschieht.
+Die 4-Prozentige Auslegung zeigt ein ständiges Auf und Ab. In dieser Dimension könnte ein Stromspeicher wirtschaftlich zu betreiben sein. Dafür würden 2030 247 GWh und 2035 953 GWh Speicherkapazität benötigt. 247 GWh entsprechen dem 6,6-Fachen der bestehenden Pumpspeicherkapazität oder 5 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg in der ersten Ausbaustufe. 953 GWh entsprechen 25,5 Pumpspeicheräquivalenten und 19 Jahresproduktionen der Tesla Gigafactory Berlin-Brandenburg.
 
-Erkennbar gilt hier die 80-20-Regel ([Paretoprinzip](https://de.wikipedia.org/wiki/Paretoprinzip)): Mit 20 Prozent des Aufwands werden  80 Prozent des Weges erreicht. Beträgt 2035 der Anteil erneuerbarer Energien ohne Speicher 93 Prozent, so sind 7 Prozent durch Speicher (oder anderweitig) zu decken. Für eine 100-prozentige Bedarfsdeckung aus Stromspeichern würden 6,3 TWh Speicherkapzität benötigt. Ein 20 Prozent so großer Speicher erreicht einen Gesamtanteil erneurbarer Energien von 99 Prozent. Ein wiederum nur 20 Prozent so großer Speicher erreicht einen Gesamtanteil von 97 Prozent.
+In allen Szenarien ist auffällig, dass die Zyklenzahl in Jahr 1 und Jahr 2 fast identisch ist. Der Unterschied von einem halben Zyklus ergibt sich dadurch, dass der Speicher im ersten Jahr leer ans Netz geht. Je nach Szenario wird der Speicher dann im Jahresverlauf (Speichergröße 80 %), innerhalb weniger Wochen (Speichergröße 20 %) oder nahezu sofort (Speichergröße 4 %) erstmalig voll geladen.
+
+Erkennbar gilt bei der Speicherauslegung die 80-20-Regel ([Paretoprinzip](https://de.wikipedia.org/wiki/Paretoprinzip)): Mit 20 Prozent des Aufwands werden  80 Prozent des Weges erreicht. Beträgt 2035 der Anteil erneuerbarer Energien ohne Speicher 81 Prozent, so sind 19 Prozent durch Speicher (oder anderweitig) zu decken. Für eine 100-prozentige Bedarfsdeckung aus Stromspeichern würden 23,8 TWh Speicherkapzität benötigt. Ein 20 Prozent so großer Speicher erreicht einen Gesamtanteil erneuerbarer Energien von 95 Prozent. Ein wiederum nur 20 Prozent so großer Speicher erreicht einen Gesamtanteil von 92 Prozent.
 
 ## Bonus: Benötigte Spitzenleistung der Reservekraftwerke abschätzen
 Aus der Berechnung verschiedener Speichergrößen wurde erkennbar, dass auch verhältnismäßig kleine Speichergrößen zu einem hohen Anteil erneuerbarer Energien im Strommix führen. Dennoch bedeuten kleiner dimensionierte Speicher, dass punktuell Netzlast durch in Reserve stehende Lastfolgekraftwerke bedient werden muss. In diesem Abschnitt wird die benötigte Erzeugungsleistung der Reservekraftwerke abgeschätzt. Dazu wird das Maximum der positiven Restlast nach Ausspeicherung mal vier multipliziert, da der Datensatz auf Viertelstundenbasis vorliegt.
@@ -3656,4 +4495,10 @@ Lösung 5: a, b, c, d
 
 Im Rahmen der schließenden Datenanalyse wurde festgestellt, dass durch die Kappung von Erzeugungsspitzen in einem von erneuerbarer Überschussproduktion geprägtem Stromsystem der erforderliche Stromspeicher um Größenordnungen kleiner dimensioniert werden kann. Allerdings verbleiben dann wenige Prozent der Jahresstromnachfrage, die nicht erneuerbar aus der laufenden Produktion oder durch Ausspeicherung gedeckt werden können. Eine Option bestünde darin, die Biomassekraftwerke in Lastfolge zu betreiben.
 
-Berechnen Sie die erforderliche Speichergröße, wenn der Anteil erneuerbarer Energien 2030 und 2035 100 Prozent betragen soll und Biomassekraftwerke in Lastfolge betrieben werden. Der Einspeicherwirkungsgrad betrage 0.9, der Ausspeicherwirkungsgrad = 0.88.
+Berechnen Sie die erforderliche Speichergröße (Einspeicherwirkungsgrad = 0.9, Ausspeicherwirkungsgrad = 0.88), wenn der Anteil erneuerbarer Energien 2035 100 Prozent betragen soll und Biomassekraftwerke in Lastfolge betrieben werden. Dabei wird angenommen, dass Biomassekraftwerke in Zeiten mit einer vollständigen Deckung des Stromverbrauchs durch die übrigen erneuerbaren Energien ihre Gasproduktion einspeichern und dann verstromen, wenn eine positive Restlast besteht. Die Produktion der Biogasanlagen entspreche der Erzeugungskurve des Jahres 2023.
+
+  - Wie groß müsste der Gasspeicher (in MWh elektrischer Energie) sein?
+
+  - Wie hoch ist die maximal benötigte Stromerzeugungsleistung der Biomassekraftwerke absolut und relativ zur 2023 installierten Leistung?
+
+  - Wie groß muss der erforderliche Stromspeicher sein, wenn Biomassekraftwerke in Lastfolge betrieben werden?
