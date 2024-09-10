@@ -1897,8 +1897,6 @@ print(erzeugung_austria.dtypes)
 
 :::
 
-**To Do: fig-alt**
-
 ::: {.callout-tip title="Musterlösung Aufgabe explorative Datenanalyse" collapse="true"}
 
 :::: {.border}
@@ -1971,8 +1969,8 @@ plt.show()
 ``` {python}
 #| echo: false
 #| fig-align: center
-#| fig-cap: 
-#| fig-alt: ""
+#| fig-cap: Jahresgang der Pumpspeicher in Österreich 2023 
+#| fig-alt: "In 12 Teilgrafiken ist monatsweise der Jahresgang der Pumpspeicher in Österreich im Jahr 2023 dargestellt. Auf der x-Achse sind die Tage jedes Monats abgetragen, auf der y-Achse die ein- bzw. ausgespeicherte Leistung. Die Leistungskurve ist sehr volatil. An vielen Tagen liefern die Pumpspeicher Leistungen nahe des Maximums im Bereich von 2500 MW, die aber nur stundenweise erreicht werden. Regelmäßig werden negative Leistungen im Bereich von 1000 MW erreicht, d. h. die Pumpsspeicher pumpen Wasser in die Speicherbecken. Leistungsniveaus von Null oder negative Leistungen werden während der Wintermonate tendenziell während der Nachtstunden erreicht, während des Sommers eher gegen den Mittag."
 
 # !
 # Für die eigene Anwendung muss der Dateipfad an den korrekten Speicherort der runtergeladenen .csv Datei angepasst werden. 
