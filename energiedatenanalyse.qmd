@@ -4414,7 +4414,9 @@ Kennzahlenbasierte und visuelle Methoden der Datenanalyse ergänzen einander und
 
 Mit den vorgestellten Werkzeugen stehen Ihnen Hilfsmittel zur Verfügung, um datenbasiert Entscheidungen zu treffen und am klima- und energiewirtschaftspolitischen Diskurs teilzunehmen. Dabei sollten Sie jedoch immer bedenken, dass die Analyse von Aggregatdaten Zusammenhänge vereinfacht und das Risiko ökologischer Fehlschlüsse besteht. Zu einer umfassenden Datenanalyse gehört deshalb auch, die blinden Flecken im eigenen Vorgehen zu reflektieren und transparent zu machen.
 
-# Kompetenzquiz
+# Lernzielkontrolle
+
+## Kompetenzquiz
 <!-- (ggf. aufklappbarer Callout Block, Textverweis für PDF, polierte Lösungen evntl. via Lumi später entscheiden) -->
 
 (@) Wie lautet der vollständige Befehl, um mit dem Python Modul Pandas folgenden String in ein Objekt vom Typ datetime umzuwandeln?
@@ -4489,7 +4491,7 @@ Lösung 5: a, b, c, d
 
 :::
 
-# Übungen
+## Übungen
 
 Im Rahmen der schließenden Datenanalyse wurde festgestellt, dass durch die Kappung von Erzeugungsspitzen in einem von erneuerbarer Überschussproduktion geprägtem Stromsystem der erforderliche Stromspeicher um Größenordnungen kleiner dimensioniert werden kann. Allerdings verbleiben dann wenige Prozent der Jahresstromnachfrage, die nicht erneuerbar aus der laufenden Produktion oder durch Ausspeicherung gedeckt werden können. Eine Option bestünde darin, die Biomassekraftwerke in Lastfolge zu betreiben.
 
