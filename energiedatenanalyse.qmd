@@ -60,7 +60,7 @@ fig-asp: 0.618
 ::: {.border #Lizenz}
 
 :::: {layout="[20, 80]"}
-![](skript/00-bilder/CC-BY.svg)
+![](skript/00-bilder/CC-BY.svg){fig-alt="Symbol des Lizenzhinweises Creative Commons BY"}
 
 Bausteine Computergestützter Datenanalyse von Lukas Arnold, Simone Arnold, Florian Bagemihl, Matthias Baitsch, Marc Fehr, Maik Poetzsch und Sebastian Seipel. Anwendungsbaustein Energiedatenanalyse von Maik Poetzsch ist lizensiert unter [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de). Das Werk ist abrufbar auf [GitHub](https://github.com/bausteine-der-datenanalyse/bcd-styleguide). Ausgenommen von der Lizenz sind alle Logos und anders gekennzeichneten Inhalte. 2024
 
@@ -580,9 +580,9 @@ Diesem Skript ist folgende Datei angefügt.
 
 Nach der Auswahl des Zeitraums auf Exportieren klicken, dann erscheint die Schaltfläche Download. 
 
-![&nbsp;](aufgaben/00-bilder/APG-erzeugungsdaten-2023-de.png)
+![&nbsp;](aufgaben/00-bilder/APG-erzeugungsdaten-2023-de.png){fig-alt="Ansicht der Eingabefelder, um die österreichischen Strommarktdaten herunterzuladen."}
 
-![&nbsp;](aufgaben/00-bilder/english/APG-generation-data-2023-en.png)
+![&nbsp;](aufgaben/00-bilder/english/APG-generation-data-2023-en.png){fig-alt="Ansicht der Eingabefelder, um die österreichischen Strommarktdaten in englischer Sprache herunterzuladen."}
 
 Das Datumsformat der Dateien ist abhängig von der auf der Internetseite eingestellten Sprache (Deutsch/English).
 
@@ -776,8 +776,8 @@ print(verbrauch.sum(numeric_only = True))
 ::: {#imp-Residuallast .callout-important}
 ## Residuallast
 
-Die Residuallast [...] entspricht dem
-gesamten Realisierten Stromverbrauch, abzüglich der Einspeisung von Photovoltaik-, Wind Onshore- und Wind Offshore-Anlagen. [SMARD.de Benutzerhandbuch (S. 53)](https://www.smard.de/resource/blob/212924/61a75e052eddb43a8d3cc4c6e1653fa3/smard-benutzerhandbuch-02-2024-data.pdf)
+"Die Residuallast [...] entspricht dem
+gesamten Realisierten Stromverbrauch, abzüglich der Einspeisung von Photovoltaik-, Wind Onshore- und Wind Offshore-Anlagen." [SMARD.de Benutzerhandbuch (S. 53)](https://www.smard.de/resource/blob/212924/61a75e052eddb43a8d3cc4c6e1653fa3/smard-benutzerhandbuch-02-2024-data.pdf)
 
 :::
 
