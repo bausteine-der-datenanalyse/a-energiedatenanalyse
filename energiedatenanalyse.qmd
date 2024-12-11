@@ -3377,7 +3377,6 @@ effekt_kappung_berechnen(restlast, einspeicherwirkungsgrad = 0.9, ausspeicherwir
 
 ## Anteil erneuerbarer Stromerzeugung bestimmen
 Durch die Integration eines Stromspeichers in das Stromsystem kann erneuerbare Überschussproduktion in Phasen mit einer positiven Restlast verschoben werden, die andernfalls durch Lastfolgekraftwerke zu decken wäre. Dadurch sinkt der Anteil konventioneller Stromerzeugung und steigt der Anteil erneuerbarer Stromerzeugung.
-**fig-alt: ist falsch**
 
 ::: {layout="[50, 50]"}
 
