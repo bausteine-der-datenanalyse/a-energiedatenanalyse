@@ -1,4 +1,4 @@
-name: Build and Deploy (Reusable)
+name: Deploy via Reusable Workflow
 
 on:
   push:
@@ -6,8 +6,11 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write  # 🔐 Needed for pushing changes in the called workflow
+
 jobs:
-  use-shared-workflow:
-    uses: bausteine-der-datenanalyse/shared-media-and-workflows/.github/workflows/build_and_deploy.yml@main
+  deploy:
+    uses: your-org/ci-templates/.github/workflows/build-and-deploy.yml@main
     with:
       quarto_profile: "full"
