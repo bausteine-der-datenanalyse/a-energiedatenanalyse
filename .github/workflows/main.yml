@@ -10,5 +10,4 @@ jobs:
   use-shared-workflow:
     uses: bausteine-der-datenanalyse/shared-media-and-workflows/.github/workflows/build_and_deploy.yml@main
     with:
-      python_version: "3.12"
       quarto_profile: "full"
