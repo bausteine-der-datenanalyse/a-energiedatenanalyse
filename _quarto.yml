@@ -14,11 +14,11 @@ book:
   date: today
   language: de-DE
   downloads: [pdf]
-  repo-url: "https://github.com/bausteine-der-datenanalyse/w-python-numpy-grundlagen"
+  repo-url: "https://github.com/bausteine-der-datenanalyse/a-energiedatenanalyse"
   repo-actions: [source]
   favicon: "skript/00-bilder/favicon_bcd_new.svg"
   sidebar:
-    title: "Werkzeugbaustein Grundlagen NumPy"
+    title: "Anwendungsbaustein Energiedatenanalyse"
     logo: "skript/00-bilder/logo_bcd_new.svg"
 
 ## Inhaltsverzeichnis / table of contents
