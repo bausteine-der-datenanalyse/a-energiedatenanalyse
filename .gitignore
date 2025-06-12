@@ -15,6 +15,9 @@
 .vscode/
 _environment
 
+# Ignore _book
+/_book/
+
 # Ignore venv
 /.venv/
 
