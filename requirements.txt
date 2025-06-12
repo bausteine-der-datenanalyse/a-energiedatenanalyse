@@ -1,4 +1,3 @@
 ﻿numpy
 pandas
 matplotlib
-random
