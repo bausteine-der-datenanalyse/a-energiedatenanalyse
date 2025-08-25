@@ -1,5 +1,5 @@
 # Voraussetzungen
-Die Bearbeitungszeit dieses Bausteins beträgt circa **Platzhalter**. Für die Bearbeitung dieses Bausteins werden folgende Bausteine vorausgesetzt und die genannten Bibliotheken verwendet:
+Die Bearbeitungszeit dieses Bausteins beträgt circa 10 Stunden. Für die Bearbeitung dieses Bausteins werden folgende Bausteine vorausgesetzt und die genannten Bibliotheken verwendet:
 
 - Werkzeugbaustein Python
 
