@@ -19,7 +19,7 @@ book:
   favicon: "skript/00-bilder/favicon_bcd_new.svg"
   sidebar:
     title: "Anwendungsbaustein Energiedatenanalyse"
-    logo: "skript/00-bilder/logo_bcd_new.svg"
+    logo: "skript/00-bilder/logo_with_text_new.svg"
 
 ## Inhaltsverzeichnis / table of contents
 toc: true

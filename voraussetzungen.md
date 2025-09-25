@@ -13,8 +13,4 @@ Die Bearbeitungszeit dieses Bausteins beträgt circa 10 Stunden. Für die Bearbe
 
 - Methodenbaustein Einlesen strukturierter Datensätze
 
-Querverweis auf: 
-
-  - Methodenbaustein Grundlagen der Statistik (Kapitel 2 einzelne Merkmale)
-
 Im Baustein werden Strommarktdaten für das Jahr 2023 verwendet. Daten für Deutschland werden von der Bundesnetzagentur bereitgestellt und sind unter [https://www.smard.de/](https://www.smard.de/home/downloadcenter/download-marktdaten/) abrufbar. Daten für Österreich werden von der Austrian Power Grid AG bereitgestellt und sind unter [https://markttransparenz.apg.at/](https://markttransparenz.apg.at/de/markt/Markttransparenz/erzeugung/Erzeugung-pro-Typ) abrufbar.
