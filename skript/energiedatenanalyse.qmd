@@ -1,5 +1,9 @@
 # Energiedatenanalyse
 
+<div style="position: relative; width: 100%; aspect-ratio: 16 / 9;">
+  <iframe src="https://av.tib.eu/player/71646" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+</div>
+
 # Hintergrund
 Elektrischer Strom wird in Kraftwerken erzeugt und über das Stromnetz zu den Stromverbrauchern transportiert. Stromerzeugung und -verbrauch müssen dabei immer ausgeglichen sein. Der Anteil wetterabhängiger erneuerbarer Einspeisung steigt, Strom kann bislang aber nicht (kostengünstig) großtechnisch gespeichert werden. 2023 speisten die Pumpspeicherkraftwerke in Deutschland bei einer Kapazität von 37,4 GWh [@Heimerl-Kohler-2017-Pumpspeicher-in-Deutschland, S. 77] 11,1 TWh Strom ein, was 2,4 Prozent des deutschen Stromverbrauchs von 458,3 TWh entsprach [@energy-charts-strom]. Die Kraftwerkseinsatzplanung und Speicherauslegung auf Basis von Erzeugungs- und Verbrauchsdaten ist deshalb ein relevantes Anwendungsfeld für die Datenanalyse.  
 Die Bundesnetzagentur veröffentlicht auf [https://www.smard.de/](https://www.smard.de/home/downloadcenter/download-marktdaten/) unter anderem Daten zu Stromerzeugung, -verbrauch und Großhandelspreisen. (Hinweis: Kraftwerksdaten liegen für Erzeugungseinheiten mit einer installierten Erzeugungsleistung von mindestens 100 MW vor.)
@@ -4323,7 +4327,9 @@ Bei der vergleichenden Analyse der Erzeugungs- und Verbrauchsdaten für Deutschl
 
 Kennzahlenbasierte und visuelle Methoden der Datenanalyse ergänzen einander und helfen, einen Datensatz zu verstehen. Beispielsweise könnte mit einer rein kennzahlbasierten Vorgehensweise die Abschaltung der deutschen Kernkraftwerke leicht übersehen werden, während diese in der grafischen Darstellung des Jahresgangs deutlich erkennbar ist. Demgegenüber könnten bei der reinen Visualisierung des Erzeugungsanteils verschiedener Kraftwerkstypen in Österreich die Ein- und Ausspeicherung unbedacht aufsummiert werden.
 
-Mit den vorgestellten Werkzeugen stehen Ihnen Hilfsmittel zur Verfügung, um datenbasiert Entscheidungen zu treffen und am klima- und energiewirtschaftspolitischen Diskurs teilzunehmen. Dabei sollten Sie jedoch immer bedenken, dass die Analyse von Aggregatdaten Zusammenhänge vereinfacht und das Risiko ökologischer Fehlschlüsse besteht. Zu einer umfassenden Datenanalyse gehört deshalb auch, die blinden Flecken im eigenen Vorgehen zu reflektieren und transparent zu machen.
+<div style="position: relative; width: 100%; aspect-ratio: 16 / 9;">
+  <iframe src="https://av.tib.eu/player/71636" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+</div>
 
 # Lernzielkontrolle
 
