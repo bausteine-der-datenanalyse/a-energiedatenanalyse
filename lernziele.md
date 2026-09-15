@@ -3,7 +3,7 @@ In diesen Baustein lernen Sie Methoden und Werkzeuge für die Energiedatenanalys
 
 Die behandelten Methoden umfassen:
 
-  - beschreibende Datenanlyse
+  - beschreibende Datenanalyse
 
   - explorative Datenanalyse
 
