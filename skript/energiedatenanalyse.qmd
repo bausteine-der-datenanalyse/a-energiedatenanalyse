@@ -4351,7 +4351,7 @@ datum_pd = pd.to_datetime(datum, format = " ... ")
 
     a) pandas.concat(a, b, c)
 
-    b) pandas.append(a, b, ,c)
+    b) pandas.append(a, b, c)
 
     c) pandas.concatenate[a, b, c]
 
