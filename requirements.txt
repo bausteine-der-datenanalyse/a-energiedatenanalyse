@@ -1,4 +1,4 @@
-﻿jupyter
+jupyter
 numpy
 pandas
-matplotlib
+matplotlib==3.10.9
